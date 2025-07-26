@@ -1,6 +1,8 @@
-﻿namespace AccountService.Api.Features.Account.GetAccounts;
+﻿using AccountService.Api.ViewModels;
+using MediatR;
 
-public class GetAccountsQuery
+namespace AccountService.Api.Features.Account.GetAccounts;
+
+public class GetAccountsQuery : IRequest<IEnumerable<AccountViewModel>>
 {
-    // NOTE ?
 }

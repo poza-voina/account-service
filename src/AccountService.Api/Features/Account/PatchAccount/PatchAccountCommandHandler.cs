@@ -1,0 +1,31 @@
+using AccountService.Api.Domains.Enums;
+using AccountService.Api.Exceptions;
+using AccountService.Api.ViewModels;
+using AutoMapper;
+using MediatR;
+
+namespace AccountService.Api.Features.Account.PatchAccount;
+
+public class PatchAccountCommandHandler(IAccountStorageService accountStorageService, IMapper mapper) : IRequestHandler<PatchAccountCommand, AccountViewModel>
+{
+    private const string AccountTypeErrorMessage = "Процентная ставка может быть только у депозита или кредита";
+
+    public async Task<AccountViewModel> Handle(PatchAccountCommand request, CancellationToken cancellationToken)
+    {
+        var account = await accountStorageService.GetAccountAsync(request.Id, cancellationToken);
+
+        if (!(account.Type == AccountType.Deposit || account.Type is AccountType.Credit))
+        {
+            throw new UnprocessableException(AccountTypeErrorMessage);
+        }
+
+        account.InterestRate = request.InterestRate;
+        account.ClosingDate = request.ClosingDate;
+
+        account = await accountStorageService.UpdateAccountAsync(account, cancellationToken);
+
+        var result = mapper.Map<AccountViewModel>(account);
+
+        return result;
+    }
+}

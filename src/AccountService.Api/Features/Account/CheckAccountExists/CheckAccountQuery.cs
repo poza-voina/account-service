@@ -1,6 +1,8 @@
-﻿namespace AccountService.Api.Features.Account.CheckAccountExists;
+﻿using MediatR;
 
-public class CheckAccountQuery
+namespace AccountService.Api.Features.Account.CheckAccountExists;
+
+public class CheckAccountQuery : IRequest<Unit>
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
 }

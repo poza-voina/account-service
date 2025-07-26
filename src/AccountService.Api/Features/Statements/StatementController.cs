@@ -1,20 +1,25 @@
-﻿using AccountService.Api.Features.Statements.GetStatements;
+﻿using AccountService.Api.Features.Statement.GetStatement;
 using AccountService.Api.ViewModels;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccountService.Api.Features.Statements;
 
 [ApiController]
 [Route("statements")]
-public class StatementController : ControllerBase
+public class StatementController(IMediator mediator) : ControllerBase
 {
     /// <summary>
-    /// Получает выписки по всем счетам c фильтрами
+    /// Получает выписку по счету
     /// </summary>
     /// <returns></returns>
-    [HttpGet]
-    public ActionResult<IEnumerable<AccountWithTransactionsViewModel>> GetStatments([FromQuery] GetStatementsQuery query)
+    [HttpGet("{accountId:guid}")]
+    public async Task<ActionResult<IEnumerable<AccountWithTransactionsViewModel>>> GetStatmentAsync([FromRoute] Guid accountId, [FromQuery] GetStatementQuery query)
     {
-        return Ok(null); // TODO: сделать
+        query.AccountId = accountId;
+
+        var result = await mediator.Send(query);
+
+        return Ok(result);
     }
 }

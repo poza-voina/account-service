@@ -1,61 +1,74 @@
 ﻿using AccountService.Api.Features.Account.CheckAccountExists;
 using AccountService.Api.Features.Account.CreateAccount;
 using AccountService.Api.Features.Account.GetAccounts;
+using AccountService.Api.Features.Account.PatchAccount;
 using AccountService.Api.Features.Account.RemoveAccount;
-using AccountService.Api.Features.Account.UpdateAccount;
 using AccountService.Api.ViewModels;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccountService.Api.Features.Account;
 
 [ApiController]
 [Route("accounts")]
-public class AccountController : ControllerBase
+public class AccountController(IMediator mediator) : ControllerBase
 {
     /// <summary>
     /// Создает счет
     /// </summary>
     [HttpPost]
-    public ActionResult<AccountViewModel> CreateAccount([FromBody] CreateAccountCommand command)
+    public async Task<ActionResult<AccountViewModel>> CreateAccount([FromBody] CreateAccountCommand command)
     {
-        return Ok(null); // TODO: Сделать
+        var result = await mediator.Send(command);
+
+        return Ok(result);
     }
 
     /// <summary>
     /// Обновляет счет
     /// </summary>
     [HttpPut]
-    public ActionResult<AccountViewModel> UpdateAccount([FromBody] UpdateAccountCommand command)
+    public async Task<ActionResult<AccountViewModel>> UpdateAccount([FromBody] PatchAccountCommand command)
     {
-        return Ok(null); // TODO: Сделать
+        var result = await mediator.Send(command);
+
+        return Ok(result);
     }
 
     /// <summary>
     /// Удаляет счет
     /// </summary>
     [HttpDelete("{id:Guid}")]
-    public ActionResult<AccountViewModel> RemoveAccount(Guid id)
+    public async Task<ActionResult<AccountViewModel>> RemoveAccount(Guid id)
     {
         var command = new RemoveAccountCommand() { Id = id };
-        return Ok(null); // TODO: Сделать
+
+        var result = await mediator.Send(command);
+
+        return Ok(result);
     }
 
     /// <summary>
     /// Получает список счетов
     /// </summary>
     [HttpGet]
-    public ActionResult<IEnumerable<AccountViewModel>> GetAccounts([FromQuery] GetAccountsQuery query)
+    public async Task<ActionResult<IEnumerable<AccountViewModel>>> GetAccounts([FromQuery] GetAccountsQuery query)
     {
-        return Ok(null); // TODO: Сделать
+        var result = await mediator.Send(query);
+
+        return Ok(result);
     }
 
     /// <summary>
     /// Проверяет наличие счета
     /// </summary>
-    [HttpGet("{id:long}/exists")]
-    public ActionResult<AccountViewModel> CheckAccountExists([FromRoute] Guid id)
+    [HttpGet("{id:guid}/exists")]
+    public async Task<ActionResult<AccountViewModel>> CheckAccountExists([FromRoute] Guid id)
     {
         var query = new CheckAccountQuery() { Id = id };
-        return Ok(null); // TODO: Сделать
+
+        var result = await mediator.Send(query);
+
+        return Ok(result);
     }
 }

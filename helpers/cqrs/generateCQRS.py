@@ -37,21 +37,29 @@ def find_command_or_query_file():
     raise FileNotFoundError("❌ Не найден файл *Command.cs или *Query.cs в текущей директории.")
 
 def extract_namespace_from_file(filepath):
-    """Извлекает namespace из файла C#."""
-    with open(filepath, encoding="utf-8") as f:
-        for line in f:
-            match = re.match(r'^\s*namespace\s+([\w\.]+)', line)
-            if match:
-                return match.group(1)
+    """
+    Извлекает namespace из C# файла:
+    - поддерживает file-scoped (с `;`)
+    - поддерживает block-scoped (с `{`)
+    - не зависит от позиции в файле
+    - обрабатывает UTF-8 BOM
+    """
+    with open(filepath, encoding="utf-8-sig") as f:
+        content = f.read()
+
+    match = re.search(r'^\s*namespace\s+([\w\.]+)', content, re.MULTILINE)
+    if match:
+        return match.group(1)
+
     raise ValueError(f"❌ Не найден namespace в файле: {filepath}")
 
 def extract_entity_name(filepath):
-    """Извлекает имя сущности (например, из CreateAccountCommand → Account)."""
+    """Извлекает имя команды/запроса (например, CreateAccountCommand)."""
     filename = os.path.basename(filepath)
-    match = re.match(r'^.*?([A-Z][a-zA-Z0-9]+)(Command|Query)\.cs$', filename)
+    match = re.match(r'^(.*)(Command|Query)\.cs$', filename)
     if not match:
-        raise ValueError(f"❌ Невозможно извлечь имя сущности из имени файла: {filename}")
-    return match.group(1)
+        raise ValueError(f"❌ Невозможно извлечь имя команды из имени файла: {filename}")
+    return match.group(1) + match.group(2)  # Возвращаем с суффиксом
 
 def generate_files(entity_name, namespace, target_dir):
     os.makedirs(target_dir, exist_ok=True)
@@ -63,7 +71,7 @@ def generate_files(entity_name, namespace, target_dir):
 
     for filename, template in files.items():
         content = template.replace("{Entity}", entity_name).replace("{Namespace}", namespace)
-        file_path = os.path.join(target_dir, filename)
+        file_path = filename
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(content)
 

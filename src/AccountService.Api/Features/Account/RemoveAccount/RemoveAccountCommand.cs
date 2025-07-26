@@ -1,6 +1,8 @@
-﻿namespace AccountService.Api.Features.Account.RemoveAccount;
+﻿using MediatR;
 
-public class RemoveAccountCommand
+namespace AccountService.Api.Features.Account.RemoveAccount;
+
+public class RemoveAccountCommand : IRequest<Unit>
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
 }
