@@ -1,6 +1,7 @@
 ﻿using AccountService.Api.Behaviors;
 using AccountService.Api.Features.Account;
 using AccountService.Api.Features.Statement.GetStatement;
+using AccountService.Api.Features.Transactions;
 using AccountService.Api.ObjectStorage;
 using AccountService.Api.SwaggerFilters;
 using FluentValidation;
@@ -70,6 +71,8 @@ public static class DependencyInjection
     {
         services.AddScoped<IClientVefiricationService, ClientVefiricationService>();
         services.AddScoped<IAccountStorageService, AccountStorageService>();
+        services.AddScoped<ITransactionStorageService, TransactionStorageService>();
+        services.AddScoped<ICurrencyService, CurrencyService>();
     }
 
     public static void AddHelpers(this IServiceCollection services)

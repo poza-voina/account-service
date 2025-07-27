@@ -26,7 +26,7 @@ public class CreateAccountCommandValidator : AbstractValidator<CreateAccountComm
         RuleFor(x => x.ClosingDate).GreaterThanOrEqualTo(GetCurrentDatetime());
     }
 
-    private DateTime GetCurrentDatetime()
+    private static DateTime GetCurrentDatetime()
     {
         var now = DateTime.UtcNow;
         return new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0, DateTimeKind.Utc);

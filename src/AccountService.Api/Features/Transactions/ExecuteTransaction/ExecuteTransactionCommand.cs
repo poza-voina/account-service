@@ -2,12 +2,11 @@
 using AccountService.Api.ViewModels;
 using MediatR;
 
-namespace AccountService.Api.Features.Transactions.RegisterTransaction;
+namespace AccountService.Api.Features.Transactions.ExecuteTransaction;
 
-public class RegisterTransactionCommand : IRequest<TransactionViewModel>
+public class ExecuteTransactionCommand : IRequest<TransactionViewModel>
 {
     public required Guid BankAccountId { get; set; }
-    public Guid? CounterpartyBankAccountId { get; set; }
     public required decimal Amount { get; set; }
     public required string Currency { get; set; }
     public required TransactionType Type { get; set; }
