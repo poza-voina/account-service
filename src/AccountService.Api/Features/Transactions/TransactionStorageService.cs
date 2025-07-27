@@ -17,6 +17,8 @@ public class TransactionStorageService(ICollection<Domains.Account> accounts, IM
 {
     private const string AccountNotFoundErrorMessage = "Счет не найден";
     private const string TransactionNotFound = "Транзакция не найдена";
+    private const string TransactionIdsDublesErrorMessage = "Входные данные содержат дублирующиеся идентификаторы транзакций.";
+    private const string TransactionNotAllFoundsErrorMessage = "Найдены не все транзакции";
 
     public Task ApplyTransactionAsync(Transaction applyTransaction, Domains.Account applyAccount, CancellationToken cancellationToken)
     {
@@ -74,7 +76,7 @@ public class TransactionStorageService(ICollection<Domains.Account> accounts, IM
         var idSet = ids.ToHashSet();
         if (idSet.Count != ids.Count())
         {
-            throw new InvalidOperationException("Входные данные содержат дублирующиеся идентификаторы транзакций."); // TODO: сделать
+            throw new InvalidOperationException(TransactionIdsDublesErrorMessage);
         }
 
         var result = accounts
@@ -84,7 +86,7 @@ public class TransactionStorageService(ICollection<Domains.Account> accounts, IM
 
         if (result.Count != idSet.Count)
         {
-            throw new InvalidOperationException("Найдены не все транзакции"); // TODO: сделать
+            throw new InvalidOperationException(TransactionNotAllFoundsErrorMessage);
         }
 
         return Task.FromResult(result.AsEnumerable());
