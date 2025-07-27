@@ -38,6 +38,7 @@ public class AccountController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Удаляет счет
     /// </summary>
+    /// <param name="id">Идентификатор счета</param>
     [HttpDelete("{id:Guid}")]
     public async Task<ActionResult<AccountViewModel>> RemoveAccount(Guid id)
     {
@@ -62,6 +63,7 @@ public class AccountController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Проверяет наличие счета
     /// </summary>
+    /// <param name="id">Идентификатор счета</param>
     [HttpGet("{id:guid}/exists")]
     public async Task<ActionResult<AccountViewModel>> CheckAccountExists([FromRoute] Guid id)
     {

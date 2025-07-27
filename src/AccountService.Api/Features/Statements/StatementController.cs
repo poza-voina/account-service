@@ -13,6 +13,7 @@ public class StatementController(IMediator mediator) : ControllerBase
     /// Получает выписку по счету
     /// </summary>
     /// <returns></returns>
+    /// <param name="accountId">Идентификатор счета</param>
     [HttpGet("{accountId:guid}")]
     public async Task<ActionResult<IEnumerable<AccountWithTransactionsViewModel>>> GetStatmentAsync([FromRoute] Guid accountId, [FromQuery] GetStatementQuery query)
     {
