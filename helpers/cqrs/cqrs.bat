@@ -1,0 +1,1 @@
+python "E:\projects\entry\account-service\helpers\cqrs\generateCQRS.py"
