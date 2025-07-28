@@ -7,21 +7,21 @@ using MediatR;
 
 namespace AccountService.Api.Features.Transactions.TransferTransaction;
 
-public class TrasferTransactionCommandHandler(IMediator mediator, IMapper mapper) : IRequestHandler<TrasferTransactionCommand, TransferTransactionViewModel>
+public class TransferTransactionCommandHandler(IMediator mediator, IMapper mapper) : IRequestHandler<TransferTransactionCommand, TransferTransactionViewModel>
 {
-    public async Task<TransferTransactionViewModel> Handle(TrasferTransactionCommand request, CancellationToken cancellationToken)
+    public async Task<TransferTransactionViewModel> Handle(TransferTransactionCommand request, CancellationToken cancellationToken)
     {
         var credit = await mediator.Send(BuildCreditTransaction(request), cancellationToken);
         var debit = await mediator.Send(BuildDebitTransaction(request), cancellationToken);
 
-        var applyTransactionsCommand = new ApplyTransactionPairCommand() { FirstTransactionId = credit.Id, SecondTransactionId = debit.Id};
+        var applyTransactionsCommand = new ApplyTransactionPairCommand { FirstTransactionId = credit.Id, SecondTransactionId = debit.Id};
 
         await mediator.Send(applyTransactionsCommand, cancellationToken);
 
-        return new TransferTransactionViewModel() { Credit = credit, Debit = debit };
+        return new TransferTransactionViewModel { Credit = credit, Debit = debit };
     }
 
-    private RegisterTransactionCommand BuildCreditTransaction(TrasferTransactionCommand request)
+    private RegisterTransactionCommand BuildCreditTransaction(TransferTransactionCommand request)
     {
         var registerCommand = mapper.Map<RegisterTransactionCommand>(request);
         registerCommand.Type = TransactionType.Credit;
@@ -29,7 +29,7 @@ public class TrasferTransactionCommandHandler(IMediator mediator, IMapper mapper
         return registerCommand;
     }
 
-    private RegisterTransactionCommand BuildDebitTransaction(TrasferTransactionCommand request)
+    private RegisterTransactionCommand BuildDebitTransaction(TransferTransactionCommand request)
     {
         var registerCommand = mapper.Map<RegisterTransactionCommand>(request);
         registerCommand.BankAccountId = request.CounterpartyBankAccountId;

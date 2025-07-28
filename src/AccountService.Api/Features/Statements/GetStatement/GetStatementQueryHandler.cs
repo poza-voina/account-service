@@ -3,19 +3,18 @@ using AccountService.Api.ObjectStorage;
 using AccountService.Api.ViewModels;
 using AutoMapper;
 using MediatR;
-using System.Reflection;
 
-namespace AccountService.Api.Features.Statement.GetStatement;
+namespace AccountService.Api.Features.Statements.GetStatement;
 
 public class GetStatementQueryHandler(
     IAccountStorageService accountStorageService,
-    IClientVefiricationService vefiricationService,
+    IClientVerificationService verificationService,
     IDatetimeHelper datetimeHelper,
     IMapper mapper) : IRequestHandler<GetStatementQuery, AccountWithTransactionsViewModel>
 {
     public async Task<AccountWithTransactionsViewModel> Handle(GetStatementQuery request, CancellationToken cancellationToken)
     {
-        await vefiricationService.VerifyAsync(request.OwnerId);
+        await verificationService.VerifyAsync(request.OwnerId);
         (request.StartDateTime, request.EndDateTime) = datetimeHelper.NormalizeDateRange(request.StartDateTime, request.EndDateTime);
 
         var account = await accountStorageService.GetAccountAsync(request.AccountId, cancellationToken);

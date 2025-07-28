@@ -17,7 +17,7 @@ public class TransactionStorageService(ICollection<Domains.Account> accounts, IM
 {
     private const string AccountNotFoundErrorMessage = "Счет не найден";
     private const string TransactionNotFound = "Транзакция не найдена";
-    private const string TransactionIdsDublesErrorMessage = "Входные данные содержат дублирующиеся идентификаторы транзакций.";
+    private const string TransactionIdsDuplicatesErrorMessage = "Входные данные содержат дублирующиеся идентификаторы транзакций.";
     private const string TransactionNotAllFoundsErrorMessage = "Найдены не все транзакции";
 
     public Task ApplyTransactionAsync(Transaction applyTransaction, Domains.Account applyAccount, CancellationToken cancellationToken)
@@ -42,11 +42,11 @@ public class TransactionStorageService(ICollection<Domains.Account> accounts, IM
             item.IsApply = true;
         }
 
-        var foundAccounts = accounts.Where(x => applyAccounts.Select(x => x.Id).Contains(x.Id));
+        var foundAccounts = accounts.Where(x => applyAccounts.Select(account => account.Id).Contains(x.Id));
 
         var applyAccountsDict = applyAccounts.ToDictionary(a => a.Id);
 
-        foreach (var account in accounts)
+        foreach (var account in foundAccounts)
         {
             if (applyAccountsDict.TryGetValue(account.Id, out var updatedAccount))
             {
@@ -73,18 +73,21 @@ public class TransactionStorageService(ICollection<Domains.Account> accounts, IM
 
     public Task<IEnumerable<Transaction>> GetTransactionsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
     {
-        var idSet = ids.ToHashSet();
-        if (idSet.Count != ids.Count())
+        ids = ids.ToArray();
+        var prevIdsLength = ids.Count();
+        ids = ids.ToHashSet();
+
+        if (ids.Count() != prevIdsLength)
         {
-            throw new InvalidOperationException(TransactionIdsDublesErrorMessage);
+            throw new InvalidOperationException(TransactionIdsDuplicatesErrorMessage);
         }
 
         var result = accounts
             .SelectMany(x => x.Transactions)
-            .Where(x => idSet.Contains(x.Id))
+            .Where(x => ids.Contains(x.Id))
             .ToList();
 
-        if (result.Count != idSet.Count)
+        if (result.Count != ids.Count())
         {
             throw new InvalidOperationException(TransactionNotAllFoundsErrorMessage);
         }

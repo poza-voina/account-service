@@ -14,7 +14,7 @@ public class PatchAccountCommandHandler(IAccountStorageService accountStorageSer
     {
         var account = await accountStorageService.GetAccountAsync(request.Id, cancellationToken);
 
-        if (!(account.Type == AccountType.Deposit || account.Type is AccountType.Credit))
+        if (account.Type is not (AccountType.Deposit or AccountType.Credit))
         {
             throw new UnprocessableException(AccountTypeErrorMessage);
         }

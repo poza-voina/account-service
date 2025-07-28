@@ -1,4 +1,3 @@
-using AccountService.Api.Domains.Enums;
 using AccountService.Api.Exceptions;
 using AccountService.Api.Features.Account;
 using AccountService.Api.Features.Account.CheckAccountExists;
@@ -17,7 +16,7 @@ public class RegisterTransactionCommandHandler(
     IMapper mapper)
     : IRequestHandler<RegisterTransactionCommand, TransactionViewModel>
 {
-    private const string CurrencyNotProccedFormatErrorMessage = "Валюта {0} не поддерживается счетом";
+    private const string CurrencyNotProcessedFormatErrorMessage = "Валюта {0} не поддерживается счетом";
 
     public async Task<TransactionViewModel> Handle(RegisterTransactionCommand request, CancellationToken cancellationToken)
     {
@@ -25,12 +24,12 @@ public class RegisterTransactionCommandHandler(
 
         if (request.CounterpartyBankAccountId.HasValue)
         {
-            await mediator.Send(new CheckAccountQuery() { Id = request.CounterpartyBankAccountId.Value }, cancellationToken);
+            await mediator.Send(new CheckAccountQuery { Id = request.CounterpartyBankAccountId.Value }, cancellationToken);
         }
 
         if (!await currencyService.IsCurrencySupportedByAccount(account, request.Currency))
         {
-            throw new UnprocessableException(string.Format(CurrencyNotProccedFormatErrorMessage, request.Currency));
+            throw new UnprocessableException(string.Format(CurrencyNotProcessedFormatErrorMessage, request.Currency));
         }
 
         var transaction = mapper.Map<Domains.Transaction>(request);

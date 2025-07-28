@@ -2,18 +2,19 @@
 
 namespace AccountService.Api.ObjectStorage;
 
-public interface IClientVefiricationService
+public interface IClientVerificationService
 {
     Task VerifyAsync(Guid ownerId);
 }
 
-public class ClientVefiricationService(ICollection<Guid> ownerIds) : IClientVefiricationService
+public class ClientVerificationService(ICollection<Guid> ownerIds) : IClientVerificationService
 {
+    public ICollection<Guid> OwnerIds { get; set; } = ownerIds;
     private const string OwnerNonExistsErrorMessage = "Клиент не существует";
 
     public Task VerifyAsync(Guid ownerId)
     {
-        if (!ownerIds.Any(x => x == ownerId))
+        if (OwnerIds.All(x => x != ownerId))
         {
             throw new UnprocessableException(OwnerNonExistsErrorMessage);
         }

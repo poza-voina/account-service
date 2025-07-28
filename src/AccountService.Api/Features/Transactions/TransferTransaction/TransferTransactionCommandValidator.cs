@@ -1,11 +1,13 @@
 using AccountService.Api.ObjectStorage;
 using FluentValidation;
+using JetBrains.Annotations;
 
 namespace AccountService.Api.Features.Transactions.TransferTransaction;
 
-public class TrasferTransactionCommandValidator : AbstractValidator<TrasferTransactionCommand>
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
+public class TransferTransactionCommandValidator : AbstractValidator<TransferTransactionCommand>
 {
-    public TrasferTransactionCommandValidator(ICurrencyHelper currencyHelper)
+    public TransferTransactionCommandValidator(ICurrencyHelper currencyHelper)
     {
         RuleFor(x => x.BankAccountId)
             .NotEmpty();

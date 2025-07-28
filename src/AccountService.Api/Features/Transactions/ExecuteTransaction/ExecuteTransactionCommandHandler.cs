@@ -11,7 +11,7 @@ public class ExecuteTransactionCommandHandler(IMediator mediator, IMapper mapper
     public async Task<TransactionViewModel> Handle(ExecuteTransactionCommand request, CancellationToken cancellationToken)
     {
         var transaction = await mediator.Send(mapper.Map<RegisterTransactionCommand>(request), cancellationToken);
-        await mediator.Send(new ApplyTransactionCommand() { TransactionId = transaction.Id});
+        await mediator.Send(new ApplyTransactionCommand { TransactionId = transaction.Id}, cancellationToken);
 
         return transaction;
     }

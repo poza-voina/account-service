@@ -1,5 +1,8 @@
-﻿namespace AccountService.Api.ViewModels;
+﻿using JetBrains.Annotations;
 
+namespace AccountService.Api.ViewModels;
+
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public class AccountWithTransactionsViewModel : AccountViewModel
 {
     /// <summary>

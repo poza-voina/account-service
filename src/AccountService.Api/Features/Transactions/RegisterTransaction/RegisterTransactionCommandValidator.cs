@@ -1,8 +1,10 @@
 using AccountService.Api.ObjectStorage;
 using FluentValidation;
+using JetBrains.Annotations;
 
 namespace AccountService.Api.Features.Transactions.RegisterTransaction;
 
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public class RegisterTransactionCommandValidator : AbstractValidator<RegisterTransactionCommand>
 {
     public RegisterTransactionCommandValidator(ICurrencyHelper currencyHelper)

@@ -1,10 +1,9 @@
-﻿using AccountService.Api.Domains.Enums;
-using AccountService.Api.ViewModels;
+﻿using AccountService.Api.ViewModels;
 using MediatR;
 
 namespace AccountService.Api.Features.Transactions.TransferTransaction;
 
-public class TrasferTransactionCommand : IRequest<TransferTransactionViewModel>
+public class TransferTransactionCommand : IRequest<TransferTransactionViewModel>
 {
     /// <summary>
     /// Идентификатор счета

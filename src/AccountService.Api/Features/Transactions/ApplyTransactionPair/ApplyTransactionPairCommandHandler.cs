@@ -3,7 +3,6 @@ using AccountService.Api.Domains.Enums;
 using AccountService.Api.Exceptions;
 using AccountService.Api.Features.Account;
 using MediatR;
-using System.Linq;
 
 namespace AccountService.Api.Features.Transactions.ApplyTransactionPair;
 
@@ -18,7 +17,7 @@ public class ApplyTransactionPairCommandHandler(IAccountStorageService accountSt
 
     public async Task<Unit> Handle(ApplyTransactionPairCommand request, CancellationToken cancellationToken)
     {
-        var transactions = await transactionStorageService.GetTransactionsAsync([request.FirstTransactionId, request.SecondTransactionId], cancellationToken);
+        var transactions = (await transactionStorageService.GetTransactionsAsync([request.FirstTransactionId, request.SecondTransactionId], cancellationToken)).ToList();
 
         var credit = transactions.FirstOrDefault(x => x.Type == TransactionType.Credit)
             ?? throw new NotFoundException(CreditTransactionNotFoundErrorMessage);
@@ -27,13 +26,12 @@ public class ApplyTransactionPairCommandHandler(IAccountStorageService accountSt
 
         if (credit.BankAccountId == debit.CounterpartyBankAccountId &&
             credit.CounterpartyBankAccountId == debit.BankAccountId &&
-            credit.CounterpartyBankAccountId is { } &&
-            credit.CounterpartyBankAccountId is { })
+            credit.CounterpartyBankAccountId is not null)
         {
             throw new UnprocessableException(InvalidTransactionLinkErrorMessage);
         }
 
-        var accounts = await accountStorageService.GetAccountsAsync(cancellationToken, credit.BankAccountId, credit.CounterpartyBankAccountId!.Value);
+        var accounts = (await accountStorageService.GetAccountsAsync(cancellationToken, credit.BankAccountId, credit.CounterpartyBankAccountId!.Value)).ToList();
 
         var creditAccount = accounts.SingleOrDefault(a => a.Id == credit.BankAccountId)
              ?? throw new NotFoundException(CreditAccountNotFoundErrorMessage);

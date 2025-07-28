@@ -1,7 +1,7 @@
 ﻿using AccountService.Api.ViewModels;
 using MediatR;
 
-namespace AccountService.Api.Features.Statement.GetStatement;
+namespace AccountService.Api.Features.Statements.GetStatement;
 
 public class GetStatementQuery : IRequest<AccountWithTransactionsViewModel>
 {

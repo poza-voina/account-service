@@ -5,7 +5,7 @@ namespace AccountService.Api.SwaggerFilters;
 
 public class RemoveQueryParameters<TTarget>(params string[] propertyNames) : IOperationFilter
 {
-    public void Apply(OpenApiOperation operation, OperationFilterContext context)
+    public void Apply(OpenApiOperation? operation, OperationFilterContext context)
     {
         if (operation is null)
         {

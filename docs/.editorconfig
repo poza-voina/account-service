@@ -1,0 +1,10 @@
+[*.cs]
+resharper_unused_field_highlighting = none
+resharper_unused_auto_property_highlighting = none  
+resharper_unused_type_highlighting = none
+resharper_unused_type_global_highlighting = none
+resharper_unused_member_highlighting = none
+resharper_unused_member_global_highlighting = none
+resharper_unused_parameter_highlighting = none
+resharper_event_never_subscribed_to_global_highlighting = none
+resharper_event_never_subscribed_to_local_highlighting = none

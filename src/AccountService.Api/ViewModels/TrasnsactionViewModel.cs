@@ -1,7 +1,9 @@
 ﻿using AccountService.Api.Domains.Enums;
+using JetBrains.Annotations;
 
 namespace AccountService.Api.ViewModels;
 
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public class TransactionViewModel
 {
     /// <summary>

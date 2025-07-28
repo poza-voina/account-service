@@ -4,7 +4,6 @@ using AccountService.Api.Features.Transactions.TransferTransaction;
 using AccountService.Api.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace AccountService.Api.Features.Transactions;
 
@@ -27,7 +26,7 @@ public class TransactionController(IMediator mediator) : ControllerBase
     /// Перенос между счетами
     /// </summary>
     [HttpPost("transfer")]
-    public async Task<ActionResult<TransactionViewModel>> TransferTransaction(TrasferTransactionCommand command)
+    public async Task<ActionResult<TransactionViewModel>> TransferTransaction(TransferTransactionCommand command)
     {
         var result = await mediator.Send(command);
 

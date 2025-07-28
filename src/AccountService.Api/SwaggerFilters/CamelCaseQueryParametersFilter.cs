@@ -23,6 +23,6 @@ public class CamelCaseQueryParametersFilter : IOperationFilter
         if (string.IsNullOrEmpty(input) || char.IsLower(input[0]))
             return input;
 
-        return char.ToLowerInvariant(input[0]) + input.Substring(1);
+        return char.ToLowerInvariant(input[0]) + input[1..];
     }
 }

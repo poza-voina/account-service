@@ -9,7 +9,7 @@ public interface ICurrencyHelper
 
 public class CurrencyHelper : ICurrencyHelper
 {
-    HashSet<string> ISOCurrencyCodes { get; } =
+    private HashSet<string> IsoCurrencyCodes { get; } =
         CultureInfo.GetCultures(CultureTypes.SpecificCultures)
             .Select(x => new RegionInfo(x.Name))
             .Select(x => x.ISOCurrencySymbol)
@@ -17,6 +17,6 @@ public class CurrencyHelper : ICurrencyHelper
 
     public bool IsValid(string currency)
     {
-        return ISOCurrencyCodes.Contains(currency);
+        return IsoCurrencyCodes.Contains(currency);
     }
 }

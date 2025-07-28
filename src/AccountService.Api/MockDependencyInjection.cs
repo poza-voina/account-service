@@ -13,24 +13,24 @@ public static class MockDependencyInjection
 
     private static void AddMockClients(IServiceCollection services)
     {
-        services.AddSingleton<ICollection<Guid>>(provider =>
+        services.AddSingleton<ICollection<Guid>>(_ =>
             [
                 Guid.Parse("d3b07384-d9a6-4b5e-bc8d-23f7c1a1a111"),
                 Guid.Parse("a5f5c3b2-1e74-4e6d-9c9d-8bfbec79a222"),
                 Guid.Parse("9f8e7d6c-5b4a-3c2d-1e0f-1234567890ab"),
-                Guid.Parse("abcdefab-cdef-abcd-efab-cdefabcdef12"),
+                Guid.Parse("abcdefab-cdef-abcd-efab-cdefabcdef12")
             ]);
     }
 
     private static void AddMockAccounts(IServiceCollection services)
     {
-        services.AddSingleton<ICollection<Account>>(provider =>
+        services.AddSingleton<ICollection<Account>>(_ =>
         {
             var account1Id = Guid.Parse("c0d4f0d2-69e1-4b3e-9e1a-7e6c56d4c301");
             var account2Id = Guid.Parse("7c9fcf13-6df1-4eb1-9404-0e4380e2bba5");
             var account3Id = Guid.Parse("aa1c5fd0-3e12-4b3f-b7ab-2bcfcbaf7432");
 
-            var guidsForPairs = new List<Guid>()
+            var guidsForPairs = new List<Guid>
             {
                 Guid.Parse("fe9c4d27-c91c-45e7-a6a5-b2d5e2fc7a55"),
                 Guid.Parse("8cdb7d19-5210-4cb0-a4f3-0b1cc1e8ea63"),
@@ -58,7 +58,7 @@ public static class MockDependencyInjection
                     IsDeleted = false,
                     Transactions =
                     [
-                        new ()
+                        new Transaction
                         {
                             Id = Guid.NewGuid(),
                             BankAccountId = Guid.NewGuid(),
@@ -70,7 +70,7 @@ public static class MockDependencyInjection
                             CreatedAt = DateTime.UtcNow.AddMonths(-3),
                             IsApply = true
                         },
-                        new ()
+                        new Transaction
                         {
                             Id = Guid.NewGuid(),
                             BankAccountId = Guid.NewGuid(),
@@ -82,7 +82,7 @@ public static class MockDependencyInjection
                             CreatedAt = DateTime.UtcNow.AddMonths(-2),
                             IsApply = true
                         },
-                        new ()
+                        new Transaction
                         {
                             Id = Guid.NewGuid(),
                             BankAccountId = Guid.NewGuid(),
@@ -123,8 +123,7 @@ public static class MockDependencyInjection
                     IsDeleted = false,
                     Transactions =
                     [
-                        // Пара 1
-                        new ()
+                        new Transaction
                         {
                             Id = guidsForPairs[0],
                             BankAccountId = account1Id,
@@ -136,7 +135,7 @@ public static class MockDependencyInjection
                             CreatedAt = DateTime.UtcNow.AddDays(-10),
                             IsApply = false
                         },
-                        new ()
+                        new Transaction
                         {
                             Id = guidsForPairs[1],
                             BankAccountId = account2Id,
@@ -148,9 +147,7 @@ public static class MockDependencyInjection
                             CreatedAt = DateTime.UtcNow.AddDays(-10),
                             IsApply = false
                         },
-
-                        // Пара 2
-                        new ()
+                        new Transaction
                         {
                             Id = guidsForPairs[2],
                             BankAccountId = account1Id,
@@ -162,7 +159,7 @@ public static class MockDependencyInjection
                             CreatedAt = DateTime.UtcNow.AddDays(-9),
                             IsApply = false
                         },
-                        new ()
+                        new Transaction
                         {
                             Id = guidsForPairs[3],
                             BankAccountId = account3Id,
@@ -174,9 +171,7 @@ public static class MockDependencyInjection
                             CreatedAt = DateTime.UtcNow.AddDays(-9),
                             IsApply = false
                         },
-
-                        // Пара 3
-                        new ()
+                        new Transaction
                         {
                             Id = guidsForPairs[4],
                             BankAccountId = account2Id,
@@ -188,7 +183,7 @@ public static class MockDependencyInjection
                             CreatedAt = DateTime.UtcNow.AddDays(-7),
                             IsApply = false
                         },
-                        new ()
+                        new Transaction
                         {
                             Id = guidsForPairs[5],
                             BankAccountId = account3Id,
@@ -200,9 +195,7 @@ public static class MockDependencyInjection
                             CreatedAt = DateTime.UtcNow.AddDays(-7),
                             IsApply = false
                         },
-
-                        // Пара 4
-                        new ()
+                        new Transaction
                         {
                             Id = guidsForPairs[6],
                             BankAccountId = account1Id,
@@ -214,7 +207,7 @@ public static class MockDependencyInjection
                             CreatedAt = DateTime.UtcNow.AddDays(-6),
                             IsApply = false
                         },
-                        new ()
+                        new Transaction
                         {
                             Id = Guid.NewGuid(),
                             BankAccountId = account2Id,
@@ -226,9 +219,7 @@ public static class MockDependencyInjection
                             CreatedAt = DateTime.UtcNow.AddDays(-6),
                             IsApply = false
                         },
-
-                        // Без пары 1
-                        new ()
+                        new Transaction
                         {
                             Id = guidsForPairs[7],
                             BankAccountId = account1Id,
@@ -240,9 +231,7 @@ public static class MockDependencyInjection
                             CreatedAt = DateTime.UtcNow.AddDays(-5),
                             IsApply = false
                         },
-
-                        // Без пары 2
-                        new ()
+                        new Transaction
                         {
                             Id = guidsForPairs[8],
                             BankAccountId = account1Id,

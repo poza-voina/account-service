@@ -11,20 +11,14 @@ public class DatetimeHelper : IDatetimeHelper
 
     public (DateTime? start, DateTime? end) NormalizeDateRange(DateTime? start, DateTime? end)
     {
-        DateTime? normalizedStart = start;
-        DateTime? normalizedEnd = end;
+        var normalizedStart = start;
+        var normalizedEnd = end;
 
-        if (normalizedStart.HasValue)
-        {
-            normalizedStart = normalizedStart.Value.Date;
-        }
+        normalizedStart = normalizedStart?.Date;
 
-        if (normalizedEnd.HasValue)
-        {
-            normalizedEnd = normalizedEnd.Value.Date.AddDays(1).AddTicks(-1);
-        }
+        normalizedEnd = normalizedEnd?.Date.AddDays(1).AddTicks(-1);
 
-        if (normalizedStart.HasValue && normalizedEnd.HasValue && normalizedStart > normalizedEnd)
+        if (normalizedStart > normalizedEnd)
         {
             throw new ArgumentException(string.Format(ErrorMessageFormat, normalizedStart, normalizedEnd));
         }

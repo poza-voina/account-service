@@ -42,7 +42,7 @@ public class AccountController(IMediator mediator) : ControllerBase
     [HttpDelete("{id:Guid}")]
     public async Task<ActionResult<AccountViewModel>> RemoveAccount(Guid id)
     {
-        var command = new RemoveAccountCommand() { Id = id };
+        var command = new RemoveAccountCommand { Id = id };
 
         var result = await mediator.Send(command);
 
@@ -67,7 +67,7 @@ public class AccountController(IMediator mediator) : ControllerBase
     [HttpGet("{id:guid}/exists")]
     public async Task<ActionResult<AccountViewModel>> CheckAccountExists([FromRoute] Guid id)
     {
-        var query = new CheckAccountQuery() { Id = id };
+        var query = new CheckAccountQuery { Id = id };
 
         var result = await mediator.Send(query);
 

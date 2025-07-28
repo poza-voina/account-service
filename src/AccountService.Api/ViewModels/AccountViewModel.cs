@@ -1,7 +1,9 @@
 ﻿using AccountService.Api.Domains.Enums;
+using JetBrains.Annotations;
 
 namespace AccountService.Api.ViewModels;
 
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public class AccountViewModel
 {
     /// <summary>
@@ -22,7 +24,7 @@ public class AccountViewModel
     /// <summary>
     /// Валюта
     /// </summary>
-    public string Currency { get; set; }
+    public required string Currency { get; set; }
 
     /// <summary>
     /// Баланс счета

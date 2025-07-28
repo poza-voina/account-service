@@ -8,12 +8,12 @@ namespace AccountService.Api.Features.Account.CreateAccount;
 public class CreateAccountCommandHandler(
     IAccountStorageService accountStorageService,
     IMapper mapper,
-    IClientVefiricationService clientVefiricationService
+    IClientVerificationService clientVerificationService
     ) : IRequestHandler<CreateAccountCommand, AccountViewModel>
 {
     public async Task<AccountViewModel> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
     {
-        await clientVefiricationService.VerifyAsync(request.OwnerId);
+        await clientVerificationService.VerifyAsync(request.OwnerId);
 
         var account = mapper.Map<Domains.Account>(request);
 

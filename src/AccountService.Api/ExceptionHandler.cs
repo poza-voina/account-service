@@ -12,46 +12,44 @@ public class ExceptionHandler(IProblemDetailsService problemDetailsService) : IE
         Exception exception,
         CancellationToken cancellationToken)
     {
-        var problemDetails = new ProblemDetails()
+        var problemDetails = new ProblemDetails
         {
             Title = nameof(Results.InternalServerError),
             Detail = exception.Message,
-            Status = StatusCodes.Status500InternalServerError,
+            Status = StatusCodes.Status500InternalServerError
         };
 
-        if (exception is NotFoundException)
+        switch (exception)
         {
-            problemDetails.Title = nameof(Results.NotFound);
-            problemDetails.Status = StatusCodes.Status404NotFound;
-        }
-        else if (exception is ValidationException)
-        {
-            problemDetails.Title = nameof(Results.BadRequest);
-            problemDetails.Status = StatusCodes.Status400BadRequest;
-        }
-        else if (exception is ConflictException)
-        {
-            problemDetails.Title = nameof(Results.Conflict);
-            problemDetails.Status = StatusCodes.Status409Conflict;
-        }
-        else if (exception is UnprocessableException)
-        {
-            problemDetails.Title = nameof(Results.UnprocessableEntity);
-            problemDetails.Status = StatusCodes.Status422UnprocessableEntity;
+            case NotFoundException:
+                problemDetails.Title = nameof(Results.NotFound);
+                problemDetails.Status = StatusCodes.Status404NotFound;
+                break;
+            case ValidationException:
+                problemDetails.Title = nameof(Results.BadRequest);
+                problemDetails.Status = StatusCodes.Status400BadRequest;
+                break;
+            case ConflictException:
+                problemDetails.Title = nameof(Results.Conflict);
+                problemDetails.Status = StatusCodes.Status409Conflict;
+                break;
+            case UnprocessableException:
+                problemDetails.Title = nameof(Results.UnprocessableEntity);
+                problemDetails.Status = StatusCodes.Status422UnprocessableEntity;
+                break;
         }
 
-        if (problemDetails is { Status: not null })
-        {
-            httpContext.Response.StatusCode = problemDetails.Status.Value;
-            return await problemDetailsService.TryWriteAsync(new()
-            {
-                HttpContext = httpContext,
-                ProblemDetails = problemDetails,
-            });
-        }
-        else
+        if (problemDetails is not { Status: not null })
         {
             return true;
         }
+
+        httpContext.Response.StatusCode = problemDetails.Status.Value;
+        return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
+        {
+            HttpContext = httpContext,
+            ProblemDetails = problemDetails
+        });
+
     }
 }

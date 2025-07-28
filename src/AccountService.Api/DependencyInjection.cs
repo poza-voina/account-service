@@ -1,13 +1,12 @@
 ﻿using AccountService.Api.Behaviors;
 using AccountService.Api.Features.Account;
-using AccountService.Api.Features.Statement.GetStatement;
+using AccountService.Api.Features.Statements.GetStatement;
 using AccountService.Api.Features.Transactions;
 using AccountService.Api.ObjectStorage;
 using AccountService.Api.SwaggerFilters;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -16,9 +15,9 @@ namespace AccountService.Api;
 
 public static class DependencyInjection
 {
-    private const string REQUEST_ID_PROBLEM_DETAIL = "requestId";
-    private const string TRACE_ID_PROBLEM_DETAIL = "traceId";
-    private const char HTTP_METHOD_SEPARATOR = ' ';
+    private const string RequestIdProblemDetail = "requestId";
+    private const string TraceIdProblemDetail = "traceId";
+    private const char HttpMethodSeparator = ' ';
 
     public static void AddValidationConfiguration(this IServiceCollection services)
     {
@@ -69,7 +68,7 @@ public static class DependencyInjection
 
     public static void AddServices(this IServiceCollection services)
     {
-        services.AddScoped<IClientVefiricationService, ClientVefiricationService>();
+        services.AddScoped<IClientVerificationService, ClientVerificationService>();
         services.AddScoped<IAccountStorageService, AccountStorageService>();
         services.AddScoped<ITransactionStorageService, TransactionStorageService>();
         services.AddScoped<ICurrencyService, CurrencyService>();
@@ -89,10 +88,10 @@ public static class DependencyInjection
         {
             options.CustomizeProblemDetails = context =>
             {
-                context.ProblemDetails.Instance = string.Join(HTTP_METHOD_SEPARATOR, context.HttpContext.Request.Method, context.HttpContext.Request.Path.Value);
-                context.ProblemDetails.Extensions.TryAdd(REQUEST_ID_PROBLEM_DETAIL, context.HttpContext.TraceIdentifier);
+                context.ProblemDetails.Instance = string.Join(HttpMethodSeparator, context.HttpContext.Request.Method, context.HttpContext.Request.Path.Value);
+                context.ProblemDetails.Extensions.TryAdd(RequestIdProblemDetail, context.HttpContext.TraceIdentifier);
                 var activity = context.HttpContext.Features.Get<IHttpActivityFeature>()?.Activity;
-                context.ProblemDetails.Extensions.TryAdd(TRACE_ID_PROBLEM_DETAIL, activity?.Id);
+                context.ProblemDetails.Extensions.TryAdd(TraceIdProblemDetail, activity?.Id);
             };
         });
     }    

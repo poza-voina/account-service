@@ -1,7 +1,9 @@
 using FluentValidation;
+using JetBrains.Annotations;
 
-namespace AccountService.Api.Features.Statement.GetStatement;
+namespace AccountService.Api.Features.Statements.GetStatement;
 
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public class GetStatementQueryValidator : AbstractValidator<GetStatementQuery>
 {
     public GetStatementQueryValidator()

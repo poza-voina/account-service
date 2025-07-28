@@ -1,9 +1,11 @@
 ﻿using AccountService.Api.Domains.Enums;
 using AccountService.Api.ViewModels;
+using JetBrains.Annotations;
 using MediatR;
 
 namespace AccountService.Api.Features.Transactions.ExecuteTransaction;
 
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public class ExecuteTransactionCommand : IRequest<TransactionViewModel>
 {
     /// <summary>

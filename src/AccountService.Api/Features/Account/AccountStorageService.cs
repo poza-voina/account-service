@@ -1,5 +1,4 @@
-﻿using AccountService.Api.Domains;
-using AccountService.Api.Exceptions;
+﻿using AccountService.Api.Exceptions;
 using AutoMapper;
 
 namespace AccountService.Api.Features.Account;
@@ -73,13 +72,13 @@ public class AccountStorageService(ICollection<Domains.Account> accounts, IMappe
 
         var result = accounts
             .Where(account => idSet.Contains(account.Id))
-            .AsEnumerable();
+            .ToList();
 
-        if (result.Count() != idSet.Count)
+        if (result.Count != idSet.Count)
         {
             throw new NotFoundException(AccountsNotFoundErrorMessage);
         }
 
-        return Task.FromResult(result);
+        return Task.FromResult(result.AsEnumerable());
     }
 }

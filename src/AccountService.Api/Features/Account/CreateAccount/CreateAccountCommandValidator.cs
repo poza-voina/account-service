@@ -1,9 +1,11 @@
 using AccountService.Api.Domains.Enums;
 using AccountService.Api.ObjectStorage;
 using FluentValidation;
+using JetBrains.Annotations;
 
 namespace AccountService.Api.Features.Account.CreateAccount;
 
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public class CreateAccountCommandValidator : AbstractValidator<CreateAccountCommand>
 {
     public CreateAccountCommandValidator(ICurrencyHelper currencyHelper)
@@ -21,7 +23,7 @@ public class CreateAccountCommandValidator : AbstractValidator<CreateAccountComm
         RuleFor(x => x.InterestRate).Null()
             .When(x => x.Type == AccountType.Checking);
         RuleFor(x => x.InterestRate).NotEmpty()
-            .When(x => x.Type == AccountType.Deposit || x.Type == AccountType.Credit);
+            .When(x => x.Type is AccountType.Deposit or AccountType.Credit);
 
         RuleFor(x => x.ClosingDate).GreaterThanOrEqualTo(GetCurrentDatetime());
     }

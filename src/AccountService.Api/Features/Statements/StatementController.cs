@@ -1,4 +1,4 @@
-﻿using AccountService.Api.Features.Statement.GetStatement;
+﻿using AccountService.Api.Features.Statements.GetStatement;
 using AccountService.Api.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -14,8 +14,9 @@ public class StatementController(IMediator mediator) : ControllerBase
     /// </summary>
     /// <returns></returns>
     /// <param name="accountId">Идентификатор счета</param>
+    /// <param name="query">Запрос на получение выписки</param>
     [HttpGet("{accountId:guid}")]
-    public async Task<ActionResult<IEnumerable<AccountWithTransactionsViewModel>>> GetStatmentAsync([FromRoute] Guid accountId, [FromQuery] GetStatementQuery query)
+    public async Task<ActionResult<IEnumerable<AccountWithTransactionsViewModel>>> GetStatementAsync([FromRoute] Guid accountId, [FromQuery] GetStatementQuery query)
     {
         query.AccountId = accountId;
 
