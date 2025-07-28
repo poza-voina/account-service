@@ -45,4 +45,9 @@ public class TransactionViewModel
     /// Дата создания транзакции
     /// </summary>
     public required DateTime CreatedAt { get; set; }
+
+    /// <summary>
+    /// Флаг принятия транзакции
+    /// </summary>
+    public required bool IsApply { get; set; }
 }

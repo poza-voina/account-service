@@ -44,11 +44,11 @@ public class ApplyTransactionCommandHandler(ITransactionStorageService transacti
 
     public static void ProcessCredit(Transaction transaction, Domains.Account account)
     {
-        transaction.IsApply = true;
         if (transaction.Amount > account.Balance)
         {
             throw new UnprocessableException(NotEnoughMoneyErrorMessage);
         }
+        transaction.IsApply = true;
 
         account.Balance -= transaction.Amount;
     }

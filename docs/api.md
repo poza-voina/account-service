@@ -185,7 +185,7 @@ Status Code **200**
 |» id|string(uuid)|false|none|Индентификатор счета|
 |» ownerId|string(uuid)|false|none|Идентификатор клиента|
 |» type|[AccountType](#schemaaccounttype)|false|none|none|
-|» currency|string¦null|false|none|Валюта|
+|» currency|string¦null|true|none|Валюта|
 |» balance|number(double)|false|none|Баланс счета|
 |» interestRate|number(double)¦null|false|none|Процентная ставка счета|
 |» openingDate|string(date-time)|false|none|Дата открытия счета|
@@ -317,7 +317,7 @@ This operation does not require authentication
 > 200 Response
 
 ```
-[{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","ownerId":"4d206909-730f-409a-88f6-dcfaa8fc28cc","type":"Checking","currency":"string","balance":0.1,"interestRate":0.1,"openingDate":"2019-08-24T14:15:22Z","closingDate":"2019-08-24T14:15:22Z","transactions":[{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","bankAccountId":"5b26b598-a880-4e32-8c41-126aa0206857","counterpartyBankAccountId":"cc9b712c-c0c3-4405-a86e-c2690000b458","amount":0.1,"currency":"string","type":"Credit","description":"string","createdAt":"2019-08-24T14:15:22Z"}]}]
+[{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","ownerId":"4d206909-730f-409a-88f6-dcfaa8fc28cc","type":"Checking","currency":"string","balance":0.1,"interestRate":0.1,"openingDate":"2019-08-24T14:15:22Z","closingDate":"2019-08-24T14:15:22Z","transactions":[{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","bankAccountId":"5b26b598-a880-4e32-8c41-126aa0206857","counterpartyBankAccountId":"cc9b712c-c0c3-4405-a86e-c2690000b458","amount":0.1,"currency":"string","type":"Credit","description":"string","createdAt":"2019-08-24T14:15:22Z","isApply":true}]}]
 ```
 
 ```json
@@ -340,7 +340,8 @@ This operation does not require authentication
         "currency": "string",
         "type": "Credit",
         "description": "string",
-        "createdAt": "2019-08-24T14:15:22Z"
+        "createdAt": "2019-08-24T14:15:22Z",
+        "isApply": true
       }
     ]
   }
@@ -363,7 +364,7 @@ Status Code **200**
 |» id|string(uuid)|false|none|Индентификатор счета|
 |» ownerId|string(uuid)|false|none|Идентификатор клиента|
 |» type|[AccountType](#schemaaccounttype)|false|none|none|
-|» currency|string¦null|false|none|Валюта|
+|» currency|string¦null|true|none|Валюта|
 |» balance|number(double)|false|none|Баланс счета|
 |» interestRate|number(double)¦null|false|none|Процентная ставка счета|
 |» openingDate|string(date-time)|false|none|Дата открытия счета|
@@ -377,6 +378,7 @@ Status Code **200**
 |»» type|[TransactionType](#schematransactiontype)|true|none|none|
 |»» description|string¦null|true|none|Описание|
 |»» createdAt|string(date-time)|true|none|Дата создания транзакции|
+|»» isApply|boolean|true|none|Флаг принятия транзакции|
 
 #### Enumerated Values
 
@@ -426,7 +428,7 @@ This operation does not require authentication
 > 200 Response
 
 ```
-{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","bankAccountId":"5b26b598-a880-4e32-8c41-126aa0206857","counterpartyBankAccountId":"cc9b712c-c0c3-4405-a86e-c2690000b458","amount":0.1,"currency":"string","type":"Credit","description":"string","createdAt":"2019-08-24T14:15:22Z"}
+{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","bankAccountId":"5b26b598-a880-4e32-8c41-126aa0206857","counterpartyBankAccountId":"cc9b712c-c0c3-4405-a86e-c2690000b458","amount":0.1,"currency":"string","type":"Credit","description":"string","createdAt":"2019-08-24T14:15:22Z","isApply":true}
 ```
 
 ```json
@@ -438,7 +440,8 @@ This operation does not require authentication
   "currency": "string",
   "type": "Credit",
   "description": "string",
-  "createdAt": "2019-08-24T14:15:22Z"
+  "createdAt": "2019-08-24T14:15:22Z",
+  "isApply": true
 }
 ```
 
@@ -476,14 +479,14 @@ This operation does not require authentication
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[TrasferTransactionCommand](#schematrasfertransactioncommand)|false|none|
+|body|body|[TransferTransactionCommand](#schematransfertransactioncommand)|false|none|
 
 > Example responses
 
 > 200 Response
 
 ```
-{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","bankAccountId":"5b26b598-a880-4e32-8c41-126aa0206857","counterpartyBankAccountId":"cc9b712c-c0c3-4405-a86e-c2690000b458","amount":0.1,"currency":"string","type":"Credit","description":"string","createdAt":"2019-08-24T14:15:22Z"}
+{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","bankAccountId":"5b26b598-a880-4e32-8c41-126aa0206857","counterpartyBankAccountId":"cc9b712c-c0c3-4405-a86e-c2690000b458","amount":0.1,"currency":"string","type":"Credit","description":"string","createdAt":"2019-08-24T14:15:22Z","isApply":true}
 ```
 
 ```json
@@ -495,7 +498,8 @@ This operation does not require authentication
   "currency": "string",
   "type": "Credit",
   "description": "string",
-  "createdAt": "2019-08-24T14:15:22Z"
+  "createdAt": "2019-08-24T14:15:22Z",
+  "isApply": true
 }
 ```
 
@@ -540,7 +544,7 @@ This operation does not require authentication
 > 200 Response
 
 ```
-{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","bankAccountId":"5b26b598-a880-4e32-8c41-126aa0206857","counterpartyBankAccountId":"cc9b712c-c0c3-4405-a86e-c2690000b458","amount":0.1,"currency":"string","type":"Credit","description":"string","createdAt":"2019-08-24T14:15:22Z"}
+{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","bankAccountId":"5b26b598-a880-4e32-8c41-126aa0206857","counterpartyBankAccountId":"cc9b712c-c0c3-4405-a86e-c2690000b458","amount":0.1,"currency":"string","type":"Credit","description":"string","createdAt":"2019-08-24T14:15:22Z","isApply":true}
 ```
 
 ```json
@@ -552,7 +556,8 @@ This operation does not require authentication
   "currency": "string",
   "type": "Credit",
   "description": "string",
-  "createdAt": "2019-08-24T14:15:22Z"
+  "createdAt": "2019-08-24T14:15:22Z",
+  "isApply": true
 }
 ```
 
@@ -622,7 +627,7 @@ This operation does not require authentication
 |id|string(uuid)|false|none|Индентификатор счета|
 |ownerId|string(uuid)|false|none|Идентификатор клиента|
 |type|[AccountType](#schemaaccounttype)|false|none|none|
-|currency|string¦null|false|none|Валюта|
+|currency|string¦null|true|none|Валюта|
 |balance|number(double)|false|none|Баланс счета|
 |interestRate|number(double)¦null|false|none|Процентная ставка счета|
 |openingDate|string(date-time)|false|none|Дата открытия счета|
@@ -654,7 +659,8 @@ This operation does not require authentication
       "currency": "string",
       "type": "Credit",
       "description": "string",
-      "createdAt": "2019-08-24T14:15:22Z"
+      "createdAt": "2019-08-24T14:15:22Z",
+      "isApply": true
     }
   ]
 }
@@ -668,7 +674,7 @@ This operation does not require authentication
 |id|string(uuid)|false|none|Индентификатор счета|
 |ownerId|string(uuid)|false|none|Идентификатор клиента|
 |type|[AccountType](#schemaaccounttype)|false|none|none|
-|currency|string¦null|false|none|Валюта|
+|currency|string¦null|true|none|Валюта|
 |balance|number(double)|false|none|Баланс счета|
 |interestRate|number(double)¦null|false|none|Процентная ставка счета|
 |openingDate|string(date-time)|false|none|Дата открытия счета|
@@ -842,7 +848,8 @@ This operation does not require authentication
   "currency": "string",
   "type": "Credit",
   "description": "string",
-  "createdAt": "2019-08-24T14:15:22Z"
+  "createdAt": "2019-08-24T14:15:22Z",
+  "isApply": true
 }
 
 ```
@@ -859,13 +866,14 @@ This operation does not require authentication
 |type|[TransactionType](#schematransactiontype)|true|none|none|
 |description|string¦null|true|none|Описание|
 |createdAt|string(date-time)|true|none|Дата создания транзакции|
+|isApply|boolean|true|none|Флаг принятия транзакции|
 
-<h2 id="tocS_TrasferTransactionCommand">TrasferTransactionCommand</h2>
+<h2 id="tocS_TransferTransactionCommand">TransferTransactionCommand</h2>
 <!-- backwards compatibility -->
-<a id="schematrasfertransactioncommand"></a>
-<a id="schema_TrasferTransactionCommand"></a>
-<a id="tocStrasfertransactioncommand"></a>
-<a id="tocstrasfertransactioncommand"></a>
+<a id="schematransfertransactioncommand"></a>
+<a id="schema_TransferTransactionCommand"></a>
+<a id="tocStransfertransactioncommand"></a>
+<a id="tocstransfertransactioncommand"></a>
 
 ```json
 {
