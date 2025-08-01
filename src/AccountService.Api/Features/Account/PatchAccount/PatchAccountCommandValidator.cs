@@ -10,6 +10,6 @@ public class PatchAccountCommandValidator : AbstractValidator<PatchAccountComman
     {
         RuleFor(x => x.ClosingDate)
             .GreaterThanOrEqualTo(x => DateTime.Today)
-            .WithMessage("Дата закрытия счета должна быть в будующем");
+            .WithMessage("Р”Р°С‚Р° Р·Р°РєСЂС‹С‚РёСЏ СЃС‡РµС‚Р° РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РІ Р±СѓРґСѓСЋС‰РµРј");
     }
 }

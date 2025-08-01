@@ -13,29 +13,29 @@ public class CreateAccountCommandValidator : AbstractValidator<CreateAccountComm
     {
         RuleFor(x => x.OwnerId)
             .NotEmpty()
-            .WithMessage("Идентификатор клиента не может быть пустым");
+            .WithMessage("РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєР»РёРµРЅС‚Р° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј");
 
         RuleFor(x => x.Type)
             .IsInEnum()
-            .WithMessage("Несуществующий тип счета");
+            .WithMessage("РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ С‚РёРї СЃС‡РµС‚Р°");
         
         RuleFor(x => x.Currency)
             .NotEmpty()
             .Must(currencyHelper.IsValid)
-            .WithMessage("Валюта должна быть написана в формате ISO 4217");
+            .WithMessage("Р’Р°Р»СЋС‚Р° РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РЅР°РїРёСЃР°РЅР° РІ С„РѕСЂРјР°С‚Рµ ISO 4217");
 
         RuleFor(x => x.InterestRate)
             .Null()
             .When(x => x.Type == AccountType.Checking)
-            .WithMessage("Ключевая ставка должна быть пустой, если тип счета Checking");
+            .WithMessage("РљР»СЋС‡РµРІР°СЏ СЃС‚Р°РІРєР° РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РїСѓСЃС‚РѕР№, РµСЃР»Рё С‚РёРї СЃС‡РµС‚Р° Checking");
         RuleFor(x => x.InterestRate)
             .NotEmpty()
             .When(x => x.Type is AccountType.Deposit or AccountType.Credit)
-            .WithMessage("Ключевая ставка может быть пустой только при типе счета Checking");
+            .WithMessage("РљР»СЋС‡РµРІР°СЏ СЃС‚Р°РІРєР° РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚РѕР№ С‚РѕР»СЊРєРѕ РїСЂРё С‚РёРїРµ СЃС‡РµС‚Р° Checking");
 
         RuleFor(x => x.ClosingDate)
             .GreaterThanOrEqualTo(GetCurrentDatetime())
-            .WithMessage("Дата закрытия счета должна быть в будущем");
+            .WithMessage("Р”Р°С‚Р° Р·Р°РєСЂС‹С‚РёСЏ СЃС‡РµС‚Р° РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РІ Р±СѓРґСѓС‰РµРј");
     }
 
     private static DateTime GetCurrentDatetime()

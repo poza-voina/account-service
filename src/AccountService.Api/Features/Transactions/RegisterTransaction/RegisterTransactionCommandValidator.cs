@@ -12,24 +12,24 @@ public class RegisterTransactionCommandValidator : AbstractValidator<RegisterTra
     {
         RuleFor(x => x.BankAccountId)
             .NotEmpty()
-            .WithMessage("Идентификатор счета не может быть пустым");
+            .WithMessage("РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‡РµС‚Р° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј");
 
         RuleFor(x => x.Amount)
             .NotEmpty()
             .GreaterThan(0)
-            .WithMessage("Количество денег должно быть больше 0");
+            .WithMessage("РљРѕР»РёС‡РµСЃС‚РІРѕ РґРµРЅРµРі РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ 0");
 
         RuleFor(x => x.Currency)
             .NotEmpty()
             .Must(currencyHelper.IsValid)
-            .WithMessage("Валюта должна быть введена в формате ISO 4217");
+            .WithMessage("Р’Р°Р»СЋС‚Р° РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РІРІРµРґРµРЅР° РІ С„РѕСЂРјР°С‚Рµ ISO 4217");
         
         RuleFor(x => x.Type)
             .IsInEnum()
-            .WithMessage("Несуществующий тип транзакции");
+            .WithMessage("РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ С‚РёРї С‚СЂР°РЅР·Р°РєС†РёРё");
 
         RuleFor(x => x.Description)
             .NotEmpty()
-            .WithMessage("Описание не может быть пустым");
+            .WithMessage("РћРїРёСЃР°РЅРёРµ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј");
     }
 }

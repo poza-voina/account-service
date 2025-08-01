@@ -10,14 +10,14 @@ public class GetStatementQueryValidator : AbstractValidator<GetStatementQuery>
     {
         RuleFor(x => x.OwnerId)
             .NotEmpty()
-            .WithMessage("Èäåíòèôèêàòîð êëèåíòà íå ìîæåò áûòü ïóñòûì");
+            .WithMessage("Ð˜Ð´ÐµÐ½Ñ‚Ð¸Ñ„Ð¸ÐºÐ°Ñ‚Ð¾Ñ€ ÐºÐ»Ð¸ÐµÐ½Ñ‚Ð° Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚ Ð±Ñ‹Ñ‚ÑŒ Ð¿ÑƒÑÑ‚Ñ‹Ð¼");
 
         RuleFor(x => x.AccountId)
             .NotEmpty()
-            .WithMessage("Èäåíòèôèêàòîð ñ÷åò íå ìîæåò áûòü ïóñòûì");
+            .WithMessage("Ð˜Ð´ÐµÐ½Ñ‚Ð¸Ñ„Ð¸ÐºÐ°Ñ‚Ð¾Ñ€ ÑÑ‡ÐµÑ‚ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚ Ð±Ñ‹Ñ‚ÑŒ Ð¿ÑƒÑÑ‚Ñ‹Ð¼");
 
         RuleFor(x => x)
             .Must(x => x.StartDateTime is null || x.EndDateTime is null || x.StartDateTime <= x.EndDateTime)
-            .WithMessage("Äèàïîçîí âûïèñêè ìîæåò áûòü (-inf; +inf) (-inf; date] [date; +inf) [date; date]");
+            .WithMessage("Ð”Ð¸Ð°Ð¿Ð¾Ð·Ð¾Ð½ Ð²Ñ‹Ð¿Ð¸ÑÐºÐ¸ Ð¼Ð¾Ð¶ÐµÑ‚ Ð±Ñ‹Ñ‚ÑŒ (-inf; +inf) (-inf; date] [date; +inf) [date; date]");
     }
 }
