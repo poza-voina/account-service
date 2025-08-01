@@ -1,8 +1,11 @@
 ﻿using AccountService.Api.Behaviors;
 using AccountService.Api.Features.Account;
+using AccountService.Api.Features.Account.Interfaces;
 using AccountService.Api.Features.Statements.GetStatement;
 using AccountService.Api.Features.Transactions;
+using AccountService.Api.Features.Transactions.Interfaces;
 using AccountService.Api.ObjectStorage;
+using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.SwaggerFilters;
 using FluentValidation;
 using MediatR;

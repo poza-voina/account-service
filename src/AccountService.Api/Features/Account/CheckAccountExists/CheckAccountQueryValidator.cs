@@ -8,6 +8,8 @@ public class CheckAccountQueryValidator : AbstractValidator<CheckAccountQuery>
 {
     public CheckAccountQueryValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Идентификатор счета не может быть пустым");
     }
 }

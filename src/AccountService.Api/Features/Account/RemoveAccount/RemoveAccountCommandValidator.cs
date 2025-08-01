@@ -8,6 +8,8 @@ public class RemoveAccountCommandValidator : AbstractValidator<RemoveAccountComm
 {
     public RemoveAccountCommandValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Идентификатор счета не может быть пустым");
     }
 }
