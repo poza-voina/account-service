@@ -1,11 +1,7 @@
 ﻿using AccountService.Api.Exceptions;
+using AccountService.Api.ObjectStorage.Interfaces;
 
 namespace AccountService.Api.ObjectStorage;
-
-public interface IClientVerificationService
-{
-    Task VerifyAsync(Guid ownerId);
-}
 
 public class ClientVerificationService(ICollection<Guid> ownerIds) : IClientVerificationService
 {

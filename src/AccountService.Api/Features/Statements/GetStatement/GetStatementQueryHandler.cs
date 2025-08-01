@@ -1,5 +1,5 @@
-using AccountService.Api.Features.Account;
-using AccountService.Api.ObjectStorage;
+using AccountService.Api.Features.Account.Interfaces;
+using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ViewModels;
 using AutoMapper;
 using MediatR;

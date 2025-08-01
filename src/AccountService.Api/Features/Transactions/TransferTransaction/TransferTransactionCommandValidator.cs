@@ -1,4 +1,4 @@
-using AccountService.Api.ObjectStorage;
+using AccountService.Api.ObjectStorage.Interfaces;
 using FluentValidation;
 using JetBrains.Annotations;
 
@@ -10,20 +10,25 @@ public class TransferTransactionCommandValidator : AbstractValidator<TransferTra
     public TransferTransactionCommandValidator(ICurrencyHelper currencyHelper)
     {
         RuleFor(x => x.BankAccountId)
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage("Идентификатор счета не может быть пустым");
 
         RuleFor(x => x.CounterpartyBankAccountId)
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage("Идентификатор счета контрагента не может быть пустым");
 
         RuleFor(x => x.Amount)
             .NotEmpty()
-            .GreaterThan(0);
+            .GreaterThan(0)
+            .WithMessage("Количество денег должно быть больше 0");
 
         RuleFor(x => x.Currency)
             .NotEmpty()
-            .Must(currencyHelper.IsValid);
+            .Must(currencyHelper.IsValid)
+            .WithMessage("Валюта должна быть введена в формате ISO 4217");
 
         RuleFor(x => x.Description)
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage("Описание не должно пыть пустым");
     }
 }

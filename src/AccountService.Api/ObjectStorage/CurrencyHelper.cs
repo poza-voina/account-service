@@ -1,11 +1,7 @@
-﻿using System.Globalization;
+﻿using AccountService.Api.ObjectStorage.Interfaces;
+using System.Globalization;
 
 namespace AccountService.Api.ObjectStorage;
-
-public interface ICurrencyHelper
-{
-    bool IsValid(string currency);
-}
 
 public class CurrencyHelper : ICurrencyHelper
 {

@@ -1,11 +1,12 @@
 using AccountService.Api.Exceptions;
+using AccountService.Api.Features.Account.Interfaces;
 using MediatR;
 
 namespace AccountService.Api.Features.Account.CheckAccountExists;
 
 public class CheckAccountQueryHandler(IAccountStorageService accountStorageService) : IRequestHandler<CheckAccountQuery, Unit>
 {
-    private const string NotFoundErrorMessage = "Счет не создан";
+    private const string NotFoundErrorMessage = "РЎС‡РµС‚ РЅРµ СЃРѕР·РґР°РЅ";
 
     public async Task<Unit> Handle(CheckAccountQuery request, CancellationToken cancellationToken)
     {

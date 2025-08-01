@@ -1,7 +1,8 @@
 using AccountService.Api.Exceptions;
-using AccountService.Api.Features.Account;
 using AccountService.Api.Features.Account.CheckAccountExists;
-using AccountService.Api.ObjectStorage;
+using AccountService.Api.Features.Account.Interfaces;
+using AccountService.Api.Features.Transactions.Interfaces;
+using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ViewModels;
 using AutoMapper;
 using MediatR;

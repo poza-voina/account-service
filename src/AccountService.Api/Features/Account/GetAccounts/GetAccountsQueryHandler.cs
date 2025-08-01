@@ -1,3 +1,4 @@
+using AccountService.Api.Features.Account.Interfaces;
 using AccountService.Api.ViewModels;
 using AutoMapper;
 using MediatR;

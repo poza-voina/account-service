@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AccountService.Api.Features.Account.Interfaces;
+using MediatR;
 
 namespace AccountService.Api.Features.Account.RemoveAccount;
 
