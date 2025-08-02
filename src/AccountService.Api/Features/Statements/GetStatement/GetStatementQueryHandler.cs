@@ -19,11 +19,10 @@ public class GetStatementQueryHandler(
 
         var account = await accountStorageService.GetAccountAsync(request.AccountId, cancellationToken);
 
-        account.Transactions = account.Transactions.Where(
+        account.Transactions = [.. account.Transactions.Where(
                 x =>
                 (request.StartDateTime == null || x.CreatedAt >= request.StartDateTime) &&
-                (request.EndDateTime == null || x.CreatedAt <= request.EndDateTime))
-            .ToList();
+                (request.EndDateTime == null || x.CreatedAt <= request.EndDateTime))];
 
         return mapper.Map<AccountWithTransactionsViewModel>(account);
     }

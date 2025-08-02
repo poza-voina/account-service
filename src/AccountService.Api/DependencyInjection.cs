@@ -24,6 +24,8 @@ public static class DependencyInjection
 
     public static void AddValidationConfiguration(this IServiceCollection services)
     {
+        ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Continue;
+        ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
     }
 
@@ -82,20 +84,4 @@ public static class DependencyInjection
         services.AddSingleton<ICurrencyHelper, CurrencyHelper>();
         services.AddSingleton<IDatetimeHelper, DatetimeHelper>();
     }
-
-    public static void AddProblemsConfiguration(this IServiceCollection services)
-    {
-        services.AddExceptionHandler<ExceptionHandler>();
-
-        services.AddProblemDetails(options =>
-        {
-            options.CustomizeProblemDetails = context =>
-            {
-                context.ProblemDetails.Instance = string.Join(HttpMethodSeparator, context.HttpContext.Request.Method, context.HttpContext.Request.Path.Value);
-                context.ProblemDetails.Extensions.TryAdd(RequestIdProblemDetail, context.HttpContext.TraceIdentifier);
-                var activity = context.HttpContext.Features.Get<IHttpActivityFeature>()?.Activity;
-                context.ProblemDetails.Extensions.TryAdd(TraceIdProblemDetail, activity?.Id);
-            };
-        });
-    }    
 }

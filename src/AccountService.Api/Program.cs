@@ -1,8 +1,11 @@
 using AccountService.Api;
+
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
+
+services.AddExceptionHandler<ExceptionHandler>();
 
 services.AddControllerConfiguration();
 
@@ -22,9 +25,8 @@ services.AddAutoMapper(x => x.AddMaps(Assembly.GetExecutingAssembly()));
 
 services.AddMock();
 
-services.AddProblemsConfiguration();
-
 var app = builder.Build();
+app.UseExceptionHandler(_ => { });
 app.MapControllers();
 app.UseSwagger();
 app.UseSwaggerUI(c =>

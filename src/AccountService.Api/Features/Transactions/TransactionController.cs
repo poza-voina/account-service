@@ -1,9 +1,11 @@
 ﻿using AccountService.Api.Features.Transactions.ExecuteTransaction;
 using AccountService.Api.Features.Transactions.RegisterTransaction;
 using AccountService.Api.Features.Transactions.TransferTransaction;
-using AccountService.Api.ViewModels;
+using AccountService.Api.ViewModels.Result;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using TransactionResponse = AccountService.Api.ViewModels.Result.MbResult<AccountService.Api.ViewModels.TransactionViewModel>;
+using TransactionResponseError = AccountService.Api.ViewModels.Result.MbResult<object>;
 
 namespace AccountService.Api.Features.Transactions;
 
@@ -15,32 +17,41 @@ public class TransactionController(IMediator mediator) : ControllerBase
     /// Зарегистрировать транзакцию
     /// </summary>
     [HttpPost("register")]
-    public async Task<ActionResult<TransactionViewModel>> RegisterTransactionAsync(RegisterTransactionCommand command)
+    [ProducesResponseType(typeof(TransactionResponse), 200)]
+    [ProducesResponseType(typeof(TransactionResponseError), 400)]
+    [ProducesResponseType(typeof(TransactionResponseError), 422)]
+    public async Task<ActionResult<TransactionResponse>> RegisterTransactionAsync(RegisterTransactionCommand command)
     {
         var result = await mediator.Send(command);
 
-        return Ok(result);
+        return Ok(MbResultFactory.WithSuccess(result));
     }
 
     /// <summary>
     /// Перенос между счетами
     /// </summary>
     [HttpPost("transfer")]
-    public async Task<ActionResult<TransactionViewModel>> TransferTransaction(TransferTransactionCommand command)
+    [ProducesResponseType(typeof(TransactionResponseError), 400)]
+    [ProducesResponseType(typeof(TransactionResponseError), 404)]
+    [ProducesResponseType(typeof(TransactionResponseError), 422)]
+    public async Task<ActionResult<TransactionResponse>> TransferTransaction(TransferTransactionCommand command)
     {
         var result = await mediator.Send(command);
 
-        return Ok(result);
+        return Ok(MbResultFactory.WithSuccess(result));
     }
 
     /// <summary>
     /// Зарегистрировать и выполнить транзакцию
     /// </summary>
     [HttpPost("execute")]
-    public async Task<ActionResult<TransactionViewModel>> TransferTransaction(ExecuteTransactionCommand command)
+    [ProducesResponseType(typeof(TransactionResponseError), 400)]
+    [ProducesResponseType(typeof(TransactionResponseError), 404)]
+    [ProducesResponseType(typeof(TransactionResponseError), 422)]
+    public async Task<ActionResult<TransactionResponse>> TransferTransaction(ExecuteTransactionCommand command)
     {
         var result = await mediator.Send(command);
 
-        return Ok(result);
+        return Ok(MbResultFactory.WithSuccess(result));
     }
 }
