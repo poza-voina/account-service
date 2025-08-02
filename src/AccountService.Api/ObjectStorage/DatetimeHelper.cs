@@ -17,7 +17,7 @@ public class DatetimeHelper : IDatetimeHelper
 
         if (normalizedStart > normalizedEnd)
         {
-            throw new ArgumentException(string.Format(ErrorMessageFormat, normalizedStart, normalizedEnd));
+            throw new ArgumentException(string.Format(ErrorMessageFormat, normalizedStart, normalizedEnd)); // TODO: ?
         }
 
         return (normalizedStart, normalizedEnd);
