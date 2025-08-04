@@ -24,14 +24,20 @@ echo '{
   }
 }' | $KEYCLOAK_BIN create clients -r $REALM -f -
 
-$KEYCLOAK_BIN create roles -r application-realm -s name=offline_access
-$KEYCLOAK_BIN create roles -r application-realm -s name=uma_authorization
+$KEYCLOAK_BIN create roles -r $REALM -s name=offline_access
+$KEYCLOAK_BIN create roles -r $REALM -s name=uma_authorization
 
-$KEYCLOAK_BIN create users -r application-realm -s username=$USERNAME -s enabled=true
+$KEYCLOAK_BIN create users \
+  -r $REALM \
+  -s username=$USERNAME \
+  -s email=test@example.com \
+  -s firstName=testFirstname \
+  -s lastName=testLastname \
+  -s enabled=true
 
-USER_ID=$($KEYCLOAK_BIN get users -r application-realm -q username=$USERNAME --fields id --format csv | tail -n1 | tr -d '"')
+USER_ID=$($KEYCLOAK_BIN get users -r $REALM -q username=$USERNAME --fields id --format csv | tail -n1 | tr -d '"')
 
-$KEYCLOAK_BIN set-password -r application-realm --userid $USER_ID --new-password testpassword
+$KEYCLOAK_BIN set-password -r $REALM --userid $USER_ID --new-password $PASSWORD
 
-$KEYCLOAK_BIN add-roles -r application-realm --uusername $USERNAME --rolename offline_access
-$KEYCLOAK_BIN add-roles -r application-realm --uusername $USERNAME --rolename uma_authorization
+$KEYCLOAK_BIN add-roles -r $REALM --uusername $USERNAME --rolename offline_access
+$KEYCLOAK_BIN add-roles -r $REALM --uusername $USERNAME --rolename uma_authorization
