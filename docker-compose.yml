@@ -1,5 +1,5 @@
 services:
-  accountservice.api:
+  account-service.api:
     image: ${DOCKER_REGISTRY-}accountserviceapi
     build:
       context: .

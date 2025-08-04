@@ -19,7 +19,7 @@ public class MbResult<T>
     /// <summary>
     /// Ошибки валидации
     /// </summary>
-    public IEnumerable<Error>? ValidationErrors { get; set; }
+    public IEnumerable<ValidationError>? ValidationErrors { get; set; }
 
     /// <summary>
     /// Код статуса выполнения

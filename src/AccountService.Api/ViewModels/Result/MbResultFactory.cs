@@ -9,7 +9,7 @@ public static class MbResultFactory
         return new MbResult<object>
         {
             ValidationErrors = errors.Select(
-            x => new Error
+            x => new ValidationError
             {
                 Field = x.PropertyName,
                 Message = x.ErrorMessage

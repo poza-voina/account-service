@@ -3,7 +3,7 @@
 /// <summary>
 /// Ошибка валидации
 /// </summary>
-public class Error
+public class ValidationError
 {
     /// <summary>
     /// Поле, по которому не прошла валидация

@@ -19,16 +19,18 @@ public class TransferTransactionCommandValidator : AbstractValidator<TransferTra
 
         RuleFor(x => x.Amount)
             .NotEmpty()
+            .WithMessage("Количество денег должно быть больше 0")
             .GreaterThan(0)
             .WithMessage("Количество денег должно быть больше 0");
 
         RuleFor(x => x.Currency)
             .NotEmpty()
+            .WithMessage("Валюта не дожна быть пустой")
             .Must(currencyHelper.IsValid)
             .WithMessage("Валюта должна быть введена в формате ISO 4217");
 
         RuleFor(x => x.Description)
             .NotEmpty()
-            .WithMessage("Описание не должно пыть пустым");
+            .WithMessage("Описание не должно быть пустым");
     }
 }

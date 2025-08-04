@@ -7,7 +7,7 @@
 		<ProjectGuid>81dded9d-158b-e303-5f62-77a2896d2a5a</ProjectGuid>
 		<DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
 		<DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger/index.html</DockerServiceUrl>
-		<DockerServiceName>accountservice.api</DockerServiceName>
+		<DockerServiceName>account-service.api</DockerServiceName>
 		<DockerComposeStopAction>Down</DockerComposeStopAction>
 		<DockerComposeDownOnStop>true</DockerComposeDownOnStop>
 	</PropertyGroup>
@@ -16,6 +16,7 @@
 			<DependentUpon>docker-compose.yml</DependentUpon>
 		</None>
 		<None Include="docker-compose.yml" />
+		<!-- ReSharper disable once MarkupAttributeTypo файл так называется-->
 		<None Include=".dockerignore" />
 	</ItemGroup>
 </Project>
