@@ -1,5 +1,8 @@
 ﻿namespace AccountService.Api.Domains.Enums;
 
+/// <summary>
+/// Тип транзакции
+/// </summary>
 public enum TransactionType
 {
     /// <summary>

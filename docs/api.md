@@ -621,11 +621,13 @@ oauth2 ( Scopes: openid profile )
 
 ```
 
+Тип банковского счета
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|string|false|none|none|
+|*anonymous*|string|false|none|Тип банковского счета|
 
 #### Enumerated Values
 
@@ -662,7 +664,7 @@ oauth2 ( Scopes: openid profile )
 |---|---|---|---|---|
 |id|string(uuid)|false|none|Индентификатор счета|
 |ownerId|string(uuid)|false|none|Идентификатор клиента|
-|type|[AccountType](#schemaaccounttype)|false|none|none|
+|type|[AccountType](#schemaaccounttype)|false|none|Тип банковского счета|
 |currency|string¦null|true|none|Валюта|
 |balance|number(double)|false|none|Баланс счета|
 |interestRate|number(double)¦null|false|none|Процентная ставка счета|
@@ -753,7 +755,7 @@ oauth2 ( Scopes: openid profile )
 |---|---|---|---|---|
 |id|string(uuid)|false|none|Индентификатор счета|
 |ownerId|string(uuid)|false|none|Идентификатор клиента|
-|type|[AccountType](#schemaaccounttype)|false|none|none|
+|type|[AccountType](#schemaaccounttype)|false|none|Тип банковского счета|
 |currency|string¦null|true|none|Валюта|
 |balance|number(double)|false|none|Баланс счета|
 |interestRate|number(double)¦null|false|none|Процентная ставка счета|
@@ -843,7 +845,7 @@ oauth2 ( Scopes: openid profile )
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |ownerId|string(uuid)|true|none|Идентификатор клиента|
-|type|[AccountType](#schemaaccounttype)|true|none|none|
+|type|[AccountType](#schemaaccounttype)|true|none|Тип банковского счета|
 |currency|string¦null|true|none|Валюта|
 |interestRate|number(double)¦null|false|none|Процентная ставка|
 |closingDate|string(date-time)¦null|false|none|Дата закрытия счета|
@@ -895,7 +897,7 @@ oauth2 ( Scopes: openid profile )
 |bankAccountId|string(uuid)|true|none|Идентификатор счета|
 |amount|number(double)|true|none|Количество денег|
 |currency|string¦null|true|none|Валюта|
-|type|[TransactionType](#schematransactiontype)|true|none|none|
+|type|[TransactionType](#schematransactiontype)|true|none|Тип транзакции|
 |description|string¦null|true|none|Описание транзакции|
 
 <h2 id="tocS_GetAccountsQuery">GetAccountsQuery</h2>
@@ -1024,7 +1026,7 @@ oauth2 ( Scopes: openid profile )
 |counterpartyBankAccountId|string(uuid)¦null|false|none|Идентификатор счета контрагента|
 |amount|number(double)|true|none|Количество денег|
 |currency|string¦null|true|none|Валюта|
-|type|[TransactionType](#schematransactiontype)|true|none|none|
+|type|[TransactionType](#schematransactiontype)|true|none|Тип транзакции|
 |description|string¦null|true|none|Описание транзакции|
 
 <h2 id="tocS_TransactionType">TransactionType</h2>
@@ -1039,11 +1041,13 @@ oauth2 ( Scopes: openid profile )
 
 ```
 
+Тип транзакции
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|string|false|none|none|
+|*anonymous*|string|false|none|Тип транзакции|
 
 #### Enumerated Values
 
@@ -1083,7 +1087,7 @@ oauth2 ( Scopes: openid profile )
 |counterpartyBankAccountId|string(uuid)¦null|false|none|Идентификатор счета контрагента|
 |amount|number(double)|true|none|Количество денег|
 |currency|string¦null|true|none|Валюта|
-|type|[TransactionType](#schematransactiontype)|true|none|none|
+|type|[TransactionType](#schematransactiontype)|true|none|Тип транзакции|
 |description|string¦null|true|none|Описание|
 |createdAt|string(date-time)|true|none|Дата создания транзакции|
 |isApply|boolean|true|none|Флаг принятия транзакции|
