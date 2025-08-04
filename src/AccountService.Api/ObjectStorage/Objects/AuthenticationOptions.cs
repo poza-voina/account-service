@@ -1,5 +1,6 @@
 ﻿namespace AccountService.Api.ObjectStorage.Objects;
 
+// TODO: отрефачить
 public class AuthenticationOptions
 {
     /// <summary>
