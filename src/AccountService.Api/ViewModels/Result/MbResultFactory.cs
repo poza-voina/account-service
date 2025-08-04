@@ -17,6 +17,7 @@ public static class MbResultFactory
             StatusCode = statusCode
         };
     }
+
     public static MbResult<object> WithOperationError(Exception exception, int statusCode)
     {
         return new MbResult<object>
@@ -26,6 +27,18 @@ public static class MbResultFactory
                 Message = exception.Message,
                 StackTrace = exception.StackTrace,
                 ExceptionType = exception.GetType().FullName
+            },
+            StatusCode = statusCode
+        };
+    }
+
+    public static MbResult<object> WithOperationError(string message, int statusCode)
+    {
+        return new MbResult<object>
+        {
+            OperationError = new OperationError
+            {
+                Message = message
             },
             StatusCode = statusCode
         };

@@ -5,6 +5,7 @@ using AccountService.Api.Features.Account.PatchAccount;
 using AccountService.Api.Features.Account.RemoveAccount;
 using AccountService.Api.ViewModels.Result;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AccountErrorResponse = AccountService.Api.ViewModels.Result.MbResult<object>;
 using AccountResponse = AccountService.Api.ViewModels.Result.MbResult<AccountService.Api.ViewModels.AccountViewModel>;
@@ -13,6 +14,7 @@ using AccountsResponse = AccountService.Api.ViewModels.Result.MbResult<System.Co
 namespace AccountService.Api.Features.Account;
 
 [ApiController]
+[Authorize]
 [Route("accounts")]
 public class AccountController(IMediator mediator) : ControllerBase
 {
@@ -23,6 +25,7 @@ public class AccountController(IMediator mediator) : ControllerBase
     [ProducesResponseType(typeof(AccountResponse), 200)]
     [ProducesResponseType(typeof(AccountErrorResponse), 422)]
     [ProducesResponseType(typeof(AccountErrorResponse), 400)]
+    [ProducesResponseType(typeof(AccountErrorResponse), 401)]
     public async Task<ActionResult<AccountResponse>> CreateAccount([FromBody] CreateAccountCommand command)
     {
         var result = await mediator.Send(command);
@@ -37,6 +40,7 @@ public class AccountController(IMediator mediator) : ControllerBase
     [ProducesResponseType(typeof(AccountErrorResponse), 422)]
     [ProducesResponseType(typeof(AccountErrorResponse), 400)]
     [ProducesResponseType(typeof(AccountErrorResponse), 404)]
+    [ProducesResponseType(typeof(AccountErrorResponse), 401)]
     public async Task<ActionResult<AccountResponse>> UpdateAccount([FromBody] PatchAccountCommand command)
     {
         var result = await mediator.Send(command);
@@ -50,6 +54,7 @@ public class AccountController(IMediator mediator) : ControllerBase
     /// <param name="id">Идентификатор счета</param>
     [HttpDelete("{id:Guid}")]
     [ProducesResponseType(typeof(AccountErrorResponse), 404)]
+    [ProducesResponseType(typeof(AccountErrorResponse), 401)]
     public async Task<ActionResult<AccountResponse>> RemoveAccount(Guid id)
     {
         var command = new RemoveAccountCommand { Id = id };
@@ -63,6 +68,7 @@ public class AccountController(IMediator mediator) : ControllerBase
     /// Получает список счетов
     /// </summary>
     [HttpGet]
+    [ProducesResponseType(typeof(AccountErrorResponse), 401)]
     public async Task<ActionResult<AccountsResponse>> GetAccounts([FromQuery] GetAccountsQuery query)
     {
         var result = await mediator.Send(query);
@@ -77,6 +83,7 @@ public class AccountController(IMediator mediator) : ControllerBase
     [HttpGet("{id:guid}/exists")]
     [ProducesResponseType(typeof(AccountErrorResponse), 200)]
     [ProducesResponseType(typeof(AccountErrorResponse), 404)]
+    [ProducesResponseType(typeof(AccountErrorResponse), 401)]
     public async Task<ActionResult> CheckAccountExists([FromRoute] Guid id)
     {
         var query = new CheckAccountQuery { Id = id };

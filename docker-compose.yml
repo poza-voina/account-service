@@ -1,0 +1,42 @@
+services:
+  accountservice.api:
+    image: ${DOCKER_REGISTRY-}accountserviceapi
+    build:
+      context: .
+      dockerfile: src/AccountService.Api/Dockerfile
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    ports:
+        - "${ACCOUNT_SERVICE_API_PORT}:80"
+    environment:
+      - Authentication__Realm=${REALM}
+      - Authentication__BaseUrl=http://keycloak:${KEYCLOAK_PORT}
+      - Authentication__RequireHttpsMetadata=false
+      - Authentication__Audience=account
+      - Authentication__ClientId=${CLIENT_ID}
+      - Authentication__ClientSecret=${CLIENT_SECRET}
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3.2
+    ports:
+      - "${KEYCLOAK_PORT}:8080"
+    environment:
+      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN_LOGIN}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+    command: ["start-dev"]
+    healthcheck:
+      test: ["CMD", "bash", "-c", "if </dev/tcp/localhost/$KEYCLOAK_PORT; then exit 0; else exit 1; fi"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  keycloak-init:
+    image: quay.io/keycloak/keycloak:26.3.2
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    entrypoint: [ "bash", "-c", "/opt/keycloak/bin/kcadm.sh config credentials --server http://keycloak:${KEYCLOAK_PORT} --realm master --user admin --password admin && bash /opt/keycloak/generate-realm.sh" ]
+    volumes:
+      - ./generate-realm.sh:/opt/keycloak/generate-realm.sh:ro
+      - ./.env:/opt/keycloak/.env:ro

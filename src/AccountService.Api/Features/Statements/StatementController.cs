@@ -1,6 +1,7 @@
 ﻿using AccountService.Api.Features.Statements.GetStatement;
 using AccountService.Api.ViewModels.Result;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StatementResponse = AccountService.Api.ViewModels.Result.MbResult<System.Collections.Generic.IEnumerable<AccountService.Api.ViewModels.AccountWithTransactionsViewModel>>;
 using StatementResponseError = AccountService.Api.ViewModels.Result.MbResult<object>;
@@ -8,6 +9,7 @@ using StatementResponseError = AccountService.Api.ViewModels.Result.MbResult<obj
 namespace AccountService.Api.Features.Statements;
 
 [ApiController]
+[Authorize]
 [Route("statements")]
 public class StatementController(IMediator mediator) : ControllerBase
 {
@@ -20,6 +22,7 @@ public class StatementController(IMediator mediator) : ControllerBase
     [HttpGet("{accountId:guid}")]
     [ProducesResponseType(typeof(StatementResponse), 200)]
     [ProducesResponseType(typeof(StatementResponseError), 404)]
+    [ProducesResponseType(typeof(StatementResponseError), 401)]
     public async Task<ActionResult<StatementResponse>> GetStatementAsync([FromRoute] Guid accountId, [FromQuery] GetStatementQuery query)
     {
         query.AccountId = accountId;
