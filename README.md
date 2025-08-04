@@ -20,6 +20,8 @@ keycloak -> keycloak-init -> accountservice.api
 ## Запуск в VS + Docker
 <img width="327" height="86" alt="image" src="https://github.com/user-attachments/assets/6d84f909-3e56-4816-926f-d51adf63f64c" />
 
+Для того чтобы контейнеры удалились из `Docker` нужно сделать очистку решения
+
 ## Запуск в VS
 Требуется чтобы работал keycloak
 
