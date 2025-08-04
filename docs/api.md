@@ -1,8 +1,35 @@
+---
+title: AccountService.Api v1.0
+language_tabs:
+  - "": ""
+language_clients:
+  - "": ""
+toc_footers: []
+includes: []
+search: true
+highlight_theme: darkula
+headingLevel: 2
+
+---
+
 <!-- Generator: Widdershins v4.0.1 -->
 
 <h1 id="accountservice-api">AccountService.Api v1.0</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
+
+# Authentication
+
+- oAuth2 authentication. 
+
+    - Flow: authorizationCode
+    - Authorization URL = [http://localhost:8080/realms/application-realm/protocol/openid-connect/auth](http://localhost:8080/realms/application-realm/protocol/openid-connect/auth)
+    - Token URL = [http://localhost:8080/realms/application-realm/protocol/openid-connect/token](http://localhost:8080/realms/application-realm/protocol/openid-connect/token)
+
+|Scope|Scope Description|
+|---|---|
+|openid|OpenID scope|
+|profile|User profile|
 
 <h1 id="accountservice-api-account">Account</h1>
 
@@ -37,19 +64,33 @@
 > 200 Response
 
 ```
-{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","ownerId":"4d206909-730f-409a-88f6-dcfaa8fc28cc","type":"Checking","currency":"string","balance":0.1,"interestRate":0.1,"openingDate":"2019-08-24T14:15:22Z","closingDate":"2019-08-24T14:15:22Z"}
+{"result":{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","ownerId":"4d206909-730f-409a-88f6-dcfaa8fc28cc","type":"Checking","currency":"string","balance":0.1,"interestRate":0.1,"openingDate":"2019-08-24T14:15:22Z","closingDate":"2019-08-24T14:15:22Z"},"operationError":{"message":"string","stackTrace":"string","exceptionType":"string"},"validationErrors":[{"field":"string","message":"string"}],"statusCode":0}
 ```
 
 ```json
 {
-  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "ownerId": "4d206909-730f-409a-88f6-dcfaa8fc28cc",
-  "type": "Checking",
-  "currency": "string",
-  "balance": 0.1,
-  "interestRate": 0.1,
-  "openingDate": "2019-08-24T14:15:22Z",
-  "closingDate": "2019-08-24T14:15:22Z"
+  "result": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "ownerId": "4d206909-730f-409a-88f6-dcfaa8fc28cc",
+    "type": "Checking",
+    "currency": "string",
+    "balance": 0.1,
+    "interestRate": 0.1,
+    "openingDate": "2019-08-24T14:15:22Z",
+    "closingDate": "2019-08-24T14:15:22Z"
+  },
+  "operationError": {
+    "message": "string",
+    "stackTrace": "string",
+    "exceptionType": "string"
+  },
+  "validationErrors": [
+    {
+      "field": "string",
+      "message": "string"
+    }
+  ],
+  "statusCode": 0
 }
 ```
 
@@ -57,10 +98,14 @@
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|OK|[AccountViewModel](#schemaaccountviewmodel)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|OK|[AccountViewModelMbResult](#schemaaccountviewmodelmbresult)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ObjectMbResult](#schemaobjectmbresult)|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Unauthorized|[ObjectMbResult](#schemaobjectmbresult)|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Unprocessable Content|[ObjectMbResult](#schemaobjectmbresult)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: openid profile )
 </aside>
 
 ## put__accounts
@@ -89,22 +134,27 @@ This operation does not require authentication
 
 > Example responses
 
-> 200 Response
+> 400 Response
 
 ```
-{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","ownerId":"4d206909-730f-409a-88f6-dcfaa8fc28cc","type":"Checking","currency":"string","balance":0.1,"interestRate":0.1,"openingDate":"2019-08-24T14:15:22Z","closingDate":"2019-08-24T14:15:22Z"}
+{"result":null,"operationError":{"message":"string","stackTrace":"string","exceptionType":"string"},"validationErrors":[{"field":"string","message":"string"}],"statusCode":0}
 ```
 
 ```json
 {
-  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "ownerId": "4d206909-730f-409a-88f6-dcfaa8fc28cc",
-  "type": "Checking",
-  "currency": "string",
-  "balance": 0.1,
-  "interestRate": 0.1,
-  "openingDate": "2019-08-24T14:15:22Z",
-  "closingDate": "2019-08-24T14:15:22Z"
+  "result": null,
+  "operationError": {
+    "message": "string",
+    "stackTrace": "string",
+    "exceptionType": "string"
+  },
+  "validationErrors": [
+    {
+      "field": "string",
+      "message": "string"
+    }
+  ],
+  "statusCode": 0
 }
 ```
 
@@ -112,10 +162,14 @@ This operation does not require authentication
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|OK|[AccountViewModel](#schemaaccountviewmodel)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ObjectMbResult](#schemaobjectmbresult)|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Unauthorized|[ObjectMbResult](#schemaobjectmbresult)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ObjectMbResult](#schemaobjectmbresult)|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Unprocessable Content|[ObjectMbResult](#schemaobjectmbresult)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: openid profile )
 </aside>
 
 ## get__accounts
@@ -134,59 +188,39 @@ This operation does not require authentication
 
 > Example responses
 
-> 200 Response
+> 401 Response
 
 ```
-[{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","ownerId":"4d206909-730f-409a-88f6-dcfaa8fc28cc","type":"Checking","currency":"string","balance":0.1,"interestRate":0.1,"openingDate":"2019-08-24T14:15:22Z","closingDate":"2019-08-24T14:15:22Z"}]
+{"result":null,"operationError":{"message":"string","stackTrace":"string","exceptionType":"string"},"validationErrors":[{"field":"string","message":"string"}],"statusCode":0}
 ```
 
 ```json
-[
-  {
-    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-    "ownerId": "4d206909-730f-409a-88f6-dcfaa8fc28cc",
-    "type": "Checking",
-    "currency": "string",
-    "balance": 0.1,
-    "interestRate": 0.1,
-    "openingDate": "2019-08-24T14:15:22Z",
-    "closingDate": "2019-08-24T14:15:22Z"
-  }
-]
+{
+  "result": null,
+  "operationError": {
+    "message": "string",
+    "stackTrace": "string",
+    "exceptionType": "string"
+  },
+  "validationErrors": [
+    {
+      "field": "string",
+      "message": "string"
+    }
+  ],
+  "statusCode": 0
+}
 ```
 
 <h3 id="get__accounts-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|OK|Inline|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Unauthorized|[ObjectMbResult](#schemaobjectmbresult)|
 
-<h3 id="get__accounts-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[AccountViewModel](#schemaaccountviewmodel)]|false|none|none|
-|» id|string(uuid)|false|none|Индентификатор счета|
-|» ownerId|string(uuid)|false|none|Идентификатор клиента|
-|» type|[AccountType](#schemaaccounttype)|false|none|none|
-|» currency|string¦null|true|none|Валюта|
-|» balance|number(double)|false|none|Баланс счета|
-|» interestRate|number(double)¦null|false|none|Процентная ставка счета|
-|» openingDate|string(date-time)|false|none|Дата открытия счета|
-|» closingDate|string(date-time)¦null|false|none|Дата закрытия счета|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|Checking|
-|type|Deposit|
-|type|Credit|
-
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: openid profile )
 </aside>
 
 ## delete__accounts_{id}
@@ -205,22 +239,27 @@ This operation does not require authentication
 
 > Example responses
 
-> 200 Response
+> 401 Response
 
 ```
-{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","ownerId":"4d206909-730f-409a-88f6-dcfaa8fc28cc","type":"Checking","currency":"string","balance":0.1,"interestRate":0.1,"openingDate":"2019-08-24T14:15:22Z","closingDate":"2019-08-24T14:15:22Z"}
+{"result":null,"operationError":{"message":"string","stackTrace":"string","exceptionType":"string"},"validationErrors":[{"field":"string","message":"string"}],"statusCode":0}
 ```
 
 ```json
 {
-  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "ownerId": "4d206909-730f-409a-88f6-dcfaa8fc28cc",
-  "type": "Checking",
-  "currency": "string",
-  "balance": 0.1,
-  "interestRate": 0.1,
-  "openingDate": "2019-08-24T14:15:22Z",
-  "closingDate": "2019-08-24T14:15:22Z"
+  "result": null,
+  "operationError": {
+    "message": "string",
+    "stackTrace": "string",
+    "exceptionType": "string"
+  },
+  "validationErrors": [
+    {
+      "field": "string",
+      "message": "string"
+    }
+  ],
+  "statusCode": 0
 }
 ```
 
@@ -228,10 +267,12 @@ This operation does not require authentication
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|OK|[AccountViewModel](#schemaaccountviewmodel)|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Unauthorized|[ObjectMbResult](#schemaobjectmbresult)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ObjectMbResult](#schemaobjectmbresult)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: openid profile )
 </aside>
 
 ## get__accounts_{id}_exists
@@ -253,19 +294,24 @@ This operation does not require authentication
 > 200 Response
 
 ```
-{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","ownerId":"4d206909-730f-409a-88f6-dcfaa8fc28cc","type":"Checking","currency":"string","balance":0.1,"interestRate":0.1,"openingDate":"2019-08-24T14:15:22Z","closingDate":"2019-08-24T14:15:22Z"}
+{"result":null,"operationError":{"message":"string","stackTrace":"string","exceptionType":"string"},"validationErrors":[{"field":"string","message":"string"}],"statusCode":0}
 ```
 
 ```json
 {
-  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "ownerId": "4d206909-730f-409a-88f6-dcfaa8fc28cc",
-  "type": "Checking",
-  "currency": "string",
-  "balance": 0.1,
-  "interestRate": 0.1,
-  "openingDate": "2019-08-24T14:15:22Z",
-  "closingDate": "2019-08-24T14:15:22Z"
+  "result": null,
+  "operationError": {
+    "message": "string",
+    "stackTrace": "string",
+    "exceptionType": "string"
+  },
+  "validationErrors": [
+    {
+      "field": "string",
+      "message": "string"
+    }
+  ],
+  "statusCode": 0
 }
 ```
 
@@ -273,10 +319,13 @@ This operation does not require authentication
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|OK|[AccountViewModel](#schemaaccountviewmodel)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|OK|[ObjectMbResult](#schemaobjectmbresult)|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Unauthorized|[ObjectMbResult](#schemaobjectmbresult)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ObjectMbResult](#schemaobjectmbresult)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: openid profile )
 </aside>
 
 <h1 id="accountservice-api-statement">Statement</h1>
@@ -303,81 +352,62 @@ This operation does not require authentication
 > 200 Response
 
 ```
-[{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","ownerId":"4d206909-730f-409a-88f6-dcfaa8fc28cc","type":"Checking","currency":"string","balance":0.1,"interestRate":0.1,"openingDate":"2019-08-24T14:15:22Z","closingDate":"2019-08-24T14:15:22Z","transactions":[{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","bankAccountId":"5b26b598-a880-4e32-8c41-126aa0206857","counterpartyBankAccountId":"cc9b712c-c0c3-4405-a86e-c2690000b458","amount":0.1,"currency":"string","type":"Credit","description":"string","createdAt":"2019-08-24T14:15:22Z","isApply":true}]}]
+{"result":[{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","ownerId":"4d206909-730f-409a-88f6-dcfaa8fc28cc","type":"Checking","currency":"string","balance":0.1,"interestRate":0.1,"openingDate":"2019-08-24T14:15:22Z","closingDate":"2019-08-24T14:15:22Z","transactions":[{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","bankAccountId":"5b26b598-a880-4e32-8c41-126aa0206857","counterpartyBankAccountId":"cc9b712c-c0c3-4405-a86e-c2690000b458","amount":0.1,"currency":"string","type":"Credit","description":"string","createdAt":"2019-08-24T14:15:22Z","isApply":true}]}],"operationError":{"message":"string","stackTrace":"string","exceptionType":"string"},"validationErrors":[{"field":"string","message":"string"}],"statusCode":0}
 ```
 
 ```json
-[
-  {
-    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-    "ownerId": "4d206909-730f-409a-88f6-dcfaa8fc28cc",
-    "type": "Checking",
-    "currency": "string",
-    "balance": 0.1,
-    "interestRate": 0.1,
-    "openingDate": "2019-08-24T14:15:22Z",
-    "closingDate": "2019-08-24T14:15:22Z",
-    "transactions": [
-      {
-        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-        "bankAccountId": "5b26b598-a880-4e32-8c41-126aa0206857",
-        "counterpartyBankAccountId": "cc9b712c-c0c3-4405-a86e-c2690000b458",
-        "amount": 0.1,
-        "currency": "string",
-        "type": "Credit",
-        "description": "string",
-        "createdAt": "2019-08-24T14:15:22Z",
-        "isApply": true
-      }
-    ]
-  }
-]
+{
+  "result": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "ownerId": "4d206909-730f-409a-88f6-dcfaa8fc28cc",
+      "type": "Checking",
+      "currency": "string",
+      "balance": 0.1,
+      "interestRate": 0.1,
+      "openingDate": "2019-08-24T14:15:22Z",
+      "closingDate": "2019-08-24T14:15:22Z",
+      "transactions": [
+        {
+          "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+          "bankAccountId": "5b26b598-a880-4e32-8c41-126aa0206857",
+          "counterpartyBankAccountId": "cc9b712c-c0c3-4405-a86e-c2690000b458",
+          "amount": 0.1,
+          "currency": "string",
+          "type": "Credit",
+          "description": "string",
+          "createdAt": "2019-08-24T14:15:22Z",
+          "isApply": true
+        }
+      ]
+    }
+  ],
+  "operationError": {
+    "message": "string",
+    "stackTrace": "string",
+    "exceptionType": "string"
+  },
+  "validationErrors": [
+    {
+      "field": "string",
+      "message": "string"
+    }
+  ],
+  "statusCode": 0
+}
 ```
 
 <h3 id="get__statements_{accountid}-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|OK|Inline|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|OK|[AccountWithTransactionsViewModelIEnumerableMbResult](#schemaaccountwithtransactionsviewmodelienumerablembresult)|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Unauthorized|[ObjectMbResult](#schemaobjectmbresult)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ObjectMbResult](#schemaobjectmbresult)|
 
-<h3 id="get__statements_{accountid}-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[[AccountWithTransactionsViewModel](#schemaaccountwithtransactionsviewmodel)]|false|none|none|
-|» id|string(uuid)|false|none|Индентификатор счета|
-|» ownerId|string(uuid)|false|none|Идентификатор клиента|
-|» type|[AccountType](#schemaaccounttype)|false|none|none|
-|» currency|string¦null|true|none|Валюта|
-|» balance|number(double)|false|none|Баланс счета|
-|» interestRate|number(double)¦null|false|none|Процентная ставка счета|
-|» openingDate|string(date-time)|false|none|Дата открытия счета|
-|» closingDate|string(date-time)¦null|false|none|Дата закрытия счета|
-|» transactions|[[TransactionViewModel](#schematransactionviewmodel)]¦null|false|none|Коллекция транзакций|
-|»» id|string(uuid)|true|none|Идентификатор транзакции|
-|»» bankAccountId|string(uuid)|true|none|Идентификатор счета|
-|»» counterpartyBankAccountId|string(uuid)¦null|false|none|Идентификатор счета контрагента|
-|»» amount|number(double)|true|none|Количество денег|
-|»» currency|string¦null|true|none|Валюта|
-|»» type|[TransactionType](#schematransactiontype)|true|none|none|
-|»» description|string¦null|true|none|Описание|
-|»» createdAt|string(date-time)|true|none|Дата создания транзакции|
-|»» isApply|boolean|true|none|Флаг принятия транзакции|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|Checking|
-|type|Deposit|
-|type|Credit|
-|type|Credit|
-|type|Debit|
-
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: openid profile )
 </aside>
 
 <h1 id="accountservice-api-transaction">Transaction</h1>
@@ -414,20 +444,34 @@ This operation does not require authentication
 > 200 Response
 
 ```
-{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","bankAccountId":"5b26b598-a880-4e32-8c41-126aa0206857","counterpartyBankAccountId":"cc9b712c-c0c3-4405-a86e-c2690000b458","amount":0.1,"currency":"string","type":"Credit","description":"string","createdAt":"2019-08-24T14:15:22Z","isApply":true}
+{"result":{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","bankAccountId":"5b26b598-a880-4e32-8c41-126aa0206857","counterpartyBankAccountId":"cc9b712c-c0c3-4405-a86e-c2690000b458","amount":0.1,"currency":"string","type":"Credit","description":"string","createdAt":"2019-08-24T14:15:22Z","isApply":true},"operationError":{"message":"string","stackTrace":"string","exceptionType":"string"},"validationErrors":[{"field":"string","message":"string"}],"statusCode":0}
 ```
 
 ```json
 {
-  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "bankAccountId": "5b26b598-a880-4e32-8c41-126aa0206857",
-  "counterpartyBankAccountId": "cc9b712c-c0c3-4405-a86e-c2690000b458",
-  "amount": 0.1,
-  "currency": "string",
-  "type": "Credit",
-  "description": "string",
-  "createdAt": "2019-08-24T14:15:22Z",
-  "isApply": true
+  "result": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "bankAccountId": "5b26b598-a880-4e32-8c41-126aa0206857",
+    "counterpartyBankAccountId": "cc9b712c-c0c3-4405-a86e-c2690000b458",
+    "amount": 0.1,
+    "currency": "string",
+    "type": "Credit",
+    "description": "string",
+    "createdAt": "2019-08-24T14:15:22Z",
+    "isApply": true
+  },
+  "operationError": {
+    "message": "string",
+    "stackTrace": "string",
+    "exceptionType": "string"
+  },
+  "validationErrors": [
+    {
+      "field": "string",
+      "message": "string"
+    }
+  ],
+  "statusCode": 0
 }
 ```
 
@@ -435,10 +479,14 @@ This operation does not require authentication
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|OK|[TransactionViewModel](#schematransactionviewmodel)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|OK|[TransactionViewModelMbResult](#schematransactionviewmodelmbresult)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ObjectMbResult](#schemaobjectmbresult)|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Unauthorized|[ObjectMbResult](#schemaobjectmbresult)|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Unprocessable Content|[ObjectMbResult](#schemaobjectmbresult)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: openid profile )
 </aside>
 
 ## post__transactions_transfer
@@ -469,23 +517,27 @@ This operation does not require authentication
 
 > Example responses
 
-> 200 Response
+> 400 Response
 
 ```
-{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","bankAccountId":"5b26b598-a880-4e32-8c41-126aa0206857","counterpartyBankAccountId":"cc9b712c-c0c3-4405-a86e-c2690000b458","amount":0.1,"currency":"string","type":"Credit","description":"string","createdAt":"2019-08-24T14:15:22Z","isApply":true}
+{"result":null,"operationError":{"message":"string","stackTrace":"string","exceptionType":"string"},"validationErrors":[{"field":"string","message":"string"}],"statusCode":0}
 ```
 
 ```json
 {
-  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "bankAccountId": "5b26b598-a880-4e32-8c41-126aa0206857",
-  "counterpartyBankAccountId": "cc9b712c-c0c3-4405-a86e-c2690000b458",
-  "amount": 0.1,
-  "currency": "string",
-  "type": "Credit",
-  "description": "string",
-  "createdAt": "2019-08-24T14:15:22Z",
-  "isApply": true
+  "result": null,
+  "operationError": {
+    "message": "string",
+    "stackTrace": "string",
+    "exceptionType": "string"
+  },
+  "validationErrors": [
+    {
+      "field": "string",
+      "message": "string"
+    }
+  ],
+  "statusCode": 0
 }
 ```
 
@@ -493,10 +545,14 @@ This operation does not require authentication
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|OK|[TransactionViewModel](#schematransactionviewmodel)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ObjectMbResult](#schemaobjectmbresult)|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Unauthorized|[ObjectMbResult](#schemaobjectmbresult)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ObjectMbResult](#schemaobjectmbresult)|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Unprocessable Content|[ObjectMbResult](#schemaobjectmbresult)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: openid profile )
 </aside>
 
 ## post__transactions_execute
@@ -527,23 +583,27 @@ This operation does not require authentication
 
 > Example responses
 
-> 200 Response
+> 400 Response
 
 ```
-{"id":"497f6eca-6276-4993-bfeb-53cbbbba6f08","bankAccountId":"5b26b598-a880-4e32-8c41-126aa0206857","counterpartyBankAccountId":"cc9b712c-c0c3-4405-a86e-c2690000b458","amount":0.1,"currency":"string","type":"Credit","description":"string","createdAt":"2019-08-24T14:15:22Z","isApply":true}
+{"result":null,"operationError":{"message":"string","stackTrace":"string","exceptionType":"string"},"validationErrors":[{"field":"string","message":"string"}],"statusCode":0}
 ```
 
 ```json
 {
-  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "bankAccountId": "5b26b598-a880-4e32-8c41-126aa0206857",
-  "counterpartyBankAccountId": "cc9b712c-c0c3-4405-a86e-c2690000b458",
-  "amount": 0.1,
-  "currency": "string",
-  "type": "Credit",
-  "description": "string",
-  "createdAt": "2019-08-24T14:15:22Z",
-  "isApply": true
+  "result": null,
+  "operationError": {
+    "message": "string",
+    "stackTrace": "string",
+    "exceptionType": "string"
+  },
+  "validationErrors": [
+    {
+      "field": "string",
+      "message": "string"
+    }
+  ],
+  "statusCode": 0
 }
 ```
 
@@ -551,10 +611,14 @@ This operation does not require authentication
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|OK|[TransactionViewModel](#schematransactionviewmodel)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad Request|[ObjectMbResult](#schemaobjectmbresult)|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Unauthorized|[ObjectMbResult](#schemaobjectmbresult)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ObjectMbResult](#schemaobjectmbresult)|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Unprocessable Content|[ObjectMbResult](#schemaobjectmbresult)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: openid profile )
 </aside>
 
 # Schemas
@@ -619,6 +683,50 @@ This operation does not require authentication
 |openingDate|string(date-time)|false|none|Дата открытия счета|
 |closingDate|string(date-time)¦null|false|none|Дата закрытия счета|
 
+<h2 id="tocS_AccountViewModelMbResult">AccountViewModelMbResult</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountviewmodelmbresult"></a>
+<a id="schema_AccountViewModelMbResult"></a>
+<a id="tocSaccountviewmodelmbresult"></a>
+<a id="tocsaccountviewmodelmbresult"></a>
+
+```json
+{
+  "result": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "ownerId": "4d206909-730f-409a-88f6-dcfaa8fc28cc",
+    "type": "Checking",
+    "currency": "string",
+    "balance": 0.1,
+    "interestRate": 0.1,
+    "openingDate": "2019-08-24T14:15:22Z",
+    "closingDate": "2019-08-24T14:15:22Z"
+  },
+  "operationError": {
+    "message": "string",
+    "stackTrace": "string",
+    "exceptionType": "string"
+  },
+  "validationErrors": [
+    {
+      "field": "string",
+      "message": "string"
+    }
+  ],
+  "statusCode": 0
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|result|[AccountViewModel](#schemaaccountviewmodel)|false|none|none|
+|operationError|[OperationError](#schemaoperationerror)|false|none|none|
+|validationErrors|[[Error](#schemaerror)]¦null|false|none|none|
+|statusCode|integer(int32)|false|none|none|
+
 <h2 id="tocS_AccountWithTransactionsViewModel">AccountWithTransactionsViewModel</h2>
 <!-- backwards compatibility -->
 <a id="schemaaccountwithtransactionsviewmodel"></a>
@@ -667,6 +775,65 @@ This operation does not require authentication
 |closingDate|string(date-time)¦null|false|none|Дата закрытия счета|
 |transactions|[[TransactionViewModel](#schematransactionviewmodel)]¦null|false|none|Коллекция транзакций|
 
+<h2 id="tocS_AccountWithTransactionsViewModelIEnumerableMbResult">AccountWithTransactionsViewModelIEnumerableMbResult</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountwithtransactionsviewmodelienumerablembresult"></a>
+<a id="schema_AccountWithTransactionsViewModelIEnumerableMbResult"></a>
+<a id="tocSaccountwithtransactionsviewmodelienumerablembresult"></a>
+<a id="tocsaccountwithtransactionsviewmodelienumerablembresult"></a>
+
+```json
+{
+  "result": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "ownerId": "4d206909-730f-409a-88f6-dcfaa8fc28cc",
+      "type": "Checking",
+      "currency": "string",
+      "balance": 0.1,
+      "interestRate": 0.1,
+      "openingDate": "2019-08-24T14:15:22Z",
+      "closingDate": "2019-08-24T14:15:22Z",
+      "transactions": [
+        {
+          "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+          "bankAccountId": "5b26b598-a880-4e32-8c41-126aa0206857",
+          "counterpartyBankAccountId": "cc9b712c-c0c3-4405-a86e-c2690000b458",
+          "amount": 0.1,
+          "currency": "string",
+          "type": "Credit",
+          "description": "string",
+          "createdAt": "2019-08-24T14:15:22Z",
+          "isApply": true
+        }
+      ]
+    }
+  ],
+  "operationError": {
+    "message": "string",
+    "stackTrace": "string",
+    "exceptionType": "string"
+  },
+  "validationErrors": [
+    {
+      "field": "string",
+      "message": "string"
+    }
+  ],
+  "statusCode": 0
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|result|[[AccountWithTransactionsViewModel](#schemaaccountwithtransactionsviewmodel)]¦null|false|none|none|
+|operationError|[OperationError](#schemaoperationerror)|false|none|none|
+|validationErrors|[[Error](#schemaerror)]¦null|false|none|none|
+|statusCode|integer(int32)|false|none|none|
+
 <h2 id="tocS_CreateAccountCommand">CreateAccountCommand</h2>
 <!-- backwards compatibility -->
 <a id="schemacreateaccountcommand"></a>
@@ -694,6 +861,28 @@ This operation does not require authentication
 |currency|string¦null|true|none|Валюта|
 |interestRate|number(double)¦null|false|none|Процентная ставка|
 |closingDate|string(date-time)¦null|false|none|Дата закрытия счета|
+
+<h2 id="tocS_Error">Error</h2>
+<!-- backwards compatibility -->
+<a id="schemaerror"></a>
+<a id="schema_Error"></a>
+<a id="tocSerror"></a>
+<a id="tocserror"></a>
+
+```json
+{
+  "field": "string",
+  "message": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|field|string¦null|true|none|none|
+|message|string¦null|true|none|none|
 
 <h2 id="tocS_ExecuteTransactionCommand">ExecuteTransactionCommand</h2>
 <!-- backwards compatibility -->
@@ -738,6 +927,65 @@ This operation does not require authentication
 ### Properties
 
 *None*
+
+<h2 id="tocS_ObjectMbResult">ObjectMbResult</h2>
+<!-- backwards compatibility -->
+<a id="schemaobjectmbresult"></a>
+<a id="schema_ObjectMbResult"></a>
+<a id="tocSobjectmbresult"></a>
+<a id="tocsobjectmbresult"></a>
+
+```json
+{
+  "result": null,
+  "operationError": {
+    "message": "string",
+    "stackTrace": "string",
+    "exceptionType": "string"
+  },
+  "validationErrors": [
+    {
+      "field": "string",
+      "message": "string"
+    }
+  ],
+  "statusCode": 0
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|result|any|false|none|none|
+|operationError|[OperationError](#schemaoperationerror)|false|none|none|
+|validationErrors|[[Error](#schemaerror)]¦null|false|none|none|
+|statusCode|integer(int32)|false|none|none|
+
+<h2 id="tocS_OperationError">OperationError</h2>
+<!-- backwards compatibility -->
+<a id="schemaoperationerror"></a>
+<a id="schema_OperationError"></a>
+<a id="tocSoperationerror"></a>
+<a id="tocsoperationerror"></a>
+
+```json
+{
+  "message": "string",
+  "stackTrace": "string",
+  "exceptionType": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string¦null|true|none|none|
+|stackTrace|string¦null|false|none|none|
+|exceptionType|string¦null|false|none|none|
 
 <h2 id="tocS_PatchAccountCommand">PatchAccountCommand</h2>
 <!-- backwards compatibility -->
@@ -853,6 +1101,51 @@ This operation does not require authentication
 |description|string¦null|true|none|Описание|
 |createdAt|string(date-time)|true|none|Дата создания транзакции|
 |isApply|boolean|true|none|Флаг принятия транзакции|
+
+<h2 id="tocS_TransactionViewModelMbResult">TransactionViewModelMbResult</h2>
+<!-- backwards compatibility -->
+<a id="schematransactionviewmodelmbresult"></a>
+<a id="schema_TransactionViewModelMbResult"></a>
+<a id="tocStransactionviewmodelmbresult"></a>
+<a id="tocstransactionviewmodelmbresult"></a>
+
+```json
+{
+  "result": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "bankAccountId": "5b26b598-a880-4e32-8c41-126aa0206857",
+    "counterpartyBankAccountId": "cc9b712c-c0c3-4405-a86e-c2690000b458",
+    "amount": 0.1,
+    "currency": "string",
+    "type": "Credit",
+    "description": "string",
+    "createdAt": "2019-08-24T14:15:22Z",
+    "isApply": true
+  },
+  "operationError": {
+    "message": "string",
+    "stackTrace": "string",
+    "exceptionType": "string"
+  },
+  "validationErrors": [
+    {
+      "field": "string",
+      "message": "string"
+    }
+  ],
+  "statusCode": 0
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|result|[TransactionViewModel](#schematransactionviewmodel)|false|none|none|
+|operationError|[OperationError](#schemaoperationerror)|false|none|none|
+|validationErrors|[[Error](#schemaerror)]¦null|false|none|none|
+|statusCode|integer(int32)|false|none|none|
 
 <h2 id="tocS_TransferTransactionCommand">TransferTransactionCommand</h2>
 <!-- backwards compatibility -->
