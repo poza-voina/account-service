@@ -1,7 +1,6 @@
 using AccountService.Api.Domains;
 using AccountService.Api.Domains.Enums;
 using AccountService.Api.Exceptions;
-using AccountService.Api.Features.Account;
 using AccountService.Api.Features.Account.Interfaces;
 using AccountService.Api.Features.Transactions.Interfaces;
 using MediatR;

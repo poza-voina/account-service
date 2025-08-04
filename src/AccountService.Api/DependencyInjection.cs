@@ -1,5 +1,4 @@
 ﻿using AccountService.Api.Behaviors;
-using AccountService.Api.Exceptions;
 using AccountService.Api.Extensions;
 using AccountService.Api.Features.Account;
 using AccountService.Api.Features.Account.Interfaces;
@@ -13,12 +12,10 @@ using AccountService.Api.ViewModels.Result;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
 
 namespace AccountService.Api;
@@ -68,14 +65,8 @@ public static class DependencyInjection
                         ClockSkew = TimeSpan.FromMinutes(1)
                     };
 
-                    x.Events = new JwtBearerEvents()
+                    x.Events = new JwtBearerEvents
                     {
-                        OnMessageReceived = context =>
-                        {
-                            var a = context;
-                            return Task.CompletedTask;
-                        },
-
                         OnChallenge = context =>
                         {
                             context.HandleResponse();
@@ -168,7 +159,7 @@ public static class DependencyInjection
                             Id = "oauth2"
                         }
                     },
-                    new[] { "openid", "profile" }
+                    ["openid", "profile"]
                 }
             });
         });

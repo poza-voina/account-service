@@ -18,8 +18,7 @@ public class ExceptionHandler : IExceptionHandler
             ValidationException => StatusCodes.Status400BadRequest,
             ConflictException => StatusCodes.Status409Conflict,
             UnprocessableException => StatusCodes.Status422UnprocessableEntity,
-            UnauthrorizedException => StatusCodes.Status401Unauthorized,
-            _ => StatusCodes.Status500InternalServerError,
+            _ => StatusCodes.Status500InternalServerError
         };
 
         MbResult<object> result;

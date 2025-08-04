@@ -13,7 +13,7 @@ public class AuthenticationOptions
     public string? KeycloakDockerUrl { get; set; }
     public required bool RequireHttpsMetadata { get; set; }
     public required string Audience { get; set; }
-    public string Authority => string.Format(PatternRealmSegment, KeycloakDockerUrl is { } ? KeycloakDockerUrl : BaseUrl, Realm);
+    public string Authority => string.Format(PatternRealmSegment, KeycloakDockerUrl ?? BaseUrl, Realm);
     public string AuthorizationUrl => string.Format(PatternRealmSegment, BaseUrl, Realm) + "/protocol/openid-connect/auth";
     public string TokenUrl => $"{string.Format(PatternRealmSegment, BaseUrl, Realm)}/protocol/openid-connect/token";
     public required string ClientId { get; set; }
