@@ -706,14 +706,16 @@ oauth2 ( Scopes: openid profile )
 
 ```
 
+Результат выполнения запроса
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |result|[AccountViewModel](#schemaaccountviewmodel)|false|none|none|
-|operationError|[OperationError](#schemaoperationerror)|false|none|none|
-|validationErrors|[[Error](#schemaerror)]¦null|false|none|none|
-|statusCode|integer(int32)|false|none|none|
+|operationError|[OperationError](#schemaoperationerror)|false|none|Ошибка выполнения операции|
+|validationErrors|[[Error](#schemaerror)]¦null|false|none|Ошибки валидации|
+|statusCode|integer(int32)|false|none|Код статуса выполнения|
 
 <h2 id="tocS_AccountWithTransactionsViewModel">AccountWithTransactionsViewModel</h2>
 <!-- backwards compatibility -->
@@ -813,14 +815,16 @@ oauth2 ( Scopes: openid profile )
 
 ```
 
+Результат выполнения запроса
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|result|[[AccountWithTransactionsViewModel](#schemaaccountwithtransactionsviewmodel)]¦null|false|none|none|
-|operationError|[OperationError](#schemaoperationerror)|false|none|none|
-|validationErrors|[[Error](#schemaerror)]¦null|false|none|none|
-|statusCode|integer(int32)|false|none|none|
+|result|[[AccountWithTransactionsViewModel](#schemaaccountwithtransactionsviewmodel)]¦null|false|none|Результат выполнения запроса|
+|operationError|[OperationError](#schemaoperationerror)|false|none|Ошибка выполнения операции|
+|validationErrors|[[Error](#schemaerror)]¦null|false|none|Ошибки валидации|
+|statusCode|integer(int32)|false|none|Код статуса выполнения|
 
 <h2 id="tocS_CreateAccountCommand">CreateAccountCommand</h2>
 <!-- backwards compatibility -->
@@ -865,12 +869,14 @@ oauth2 ( Scopes: openid profile )
 
 ```
 
+Ошибка валидации
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|field|string¦null|true|none|none|
-|message|string¦null|true|none|none|
+|field|string¦null|true|none|Поле, по которому не прошла валидация|
+|message|string¦null|true|none|Сообщение об ошибке|
 
 <h2 id="tocS_ExecuteTransactionCommand">ExecuteTransactionCommand</h2>
 <!-- backwards compatibility -->
@@ -942,14 +948,16 @@ oauth2 ( Scopes: openid profile )
 
 ```
 
+Результат выполнения запроса
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|result|any|false|none|none|
-|operationError|[OperationError](#schemaoperationerror)|false|none|none|
-|validationErrors|[[Error](#schemaerror)]¦null|false|none|none|
-|statusCode|integer(int32)|false|none|none|
+|result|any|false|none|Результат выполнения запроса|
+|operationError|[OperationError](#schemaoperationerror)|false|none|Ошибка выполнения операции|
+|validationErrors|[[Error](#schemaerror)]¦null|false|none|Ошибки валидации|
+|statusCode|integer(int32)|false|none|Код статуса выполнения|
 
 <h2 id="tocS_OperationError">OperationError</h2>
 <!-- backwards compatibility -->
@@ -967,13 +975,15 @@ oauth2 ( Scopes: openid profile )
 
 ```
 
+Ошибка выполнения операции
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|message|string¦null|true|none|none|
-|stackTrace|string¦null|false|none|none|
-|exceptionType|string¦null|false|none|none|
+|message|string¦null|true|none|Сообщение об ошибке|
+|stackTrace|string¦null|false|none|Трейс|
+|exceptionType|string¦null|false|none|Ошибка, которая выпала в процессе выполнения операции|
 
 <h2 id="tocS_PatchAccountCommand">PatchAccountCommand</h2>
 <!-- backwards compatibility -->
@@ -1128,14 +1138,16 @@ oauth2 ( Scopes: openid profile )
 
 ```
 
+Результат выполнения запроса
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |result|[TransactionViewModel](#schematransactionviewmodel)|false|none|none|
-|operationError|[OperationError](#schemaoperationerror)|false|none|none|
-|validationErrors|[[Error](#schemaerror)]¦null|false|none|none|
-|statusCode|integer(int32)|false|none|none|
+|operationError|[OperationError](#schemaoperationerror)|false|none|Ошибка выполнения операции|
+|validationErrors|[[Error](#schemaerror)]¦null|false|none|Ошибки валидации|
+|statusCode|integer(int32)|false|none|Код статуса выполнения|
 
 <h2 id="tocS_TransferTransactionCommand">TransferTransactionCommand</h2>
 <!-- backwards compatibility -->

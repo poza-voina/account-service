@@ -39,7 +39,7 @@ services:
     depends_on:
       keycloak:
         condition: service_healthy
-    entrypoint: [ "bash", "-c", "/opt/keycloak/bin/kcadm.sh config credentials --server http://keycloak:${KEYCLOAK_PORT} --realm master --user admin --password admin && bash /opt/keycloak/generate-realm.sh" ]
+    entrypoint: [ "bash", "-c", "/opt/keycloak/bin/kcadm.sh config credentials --server http://keycloak:${KEYCLOAK_PORT} --realm master --user ${KEYCLOAK_ADMIN_LOGIN} --password ${KEYCLOAK_ADMIN_PASSWORD} && bash /opt/keycloak/generate-realm.sh" ]
     volumes:
       - ./generate-realm.sh:/opt/keycloak/generate-realm.sh:ro
       - ./.env:/opt/keycloak/.env:ro
