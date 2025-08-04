@@ -7,6 +7,8 @@ services:
     depends_on:
       keycloak:
         condition: service_healthy
+      keycloak-init:
+        condition: service_completed_successfully
     ports:
         - "${ACCOUNT_SERVICE_API_PORT}:80"
     environment:
@@ -41,3 +43,4 @@ services:
     volumes:
       - ./generate-realm.sh:/opt/keycloak/generate-realm.sh:ro
       - ./.env:/opt/keycloak/.env:ro
+    restart: no
