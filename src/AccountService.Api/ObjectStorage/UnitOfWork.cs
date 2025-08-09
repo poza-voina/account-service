@@ -24,7 +24,7 @@ public class UnitOfWork(ApplicationDbContext context, IServiceProvider servicePr
         if (connection.State is not ConnectionState.Open)
         {
             await connection.OpenAsync(cancellationToken);
-        }
+    }
 
         var dbTransaction = await connection.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
 
@@ -63,16 +63,21 @@ public class UnitOfWork(ApplicationDbContext context, IServiceProvider servicePr
     {
         if (!typeof(IDatabaseModel).IsAssignableFrom(typeof(T)))
         {
-            return serviceProvider.GetRequiredService<T>();
+            var repoType = typeof(IRepository<>).MakeGenericType(typeof(T));
+            return (T)serviceProvider.GetRequiredService(repoType);
         }
 
+        return serviceProvider.GetRequiredService<T>();
+    }
+
         var repoType = typeof(IRepository<>).MakeGenericType(typeof(T));
-        
+
         return (T)serviceProvider.GetRequiredService(repoType);
     }
 
     public void Dispose()
     {
+        // TODO: Замените UnitOfWork.Dispose() вызовом GC.SuppressFinalize(object). В результате для производных типов, использующих метод завершения, отпадет необходимость в повторной реализации "IDisposable" для вызова этого метода. Предложение студии
         _transaction?.Dispose();
         context.Dispose();
     }

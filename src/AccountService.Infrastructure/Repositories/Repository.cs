@@ -61,7 +61,7 @@ public class Repository<TModel>(ApplicationDbContext context) : IRepository<TMod
     public async Task UpdateRangeAsync(IEnumerable<TModel> entities)
     {
         foreach (var entity in entities)
-        {
+{
             await UpdateAsync(entity);
         }
     }
