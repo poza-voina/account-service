@@ -1,5 +1,4 @@
 using AccountService.Api.Domains.Enums;
-using AccountService.Api.ObjectStorage;
 using AccountService.Api.ObjectStorage.Interfaces;
 using FluentValidation;
 using JetBrains.Annotations;

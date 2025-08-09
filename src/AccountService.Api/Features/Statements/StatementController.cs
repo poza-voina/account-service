@@ -1,11 +1,15 @@
 ﻿using AccountService.Api.Features.Statements.GetStatement;
-using AccountService.Api.ViewModels;
+using AccountService.Api.ViewModels.Result;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StatementResponse = AccountService.Api.ViewModels.Result.MbResult<System.Collections.Generic.IEnumerable<AccountService.Api.ViewModels.AccountWithTransactionsViewModel>>;
+using StatementResponseError = AccountService.Api.ViewModels.Result.MbResult<object>;
 
 namespace AccountService.Api.Features.Statements;
 
 [ApiController]
+[Authorize]
 [Route("statements")]
 public class StatementController(IMediator mediator) : ControllerBase
 {
@@ -16,12 +20,15 @@ public class StatementController(IMediator mediator) : ControllerBase
     /// <param name="accountId">Идентификатор счета</param>
     /// <param name="query">Запрос на получение выписки</param>
     [HttpGet("{accountId:guid}")]
-    public async Task<ActionResult<IEnumerable<AccountWithTransactionsViewModel>>> GetStatementAsync([FromRoute] Guid accountId, [FromQuery] GetStatementQuery query)
+    [ProducesResponseType(typeof(StatementResponse), 200)]
+    [ProducesResponseType(typeof(StatementResponseError), 404)]
+    [ProducesResponseType(typeof(StatementResponseError), 401)]
+    public async Task<ActionResult<StatementResponse>> GetStatementAsync([FromRoute] Guid accountId, [FromQuery] GetStatementQuery query)
     {
         query.AccountId = accountId;
 
         var result = await mediator.Send(query);
 
-        return Ok(result);
+        return Ok(MbResultFactory.WithSuccess(result));
     }
 }

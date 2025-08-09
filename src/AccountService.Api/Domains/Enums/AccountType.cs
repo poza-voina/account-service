@@ -1,5 +1,8 @@
 ﻿namespace AccountService.Api.Domains.Enums;
 
+/// <summary>
+/// Тип банковского счета
+/// </summary>
 public enum AccountType
 {
     /// <summary>

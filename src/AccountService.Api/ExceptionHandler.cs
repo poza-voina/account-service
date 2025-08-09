@@ -1,55 +1,38 @@
 ﻿using AccountService.Api.Exceptions;
+using AccountService.Api.ViewModels.Result;
+using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace AccountService.Api;
 
-public class ExceptionHandler(IProblemDetailsService problemDetailsService) : IExceptionHandler
+public class ExceptionHandler : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
         CancellationToken cancellationToken)
     {
-        var problemDetails = new ProblemDetails
+        var statusCode = exception switch
         {
-            Title = nameof(Results.InternalServerError),
-            Detail = exception.Message,
-            Status = StatusCodes.Status500InternalServerError
+            NotFoundException => StatusCodes.Status404NotFound,
+            ValidationException => StatusCodes.Status400BadRequest,
+            ConflictException => StatusCodes.Status409Conflict,
+            UnprocessableException => StatusCodes.Status422UnprocessableEntity,
+            _ => StatusCodes.Status500InternalServerError
         };
 
-        switch (exception)
+        MbResult<object> result;
+        if (exception is ValidationException validationException)
         {
-            case NotFoundException:
-                problemDetails.Title = nameof(Results.NotFound);
-                problemDetails.Status = StatusCodes.Status404NotFound;
-                break;
-            case ValidationException:
-                problemDetails.Title = nameof(Results.BadRequest);
-                problemDetails.Status = StatusCodes.Status400BadRequest;
-                break;
-            case ConflictException:
-                problemDetails.Title = nameof(Results.Conflict);
-                problemDetails.Status = StatusCodes.Status409Conflict;
-                break;
-            case UnprocessableException:
-                problemDetails.Title = nameof(Results.UnprocessableEntity);
-                problemDetails.Status = StatusCodes.Status422UnprocessableEntity;
-                break;
+            result = MbResultFactory.WithValidationErrors(validationException.Errors, statusCode);
+        }
+        else
+        {
+            result = MbResultFactory.WithOperationError(exception, statusCode);
         }
 
-        if (problemDetails is not { Status: not null })
-        {
-            return true;
-        }
+        await httpContext.Response.WriteAsJsonAsync(result, cancellationToken);
 
-        httpContext.Response.StatusCode = problemDetails.Status.Value;
-        return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
-        {
-            HttpContext = httpContext,
-            ProblemDetails = problemDetails
-        });
-
+        return true;
     }
 }
