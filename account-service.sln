@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountService.Api", "src\A
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountService.Infrastructure", "src\AccountService.Infrastructure\AccountService.Infrastructure.csproj", "{2F434EC0-EA20-4C73-85E6-EB383CBB831C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,11 +45,24 @@ Global
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|x64.Build.0 = Release|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|x86.ActiveCfg = Release|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|x86.Build.0 = Release|Any CPU
+		{2F434EC0-EA20-4C73-85E6-EB383CBB831C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F434EC0-EA20-4C73-85E6-EB383CBB831C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F434EC0-EA20-4C73-85E6-EB383CBB831C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2F434EC0-EA20-4C73-85E6-EB383CBB831C}.Debug|x64.Build.0 = Debug|Any CPU
+		{2F434EC0-EA20-4C73-85E6-EB383CBB831C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2F434EC0-EA20-4C73-85E6-EB383CBB831C}.Debug|x86.Build.0 = Debug|Any CPU
+		{2F434EC0-EA20-4C73-85E6-EB383CBB831C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F434EC0-EA20-4C73-85E6-EB383CBB831C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F434EC0-EA20-4C73-85E6-EB383CBB831C}.Release|x64.ActiveCfg = Release|Any CPU
+		{2F434EC0-EA20-4C73-85E6-EB383CBB831C}.Release|x64.Build.0 = Release|Any CPU
+		{2F434EC0-EA20-4C73-85E6-EB383CBB831C}.Release|x86.ActiveCfg = Release|Any CPU
+		{2F434EC0-EA20-4C73-85E6-EB383CBB831C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7AD9F911-C490-4FFE-A4A3-CB9D7F33F5B4} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{2F434EC0-EA20-4C73-85E6-EB383CBB831C} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal
