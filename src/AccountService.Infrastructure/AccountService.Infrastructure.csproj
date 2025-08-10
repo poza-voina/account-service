@@ -11,4 +11,8 @@
 		<PackageReference Include=" Microsoft.EntityFrameworkCore.Design" Version="9.0.6" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\AccountService.Abstractions\AccountService.Abstractions.csproj" />
+	</ItemGroup>
 </Project>

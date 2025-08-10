@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AccountService.Infrastructure.Configurations;
 
-public class AccountModelConfiguration : IEntityTypeConfiguration<AccountModel>
+public class AccountModelConfiguration : IEntityTypeConfiguration<Account>
 {
-    public void Configure(EntityTypeBuilder<AccountModel> builder)
+    public void Configure(EntityTypeBuilder<Account> builder)
     {
         builder
             .ToTable("accounts");
@@ -18,26 +18,31 @@ public class AccountModelConfiguration : IEntityTypeConfiguration<AccountModel>
         ConfigureProperties(builder);
     }
 
-    private static void ConfigureProperties(EntityTypeBuilder<AccountModel> builder)
+    private static void ConfigureProperties(EntityTypeBuilder<Account> builder)
     {
         builder
             .Property(x => x.Id)
+            .IsRequired()
             .HasColumnName("id");
 
         builder
             .Property(x => x.OwnerId)
+            .IsRequired()
             .HasColumnName("ownerId");
 
         builder
             .Property(x => x.Type)
+            .IsRequired()
             .HasColumnName("type");
 
         builder
             .Property(x => x.Currency)
+            .IsRequired()
             .HasColumnName("currency");
 
         builder
             .Property(x => x.Balance)
+            .IsRequired()
             .HasColumnName("balance");
 
         builder
@@ -46,6 +51,8 @@ public class AccountModelConfiguration : IEntityTypeConfiguration<AccountModel>
 
         builder
             .Property(x => x.OpeningDate)
+            .IsRequired()
+            .HasDefaultValueSql("now() at time zone 'utc'")
             .HasColumnName("openingDate");
 
         builder

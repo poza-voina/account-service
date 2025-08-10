@@ -1,5 +1,5 @@
-﻿using AccountService.Api.Behaviors;
-using AccountService.Api.Extensions;
+﻿using AccountService.Abstractions.Extensions;
+using AccountService.Api.Behaviors;
 using AccountService.Api.Features.Account;
 using AccountService.Api.Features.Account.Interfaces;
 using AccountService.Api.Features.Statements.GetStatement;
@@ -9,9 +9,14 @@ using AccountService.Api.ObjectStorage;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.SwaggerFilters;
 using AccountService.Api.ViewModels.Result;
+using AccountService.Infrastructure;
+using AccountService.Infrastructure.Repositories;
+using AccountService.Infrastructure.Repositories.Interfaces;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
@@ -24,6 +29,14 @@ namespace AccountService.Api;
 
 public static class DependencyInjection
 {
+    public static void AddDbContextConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionSection = configuration.GetRequiredSection("ConnectionStrings");
+        var connectionString = connectionSection.GetRequiredValue<string>("DefaultConnectionString");
+
+        services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+    }
+
     public static void AddCorsConfiguration(this IServiceCollection services)
     {
         services.AddCors(options =>
@@ -173,6 +186,11 @@ public static class DependencyInjection
         services.AddScoped<IAccountStorageService, AccountStorageService>();
         services.AddScoped<ITransactionStorageService, TransactionStorageService>();
         services.AddScoped<ICurrencyService, CurrencyService>();
+    }
+
+    public static void AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
     }
 
     public static void AddHelpers(this IServiceCollection services)

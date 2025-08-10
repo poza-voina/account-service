@@ -1,4 +1,4 @@
-﻿using AccountService.Api.Domains.Enums;
+﻿using AccountService.Infrastructure.Enums;
 using JetBrains.Annotations;
 
 namespace AccountService.Api.ViewModels;

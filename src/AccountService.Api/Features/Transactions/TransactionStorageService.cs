@@ -1,71 +1,72 @@
-﻿using AccountService.Api.Domains;
-using AccountService.Api.Exceptions;
+﻿using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Transactions.Interfaces;
+using Models = AccountService.Infrastructure.Models;
+using AccountService.Infrastructure.Repositories.Interfaces;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccountService.Api.Features.Transactions;
 
-public class TransactionStorageService(ICollection<Domains.Account> accounts, IMapper mapper) : ITransactionStorageService
+public class TransactionStorageService(IRepository<Models.Account> accountRepository, IRepository<Models.Transaction> transactionRepository) : ITransactionStorageService
 {
-    private const string AccountNotFoundErrorMessage = "Счет не найден";
     private const string TransactionNotFound = "Транзакция не найдена";
     private const string TransactionIdsDuplicatesErrorMessage = "Входные данные содержат дублирующиеся идентификаторы транзакций.";
     private const string TransactionNotAllFoundsErrorMessage = "Найдены не все транзакции";
 
-    public Task ApplyTransactionAsync(Transaction applyTransaction, Domains.Account applyAccount, CancellationToken cancellationToken)
+    public async Task ApplyTransactionAsync(
+        Models.Transaction transaction, Models.Account account,
+        CancellationToken cancellationToken)
     {
-        var account = accounts.FirstOrDefault(x => x.Id == applyAccount.Id) ??
-            throw new NotFoundException(AccountNotFoundErrorMessage);
-
-        var transaction = account.Transactions.FirstOrDefault(x => x.Id == applyTransaction.Id) ??
-            throw new NotFoundException(TransactionNotFound);
-
-        mapper.Map(applyAccount, account);
-        mapper.Map(applyTransaction, transaction);
-
-        return Task.CompletedTask;
+        transaction.IsApply = true;
+        await transactionRepository.UpdateAsync(transaction);
+        await accountRepository.UpdateAsync(account);
     }
 
-    public async Task ApplyTransactionsAsync(IEnumerable<Transaction> applyTransactions, IEnumerable<Domains.Account> applyAccounts, CancellationToken cancellationToken)
+    public async Task ApplyTransactionsAsync(
+        IEnumerable<Models.Transaction> transactions,
+        IEnumerable<Models.Account> accounts,
+        CancellationToken cancellationToken)
     {
-        var transactions = await GetTransactionsAsync(applyTransactions.Select(x => x.Id), cancellationToken);
-        foreach (var item in transactions)
+        foreach (var transaction in transactions)
         {
-            item.IsApply = true;
+            transaction.IsApply = true;
         }
 
-        var foundAccounts = accounts.Where(x => applyAccounts.Select(account => account.Id).Contains(x.Id));
+        await transactionRepository.UpdateRangeAsync(transactions);
+        await accountRepository.UpdateRangeAsync(accounts);
+    }
 
-        var applyAccountsDict = applyAccounts.ToDictionary(a => a.Id);
+    public async Task<Models.Transaction> CreateTransactionAsync(
+        Models.Transaction transaction,
+        CancellationToken cancellationToken)
+    {
+        var isAccountExists = await accountRepository.GetAll()
+            .AnyAsync(x => x.Id == transaction.BankAccountId);
 
-        foreach (var account in foundAccounts)
-        {
-            if (applyAccountsDict.TryGetValue(account.Id, out var updatedAccount))
-            {
-                mapper.Map(updatedAccount, account);
-            }
+        if (!isAccountExists) {
+            throw new NotFoundException($"Не удалось найти счет с id = {transaction.BankAccountId}");
         }
+
+        transaction = await transactionRepository.AddAsync(transaction, cancellationToken);
+
+        return transaction;
     }
 
-    public Task<Transaction> CreateTransactionAsync(Transaction transaction, CancellationToken cancellationToken)
+    public async Task<Models.Transaction> GetTransactionAsync(
+        Guid id,
+        CancellationToken cancellationToken)
     {
-        var account = accounts.FirstOrDefault(x => x.Id == transaction.BankAccountId) ?? throw new NotFoundException(AccountNotFoundErrorMessage);
-        account.Transactions.Add(transaction);
-
-        return Task.FromResult(transaction);
-    }
-
-    public Task<Transaction> GetTransactionAsync(Guid id, CancellationToken cancellationToken)
-    {
-        var transaction = accounts.SelectMany(x => x.Transactions).FirstOrDefault(x => x.Id == id) ??
+        var transaction = await transactionRepository.FindOrDefaultAsync(id) ??
             throw new NotFoundException(TransactionNotFound);
 
-        return Task.FromResult(transaction);
+        return transaction;
     }
 
-    public Task<IEnumerable<Transaction>> GetTransactionsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Models.Transaction>> GetTransactionsAsync(
+        IEnumerable<Guid> ids,
+        CancellationToken cancellationToken)
     {
-        ids = ids.ToArray();
+        ids = [.. ids];
         var prevIdsLength = ids.Count();
         ids = ids.ToHashSet();
 
@@ -74,16 +75,13 @@ public class TransactionStorageService(ICollection<Domains.Account> accounts, IM
             throw new InvalidOperationException(TransactionIdsDuplicatesErrorMessage);
         }
 
-        var result = accounts
-            .SelectMany(x => x.Transactions)
-            .Where(x => ids.Contains(x.Id))
-            .ToList();
+        var transactions = await transactionRepository.GetAll().Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
 
-        if (result.Count != ids.Count())
+        if (transactions.Count != ids.Count())
         {
             throw new InvalidOperationException(TransactionNotAllFoundsErrorMessage);
         }
 
-        return Task.FromResult(result.AsEnumerable());
+        return transactions;
     }
 }

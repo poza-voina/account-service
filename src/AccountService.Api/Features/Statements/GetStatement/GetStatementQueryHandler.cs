@@ -3,6 +3,7 @@ using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ViewModels;
 using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccountService.Api.Features.Statements.GetStatement;
 
@@ -17,7 +18,10 @@ public class GetStatementQueryHandler(
         await verificationService.VerifyAsync(request.OwnerId);
         (request.StartDateTime, request.EndDateTime) = datetimeHelper.NormalizeDateRange(request.StartDateTime, request.EndDateTime);
 
-        var account = await accountStorageService.GetAccountAsync(request.AccountId, cancellationToken);
+        var account = await accountStorageService.GetAccountAsync(
+            request.AccountId,
+            cancellationToken,
+            x => x.Include(x => x.Transactions));
 
         account.Transactions = [.. account.Transactions.Where(
                 x =>

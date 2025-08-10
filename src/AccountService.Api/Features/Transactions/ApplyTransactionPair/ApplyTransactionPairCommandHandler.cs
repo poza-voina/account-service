@@ -1,9 +1,9 @@
-using AccountService.Api.Domains;
-using AccountService.Api.Domains.Enums;
-using AccountService.Api.Exceptions;
+using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Account.Interfaces;
 using AccountService.Api.Features.Transactions.Interfaces;
+using AccountService.Infrastructure.Enums;
 using MediatR;
+using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.Features.Transactions.ApplyTransactionPair;
 
@@ -47,19 +47,17 @@ public class ApplyTransactionPairCommandHandler(IAccountStorageService accountSt
         return Unit.Value;
     }
 
-    private static void ProcessDebit(Transaction debit, Domains.Account debitAccount)
+    private static void ProcessDebit(Models.Transaction debit, Models.Account debitAccount)
     {
         debitAccount.Balance += debit.Amount;
-        debit.IsApply = true;
     }
 
-    private static void ProcessCredit(Transaction credit, Domains.Account creditAccount)
+    private static void ProcessCredit(Models.Transaction credit, Models.Account creditAccount)
     {
         if (creditAccount.Balance < credit.Amount) {
             throw new UnprocessableException(AccountNotFoundMoney);
         }
 
         creditAccount.Balance -= credit.Amount;
-        credit.IsApply = true;
     }
 }

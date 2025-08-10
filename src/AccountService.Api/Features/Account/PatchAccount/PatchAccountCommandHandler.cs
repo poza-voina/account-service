@@ -1,7 +1,7 @@
-using AccountService.Api.Domains.Enums;
-using AccountService.Api.Exceptions;
+using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Account.Interfaces;
 using AccountService.Api.ViewModels;
+using AccountService.Infrastructure.Enums;
 using AutoMapper;
 using MediatR;
 
