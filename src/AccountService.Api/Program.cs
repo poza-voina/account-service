@@ -1,3 +1,4 @@
+using AccountService.Abstractions.Constants;
 using AccountService.Abstractions.Extensions;
 using AccountService.Api;
 using AccountService.Api.ObjectStorage;
@@ -7,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
+
+services.AddMockClients();
 
 services.AddCorsConfiguration();
 
@@ -44,7 +47,7 @@ app.UseExceptionHandler(_ => { });
 app.MapControllers();
 app.UseSwagger();
 
-var authenticationOptions = configuration.GetRequiredSection("Authentication").GetRequired<AuthenticationOptions>();
+var authenticationOptions = configuration.GetRequiredSection(EnvironmentContants.AUTHENTICATION_SECTION).GetRequired<AuthenticationOptions>();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");

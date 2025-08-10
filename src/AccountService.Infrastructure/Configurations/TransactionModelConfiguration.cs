@@ -76,7 +76,7 @@ public class TransactionModelConfiguration : IEntityTypeConfiguration<Transactio
         
         builder
             .HasOne(x => x.CounterpartyBankAccount)
-            .WithMany(x => x.Transactions)
+            .WithMany(x => x.CounterPartyTransactions)
             .HasForeignKey(x => x.CounterpartyBankAccountId);   
     }
 }
