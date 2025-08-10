@@ -1,3 +1,4 @@
+using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Transactions.ApplyTransactionPair;
 using AccountService.Api.Features.Transactions.RegisterTransaction;
 using AccountService.Api.ObjectStorage.Interfaces;
