@@ -6,7 +6,7 @@ using AccountService.Api.ViewModels;
 using AccountService.Infrastructure.Enums;
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
+using System.Data;
 
 namespace AccountService.Api.Features.Transactions.TransferTransaction;
 
@@ -14,7 +14,7 @@ public class TransferTransactionCommandHandler(IUnitOfWork unitOfWork, IMediator
 {
     public async Task<TransferTransactionViewModel> Handle(TransferTransactionCommand request, CancellationToken cancellationToken)
     {
-        await unitOfWork.BeginTransactionAsync(cancellationToken);
+        await unitOfWork.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
 
         try
         {
