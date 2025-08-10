@@ -198,6 +198,7 @@ public static class DependencyInjection
         services.AddScoped<IAccountStorageService, AccountStorageService>();
         services.AddScoped<ITransactionStorageService, TransactionStorageService>();
         services.AddScoped<ICurrencyService, CurrencyService>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
     public static void AddRepositories(this IServiceCollection services)

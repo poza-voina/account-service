@@ -37,7 +37,6 @@ public class RegisterTransactionCommandHandler(
         var transaction = mapper.Map<Models.Transaction>(request);
         transaction.IsApply = false;
         transaction.Id = Guid.NewGuid();
-        transaction.CreatedAt = DateTime.Now;
 
         var result = await transactionStorageService.CreateTransactionAsync(transaction, cancellationToken);
 

@@ -1,13 +1,13 @@
-﻿using AccountService.Infrastructure.Models;
-using AccountService.Infrastructure.Repositories.Interfaces;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 
 namespace AccountService.Api.ObjectStorage.Interfaces;
 
 public interface IUnitOfWork
 {
-    Task BeginTransactionAsync();
-    Task CommitAsync();
-    Task RollbackAsync();
-    Task SaveChangesAsync();
+    Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken);
+    Task CommitAsync(CancellationToken cancellationToken);
+    Task RollbackAsync(CancellationToken cancellationToken);
+    Task SaveChangesAsync(CancellationToken cancellationToken);
     public T GetRepository<T>() where T : class;
+    public IExecutionStrategy CreateExecutionStrategy();
 }
