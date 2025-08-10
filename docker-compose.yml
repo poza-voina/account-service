@@ -37,6 +37,19 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+  
+  migration-runner:
+    build:
+      context: .
+      dockerfile:  src/MigrationRunner/Dockerfile
+    container_name: migration-runner
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__PostgreSqlConnection=User ID=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Server=postgres;Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Pooling=true;
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.3.2
@@ -48,9 +61,9 @@ services:
     command: ["start-dev"]
     healthcheck:
       test: ["CMD", "bash", "-c", "if </dev/tcp/localhost/$KEYCLOAK_PORT; then exit 0; else exit 1; fi"]
-      interval: 10s
+      interval: 20s
       timeout: 5s
-      retries: 3
+      retries: 5
 
   keycloak-init:
     image: quay.io/keycloak/keycloak:26.3.2

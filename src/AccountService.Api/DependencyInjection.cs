@@ -1,4 +1,5 @@
-﻿using AccountService.Abstractions.Extensions;
+﻿using AccountService.Abstractions.Constants;
+using AccountService.Abstractions.Extensions;
 using AccountService.Api.Behaviors;
 using AccountService.Api.Features.Account;
 using AccountService.Api.Features.Account.Interfaces;
@@ -15,7 +16,6 @@ using AccountService.Infrastructure.Repositories.Interfaces;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -29,10 +29,22 @@ namespace AccountService.Api;
 
 public static class DependencyInjection
 {
+    public static void AddMockClients(this IServiceCollection services)
+    {
+        services.AddSingleton<ICollection<Guid>>(_ =>
+            [
+                Guid.Parse("d3b07384-d9a6-4b5e-bc8d-23f7c1a1a111"),
+                Guid.Parse("a5f5c3b2-1e74-4e6d-9c9d-8bfbec79a222"),
+                Guid.Parse("9f8e7d6c-5b4a-3c2d-1e0f-1234567890ab"),
+                Guid.Parse("abcdefab-cdef-abcd-efab-cdefabcdef12"),
+                Guid.Parse("7c9fcf13-6df1-4eb1-9404-0e4380e2bba5")
+            ]);
+    }
+
     public static void AddDbContextConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionSection = configuration.GetRequiredSection("ConnectionStrings");
-        var connectionString = connectionSection.GetRequiredValue<string>("DefaultConnectionString");
+        var connectionSection = configuration.GetRequiredSection(EnvironmentContants.CONNECTION_SECTION);
+        var connectionString = connectionSection.GetRequiredValue<string>(EnvironmentContants.DEFAULT_CONNECTION_STRING_KEY);
 
         services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
     }
@@ -53,7 +65,7 @@ public static class DependencyInjection
 
     public static void AddAuthConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtOptions = configuration.GetRequiredSection("Authentication").GetRequired<AuthenticationOptions>();
+        var jwtOptions = configuration.GetRequiredSection(EnvironmentContants.AUTHENTICATION_SECTION).GetRequired<AuthenticationOptions>();
 
         services
             .AddAuthentication(
@@ -143,7 +155,7 @@ public static class DependencyInjection
 
             x.OperationFilter<CamelCaseQueryParametersFilter>();
 
-            var authenticationOptions = configuration.GetRequiredSection("Authentication").GetRequired<AuthenticationOptions>();
+            var authenticationOptions = configuration.GetRequiredSection(EnvironmentContants.AUTHENTICATION_SECTION).GetRequired<AuthenticationOptions>();
 
             x.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
             {

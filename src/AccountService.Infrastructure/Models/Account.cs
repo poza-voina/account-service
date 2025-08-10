@@ -14,4 +14,5 @@ public class Account : IDatabaseModel
     public DateTime? ClosingDate { get; set; }
     public bool IsDeleted { get; set; }
     public virtual ICollection<Transaction> Transactions { get; set; } = [];
+    public virtual ICollection<Transaction> CounterPartyTransactions { get; set; } = [];
 }
