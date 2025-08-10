@@ -1,6 +1,8 @@
-﻿namespace AccountService.Api.ObjectStorage.Interfaces;
+﻿using Models = AccountService.Infrastructure.Models;
+
+namespace AccountService.Api.ObjectStorage.Interfaces;
 
 public interface ICurrencyService
 {
-    public Task<bool> IsCurrencySupportedByAccount(Domains.Account account, string currency);
+    public Task<bool> IsCurrencySupportedByAccount(Models.Account account, string currency);
 }

@@ -1,7 +1,7 @@
-using AccountService.Api.Domains.Enums;
 using AccountService.Api.Features.Transactions.ApplyTransactionPair;
 using AccountService.Api.Features.Transactions.RegisterTransaction;
 using AccountService.Api.ViewModels;
+using AccountService.Infrastructure.Enums;
 using AutoMapper;
 using MediatR;
 

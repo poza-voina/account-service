@@ -26,6 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\AccountService.Abstractions\AccountService.Abstractions.csproj" />
 	  <ProjectReference Include="..\AccountService.Infrastructure\AccountService.Infrastructure.csproj" />
 	</ItemGroup>
 

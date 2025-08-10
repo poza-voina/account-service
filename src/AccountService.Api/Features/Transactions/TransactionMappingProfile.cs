@@ -3,6 +3,7 @@ using AccountService.Api.Features.Transactions.RegisterTransaction;
 using AccountService.Api.Features.Transactions.TransferTransaction;
 using AutoMapper;
 using JetBrains.Annotations;
+using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.Features.Transactions;
 
@@ -11,7 +12,7 @@ public class TransactionMappingProfile : Profile
 {
     public TransactionMappingProfile()
     {
-        CreateMap<RegisterTransactionCommand, Domains.Transaction>();
+        CreateMap<RegisterTransactionCommand, Models.Transaction>();
         CreateMap<TransferTransactionCommand, RegisterTransactionCommand>();
         CreateMap<ExecuteTransactionCommand, RegisterTransactionCommand>();
     }

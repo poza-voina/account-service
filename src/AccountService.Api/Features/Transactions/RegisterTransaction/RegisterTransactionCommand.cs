@@ -1,5 +1,5 @@
-﻿using AccountService.Api.Domains.Enums;
-using AccountService.Api.ViewModels;
+﻿using AccountService.Api.ViewModels;
+using AccountService.Infrastructure.Enums;
 using MediatR;
 
 namespace AccountService.Api.Features.Transactions.RegisterTransaction;

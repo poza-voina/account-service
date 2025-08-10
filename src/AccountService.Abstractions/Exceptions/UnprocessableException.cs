@@ -1,4 +1,4 @@
-﻿namespace AccountService.Api.Exceptions;
+﻿namespace AccountService.Abstractions.Exceptions;
 
 public class UnprocessableException : Exception
 {

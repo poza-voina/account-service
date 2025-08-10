@@ -1,5 +1,5 @@
+using AccountService.Abstractions.Extensions;
 using AccountService.Api;
-using AccountService.Api.Extensions;
 using AccountService.Api.ObjectStorage;
 using System.Reflection;
 
@@ -9,6 +9,8 @@ var configuration = builder.Configuration;
 
 
 services.AddCorsConfiguration();
+
+services.AddDbContextConfiguration(configuration);
 
 services.AddExceptionHandler<ExceptionHandler>();
 
@@ -26,11 +28,11 @@ services.AddMediatrConfiguration();
 
 services.AddHelpers();
 
+services.AddRepositories();
+
 services.AddServices();
 
 services.AddAutoMapper(x => x.AddMaps(Assembly.GetExecutingAssembly()));
-
-services.AddMock();
 
 var app = builder.Build();
 

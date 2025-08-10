@@ -1,4 +1,4 @@
-﻿using AccountService.Api.Exceptions;
+﻿using AccountService.Abstractions.Exceptions;
 using AccountService.Api.ViewModels.Result;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;

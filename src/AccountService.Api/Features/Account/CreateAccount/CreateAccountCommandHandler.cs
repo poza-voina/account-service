@@ -3,6 +3,7 @@ using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ViewModels;
 using AutoMapper;
 using MediatR;
+using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.Features.Account.CreateAccount;
 
@@ -16,7 +17,7 @@ public class CreateAccountCommandHandler(
     {
         await clientVerificationService.VerifyAsync(request.OwnerId);
 
-        var account = mapper.Map<Domains.Account>(request);
+        var account = mapper.Map<Models.Account>(request);
 
         account.Id = Guid.NewGuid();
         account.IsDeleted = false;

@@ -1,8 +1,8 @@
-using AccountService.Api.Domains;
-using AccountService.Api.Domains.Enums;
-using AccountService.Api.Exceptions;
+using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Account.Interfaces;
 using AccountService.Api.Features.Transactions.Interfaces;
+using Models = AccountService.Infrastructure.Models;
+using AccountService.Infrastructure.Enums;
 using MediatR;
 
 namespace AccountService.Api.Features.Transactions.ApplyTransaction;
@@ -37,19 +37,17 @@ public class ApplyTransactionCommandHandler(ITransactionStorageService transacti
         return Unit.Value;
     }
 
-    public static void ProcessDebit(Transaction transaction, Domains.Account account)
+    public static void ProcessDebit(Models.Transaction transaction, Models.Account account)
     {
-        transaction.IsApply = true;
         account.Balance += transaction.Amount;
     }
 
-    public static void ProcessCredit(Transaction transaction, Domains.Account account)
+    public static void ProcessCredit(Models.Transaction transaction, Models.Account account)
     {
         if (transaction.Amount > account.Balance)
         {
             throw new UnprocessableException(NotEnoughMoneyErrorMessage);
         }
-        transaction.IsApply = true;
 
         account.Balance -= transaction.Amount;
     }

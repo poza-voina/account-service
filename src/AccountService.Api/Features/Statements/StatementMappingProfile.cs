@@ -1,6 +1,7 @@
 ﻿using AccountService.Api.ViewModels;
 using AutoMapper;
 using JetBrains.Annotations;
+using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.Features.Statements;
 
@@ -9,7 +10,7 @@ public class StatementMappingProfile : Profile
 {
     public StatementMappingProfile()
     {
-        CreateMap<Domains.Transaction, TransactionViewModel>();
-        CreateMap<Domains.Account, AccountWithTransactionsViewModel>();
+        CreateMap<Models.Transaction, TransactionViewModel>();
+        CreateMap<Models.Account, AccountWithTransactionsViewModel>();
     }
 }

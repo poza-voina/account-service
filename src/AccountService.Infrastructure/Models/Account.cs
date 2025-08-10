@@ -1,8 +1,8 @@
-﻿using AccountService.Api.Domains.Enums;
+﻿using AccountService.Infrastructure.Enums;
 
-namespace AccountService.Api.Domains;
+namespace AccountService.Infrastructure.Models;
 
-public class Account
+public class Account : IDatabaseModel
 {
     public Guid Id { get; set; }
     public Guid OwnerId { get; set; }
@@ -13,5 +13,5 @@ public class Account
     public DateTime OpeningDate { get; set; }
     public DateTime? ClosingDate { get; set; }
     public bool IsDeleted { get; set; }
-    public ICollection<Transaction> Transactions { get; set; } = [];
+    public virtual ICollection<Transaction> Transactions { get; set; } = [];
 }
