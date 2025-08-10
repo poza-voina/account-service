@@ -1,24 +1,38 @@
+using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Transactions.ApplyTransactionPair;
 using AccountService.Api.Features.Transactions.RegisterTransaction;
+using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ViewModels;
 using AccountService.Infrastructure.Enums;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace AccountService.Api.Features.Transactions.TransferTransaction;
 
-public class TransferTransactionCommandHandler(IMediator mediator, IMapper mapper) : IRequestHandler<TransferTransactionCommand, TransferTransactionViewModel>
+public class TransferTransactionCommandHandler(IUnitOfWork unitOfWork, IMediator mediator, IMapper mapper) : IRequestHandler<TransferTransactionCommand, TransferTransactionViewModel>
 {
     public async Task<TransferTransactionViewModel> Handle(TransferTransactionCommand request, CancellationToken cancellationToken)
     {
-        var credit = await mediator.Send(BuildCreditTransaction(request), cancellationToken);
-        var debit = await mediator.Send(BuildDebitTransaction(request), cancellationToken);
+        await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        var applyTransactionsCommand = new ApplyTransactionPairCommand { FirstTransactionId = credit.Id, SecondTransactionId = debit.Id};
+        try
+        {
+            var credit = await mediator.Send(BuildCreditTransaction(request), cancellationToken);
+            var debit = await mediator.Send(BuildDebitTransaction(request), cancellationToken);
 
-        await mediator.Send(applyTransactionsCommand, cancellationToken);
+            var applyTransactionsCommand = new ApplyTransactionPairCommand { FirstTransactionId = credit.Id, SecondTransactionId = debit.Id };
 
-        return new TransferTransactionViewModel { Credit = credit, Debit = debit };
+            await mediator.Send(applyTransactionsCommand, cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken);
+            return new TransferTransactionViewModel { Credit = credit, Debit = debit };
+        }
+        catch (Exception ex)
+        {
+            await unitOfWork.RollbackAsync(cancellationToken);
+            throw new UnprocessableException("Не удалось перенести деньги", ex);
+        }
     }
 
     private RegisterTransactionCommand BuildCreditTransaction(TransferTransactionCommand request)
