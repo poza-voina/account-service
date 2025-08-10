@@ -50,4 +50,9 @@ public class TransactionViewModel
     /// Флаг принятия транзакции
     /// </summary>
     public required bool IsApply { get; set; }
+
+    /// <summary>
+    /// Версия сущности
+    /// </summary>
+    public uint Version { get; set; }
 }

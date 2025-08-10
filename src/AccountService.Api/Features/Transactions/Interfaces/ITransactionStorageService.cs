@@ -20,9 +20,13 @@ public interface ITransactionStorageService
 
     Task<IEnumerable<Models.Transaction>> GetTransactionsAsync(
         IEnumerable<Guid> ids,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken,
+        Func<IQueryable<Models.Transaction>,
+            IQueryable<Models.Transaction>>? configureQuery = null);
 
     Task<Models.Transaction> GetTransactionAsync(
-        Guid id,
-        CancellationToken cancellationToken);
+         Guid id,
+         CancellationToken cancellationToken,
+         Func<IQueryable<Models.Transaction>,
+             IQueryable<Models.Transaction>>? configureQuery = null);
 }

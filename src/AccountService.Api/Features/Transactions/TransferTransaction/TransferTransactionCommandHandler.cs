@@ -21,7 +21,19 @@ public class TransferTransactionCommandHandler(IUnitOfWork unitOfWork, IMediator
             var credit = await mediator.Send(BuildCreditTransaction(request), cancellationToken);
             var debit = await mediator.Send(BuildDebitTransaction(request), cancellationToken);
 
-            var applyTransactionsCommand = new ApplyTransactionPairCommand { FirstTransactionId = credit.Id, SecondTransactionId = debit.Id };
+            var applyTransactionsCommand = new ApplyTransactionPairCommand
+            {
+                CreditTransaction = new()
+                {
+                    TransactionId = credit.Id,
+                    AccountVersion = request.BankAccountVersion
+                },
+                DebitTransaction = new()
+                {
+                    TransactionId = debit.Id,
+                    AccountVersion = request.CounterpartyBankAccountVersion,
+                }
+            };
 
             await mediator.Send(applyTransactionsCommand, cancellationToken);
 

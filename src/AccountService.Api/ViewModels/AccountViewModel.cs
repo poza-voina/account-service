@@ -45,4 +45,9 @@ public class AccountViewModel
     /// Дата закрытия счета
     /// </summary>
     public DateTime? ClosingDate { get; set; }
+
+    /// <summary>
+    /// Версия сущности
+    /// </summary>
+    public required string Version { get; set; }
 }

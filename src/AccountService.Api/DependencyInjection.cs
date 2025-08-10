@@ -8,6 +8,7 @@ using AccountService.Api.Features.Transactions;
 using AccountService.Api.Features.Transactions.Interfaces;
 using AccountService.Api.ObjectStorage;
 using AccountService.Api.ObjectStorage.Interfaces;
+using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Api.SwaggerFilters;
 using AccountService.Api.ViewModels.Result;
 using AccountService.Infrastructure;

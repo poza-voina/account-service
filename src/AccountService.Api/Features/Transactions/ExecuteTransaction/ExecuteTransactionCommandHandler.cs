@@ -2,6 +2,7 @@ using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Transactions.ApplyTransaction;
 using AccountService.Api.Features.Transactions.RegisterTransaction;
 using AccountService.Api.ObjectStorage.Interfaces;
+using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Api.ViewModels;
 using AutoMapper;
 using MediatR;
@@ -18,7 +19,16 @@ public class ExecuteTransactionCommandHandler(IUnitOfWork unitOfWork, IMediator 
         try
         {
             var transaction = await mediator.Send(mapper.Map<RegisterTransactionCommand>(request), cancellationToken);
-            await mediator.Send(new ApplyTransactionCommand { TransactionId = transaction.Id }, cancellationToken);
+            await mediator.Send(
+                new ApplyTransactionCommand
+                {
+                    AnyTransaction = new()
+                    {
+                        TransactionId = transaction.Id,
+                        AccountVersion = request.BankAccountVersion,
+                    }
+                },
+                cancellationToken);
 
             await unitOfWork.CommitAsync(cancellationToken);
 

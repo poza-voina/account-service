@@ -1,4 +1,4 @@
-﻿namespace AccountService.Api.ObjectStorage;
+﻿namespace AccountService.Api.ObjectStorage.Objects;
 
 public class AuthenticationOptions
 {

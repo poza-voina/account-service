@@ -13,19 +13,13 @@ public class AccountStorageService(IRepository<Models.Account> accountRepository
     private const string AccountsNotFoundErrorMessage = "Некоторые аккаунты не найдены";
     private const string DuplicateAccountIdsErrorMessage = "Список идентификаторов счетов содержит дубликаты";
 
-    public async Task<Models.Account> CreateAccountAsync(Models.Account account, CancellationToken cancellationToken)
-    {
-        var model = await accountRepository.AddAsync(mapper.Map<Models.Account>(account), cancellationToken);
+    public async Task<Models.Account> CreateAccountAsync(
+        Models.Account account,
+        CancellationToken cancellationToken) =>
+        await accountRepository.AddAsync(mapper.Map<Models.Account>(account), cancellationToken);
 
-        return mapper.Map<Models.Account>(model);
-    }
-
-    public async Task<IEnumerable<Models.Account>> GetAccountsAsync(CancellationToken cancellationToken)
-    {
-        var models = await accountRepository.GetAll().Where(x => x.IsDeleted == false).ToListAsync(cancellationToken: cancellationToken);
-
-        return mapper.Map<IEnumerable<Models.Account>>(models);
-    }
+    public async Task<IEnumerable<Models.Account>> GetAccountsAsync(CancellationToken cancellationToken) =>
+        await accountRepository.GetAll().Where(x => x.IsDeleted == false).ToListAsync(cancellationToken);
 
     public async Task RemoveAccountAsync(Guid id, CancellationToken cancellationToken)
     {
@@ -42,26 +36,29 @@ public class AccountStorageService(IRepository<Models.Account> accountRepository
         Func<IQueryable<Models.Account>,
             IQueryable<Models.Account>>? configureQuery = null)
     {
-        var model = await accountRepository.FindOrDefaultAsync(id) ?? throw new NotFoundException(AccountNotFoundErrorMessage);
+        var query = accountRepository.GetAll();
 
-        return mapper.Map<Models.Account>(model);
+        if (configureQuery is { })
+        {
+            query = configureQuery(query);
+        }
+
+        return await query.FirstOrDefaultAsync(x => x.Id == id) ?? throw new NotFoundException(AccountNotFoundErrorMessage);
     }
 
-    public async Task<Models.Account> UpdateAccountAsync(Models.Account account, CancellationToken cancellationToken)
-    {
-        var prevModel = await accountRepository.FindOrDefaultAsync(account.Id) ?? throw new NotFoundException(AccountNotFoundErrorMessage);
+    public async Task<Models.Account> UpdateAccountAsync(
+        Models.Account account,
+        CancellationToken cancellationToken) =>
+        await accountRepository.UpdateAsync(account, cancellationToken);
 
-        mapper.Map(account, prevModel);
-
-        var updatedModel = await accountRepository.UpdateAsync(prevModel, cancellationToken);
-
-        return mapper.Map<Models.Account>(updatedModel);
-    }
-
-    public async Task<bool> CheckExistsAsync(Guid id, CancellationToken cancellationToken) =>
+    public async Task<bool> CheckExistsAsync(
+        Guid id,
+        CancellationToken cancellationToken) =>
         await accountRepository.GetAll().AnyAsync(x => x.Id == id, cancellationToken: cancellationToken);
 
-    public async Task<IEnumerable<Models.Account>> GetAccountsAsync(CancellationToken cancellationToken, params Guid[] ids)
+    public async Task<IEnumerable<Models.Account>> GetAccountsAsync(
+        CancellationToken cancellationToken,
+        params Guid[] ids)
     {
         var idSet = ids.ToHashSet();
         if (ids.Length != idSet.Count)
@@ -78,6 +75,6 @@ public class AccountStorageService(IRepository<Models.Account> accountRepository
             throw new NotFoundException(AccountsNotFoundErrorMessage);
         }
 
-        return mapper.Map<IEnumerable<Models.Account>>(result);
+        return result;
     }
 }

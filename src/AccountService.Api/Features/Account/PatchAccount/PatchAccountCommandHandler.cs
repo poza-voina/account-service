@@ -22,6 +22,7 @@ public class PatchAccountCommandHandler(IAccountStorageService accountStorageSer
 
         account.InterestRate = request.InterestRate;
         account.ClosingDate = request.ClosingDate;
+        account.Version = request.Version;
 
         account = await accountStorageService.UpdateAccountAsync(account, cancellationToken);
 

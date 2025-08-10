@@ -2,7 +2,7 @@
 
 namespace AccountService.Infrastructure.Models;
 
-public class Account : IDatabaseModel
+public class Account : IDatabaseModel, IConcurrencyModel
 {
     public Guid Id { get; set; }
     public Guid OwnerId { get; set; }
@@ -15,4 +15,5 @@ public class Account : IDatabaseModel
     public bool IsDeleted { get; set; }
     public virtual ICollection<Transaction> Transactions { get; set; } = [];
     public virtual ICollection<Transaction> CounterPartyTransactions { get; set; } = [];
+    public uint Version { get; set; }
 }

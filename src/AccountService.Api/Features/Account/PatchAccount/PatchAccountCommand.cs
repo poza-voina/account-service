@@ -19,4 +19,9 @@ public class PatchAccountCommand : IRequest<AccountViewModel>
     /// Процентная ставка
     /// </summary>
     public decimal? InterestRate { get; set; }
+
+    /// <summary>
+    /// Версия сущности
+    /// </summary>
+    public uint Version { get; set; }
 }
