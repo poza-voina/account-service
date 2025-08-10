@@ -2,7 +2,10 @@
 using AccountService.Infrastructure;
 using AccountService.Infrastructure.Models;
 using AccountService.Infrastructure.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
+using System.Data.Common;
 
 namespace AccountService.Api.ObjectStorage;
 
@@ -10,14 +13,24 @@ public class UnitOfWork(ApplicationDbContext context, IServiceProvider servicePr
 {
     private IDbContextTransaction? _transaction;
 
-    public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken)
+    public async Task<IDbContextTransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken)
     {
         if (_transaction is { })
         {
             throw new InvalidOperationException("Transaction already started");
         }
 
-        _transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+        var connection = context.Database.GetDbConnection();
+
+        if (connection.State is not ConnectionState.Open)
+        {
+            await connection.OpenAsync();
+        }
+
+        var dbTransaction = await connection.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
+
+        _transaction = await context.Database.UseTransactionAsync(dbTransaction, cancellationToken)
+            ?? throw new InvalidOperationException("Failed to bind transaction");
 
         return _transaction;
     }

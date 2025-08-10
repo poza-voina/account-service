@@ -5,6 +5,7 @@ using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ViewModels;
 using AutoMapper;
 using MediatR;
+using System.Data;
 
 namespace AccountService.Api.Features.Transactions.ExecuteTransaction;
 
@@ -12,7 +13,7 @@ public class ExecuteTransactionCommandHandler(IUnitOfWork unitOfWork, IMediator 
 {
     public async Task<TransactionViewModel> Handle(ExecuteTransactionCommand request, CancellationToken cancellationToken)
     {
-        await unitOfWork.BeginTransactionAsync(cancellationToken);
+        using var _ = await unitOfWork.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
 
         try
         {
