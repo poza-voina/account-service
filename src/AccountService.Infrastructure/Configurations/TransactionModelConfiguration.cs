@@ -1,5 +1,4 @@
-﻿using AccountService.Infrastructure.Enums;
-using AccountService.Infrastructure.Models;
+﻿using AccountService.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

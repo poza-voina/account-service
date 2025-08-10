@@ -1,4 +1,5 @@
-﻿using AccountService.Infrastructure.Models;
+﻿using AccountService.Abstractions.Exceptions;
+using AccountService.Infrastructure.Models;
 using AccountService.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

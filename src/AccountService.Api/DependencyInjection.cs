@@ -216,6 +216,11 @@ public static class DependencyInjection
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
     }
 
+    public static void AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+    }
+
     public static void AddHelpers(this IServiceCollection services)
     {
         services.AddSingleton<ICurrencyHelper, CurrencyHelper>();

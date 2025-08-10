@@ -3,6 +3,7 @@ using AccountService.Api.Features.Transactions.Interfaces;
 using AccountService.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Models = AccountService.Infrastructure.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccountService.Api.Features.Transactions;
 
