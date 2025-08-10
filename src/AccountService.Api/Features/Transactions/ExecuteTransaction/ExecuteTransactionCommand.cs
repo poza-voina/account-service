@@ -32,4 +32,9 @@ public class ExecuteTransactionCommand : IRequest<TransactionViewModel>
     /// Описание транзакции
     /// </summary>
     public required string Description { get; set; }
+
+    /// <summary>
+    /// Версия сущности
+    /// </summary>
+    public uint BankAccountVersion { get; set; }
 }

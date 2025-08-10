@@ -4,6 +4,7 @@ using MediatR;
 namespace AccountService.Api.Features.Transactions.TransferTransaction;
 
 public class TransferTransactionCommand : IRequest<TransferTransactionViewModel>
+
 {
     /// <summary>
     /// Идентификатор счета
@@ -11,9 +12,19 @@ public class TransferTransactionCommand : IRequest<TransferTransactionViewModel>
     public required Guid BankAccountId { get; set; }
 
     /// <summary>
-    /// Идентификато счета контрагента
+    /// Версия счета
+    /// </summary>
+    public required uint BankAccountVersion { get; set; }
+
+    /// <summary>
+    /// Идентификатор счета контрагента
     /// </summary>
     public required Guid CounterpartyBankAccountId { get; set; }
+
+    /// <summary>
+    /// Версия счета контрагента
+    /// </summary>
+    public required uint CounterpartyBankAccountVersion { get; set; }
 
     /// <summary>
     /// Количество денег

@@ -2,7 +2,7 @@
 
 namespace AccountService.Infrastructure.Models;
 
-public class Transaction : IDatabaseModel
+public class Transaction : IDatabaseModel, IConcurrencyModel
 {
     public required Guid Id { get; set; }
     public required Guid BankAccountId { get; set; }
@@ -15,4 +15,5 @@ public class Transaction : IDatabaseModel
     public required DateTime CreatedAt { get; set; }
     public virtual Account? BankAccount { get; set; }
     public virtual Account? CounterpartyBankAccount { get; set; }
+    public uint Version { get; set; }
 }

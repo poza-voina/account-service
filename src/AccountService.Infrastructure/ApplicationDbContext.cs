@@ -11,6 +11,17 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (typeof(IConcurrencyModel).IsAssignableFrom(entityType.ClrType))
+            {
+                modelBuilder.Entity(entityType.ClrType)
+                    .Property(nameof(IConcurrencyModel.Version))
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
+            }
+        }
+
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

@@ -2,6 +2,7 @@
 using AccountService.Api.ViewModels.Result;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccountService.Api;
 
@@ -17,6 +18,7 @@ public class ExceptionHandler : IExceptionHandler
             NotFoundException => StatusCodes.Status404NotFound,
             ValidationException => StatusCodes.Status400BadRequest,
             ConflictException => StatusCodes.Status409Conflict,
+            DbUpdateConcurrencyException => StatusCodes.Status409Conflict,
             UnprocessableException => StatusCodes.Status422UnprocessableEntity,
             _ => StatusCodes.Status500InternalServerError
         };

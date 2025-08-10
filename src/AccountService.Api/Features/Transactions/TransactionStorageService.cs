@@ -18,8 +18,8 @@ public class TransactionStorageService(IRepository<Models.Account> accountReposi
         CancellationToken cancellationToken)
     {
         transaction.IsApply = true;
-        await transactionRepository.UpdateAsync(transaction);
-        await accountRepository.UpdateAsync(account);
+        await transactionRepository.UpdateAsync(transaction, cancellationToken);
+        await accountRepository.UpdateAsync(account, cancellationToken);
     }
 
     public async Task ApplyTransactionsAsync(
@@ -41,9 +41,10 @@ public class TransactionStorageService(IRepository<Models.Account> accountReposi
         CancellationToken cancellationToken)
     {
         var isAccountExists = await accountRepository.GetAll()
-            .AnyAsync(x => x.Id == transaction.BankAccountId);
+            .AnyAsync(x => x.Id == transaction.BankAccountId, cancellationToken);
 
-        if (!isAccountExists) {
+        if (!isAccountExists)
+        {
             throw new NotFoundException($"Не удалось найти счет с id = {transaction.BankAccountId}");
         }
 
@@ -54,9 +55,18 @@ public class TransactionStorageService(IRepository<Models.Account> accountReposi
 
     public async Task<Models.Transaction> GetTransactionAsync(
         Guid id,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        Func<IQueryable<Models.Transaction>,
+            IQueryable<Models.Transaction>>? configureQuery = null)
     {
-        var transaction = await transactionRepository.FindOrDefaultAsync(id) ??
+        var query = transactionRepository.GetAll();
+
+        if (configureQuery is { })
+        {
+            query = configureQuery(query);
+        }
+
+        var transaction = await query.FirstOrDefaultAsync(x => x.Id == id) ??
             throw new NotFoundException(TransactionNotFound);
 
         return transaction;
@@ -64,7 +74,9 @@ public class TransactionStorageService(IRepository<Models.Account> accountReposi
 
     public async Task<IEnumerable<Models.Transaction>> GetTransactionsAsync(
         IEnumerable<Guid> ids,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        Func<IQueryable<Models.Transaction>,
+            IQueryable<Models.Transaction>>? configureQuery = null)
     {
         ids = [.. ids];
         var prevIdsLength = ids.Count();
@@ -75,7 +87,14 @@ public class TransactionStorageService(IRepository<Models.Account> accountReposi
             throw new InvalidOperationException(TransactionIdsDuplicatesErrorMessage);
         }
 
-        var transactions = await transactionRepository.GetAll().Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
+        var query = transactionRepository.GetAll();
+
+        if (configureQuery is { })
+        {
+            query = configureQuery(query);
+        }
+
+        var transactions = await query.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
 
         if (transactions.Count != ids.Count())
         {

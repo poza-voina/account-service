@@ -4,19 +4,25 @@ using AccountService.Api.Features.Transactions.Interfaces;
 using Models = AccountService.Infrastructure.Models;
 using AccountService.Infrastructure.Enums;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccountService.Api.Features.Transactions.ApplyTransaction;
 
-public class ApplyTransactionCommandHandler(ITransactionStorageService transactionStorageService, IAccountStorageService accountStorageService) : IRequestHandler<ApplyTransactionCommand, Unit>
+public class ApplyTransactionCommandHandler(ITransactionStorageService transactionStorageService) : IRequestHandler<ApplyTransactionCommand, Unit>
 {
     private const string EnumErrorMessage = "Недопустимое значение перечисления";
     private const string NotEnoughMoneyErrorMessage = "На счете недостаточно средств";
 
     public async Task<Unit> Handle(ApplyTransactionCommand request, CancellationToken cancellationToken)
     {
-        var transaction = await transactionStorageService.GetTransactionAsync(request.TransactionId, cancellationToken);
+        var transaction = await transactionStorageService.GetTransactionAsync(
+            request.AnyTransaction.TransactionId,
+            cancellationToken,
+            x => x.Include(x => x.BankAccount));
 
-        var account = await accountStorageService.GetAccountAsync(transaction.BankAccountId, cancellationToken);
+        var account = transaction.BankAccount!;
+
+        account.Version = request.AnyTransaction.AccountVersion;
 
         switch (transaction.Type)
         {

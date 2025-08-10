@@ -1,7 +1,7 @@
 using AccountService.Abstractions.Constants;
 using AccountService.Abstractions.Extensions;
 using AccountService.Api;
-using AccountService.Api.ObjectStorage;
+using AccountService.Api.ObjectStorage.Objects;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
