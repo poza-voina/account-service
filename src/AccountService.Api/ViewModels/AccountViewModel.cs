@@ -49,5 +49,5 @@ public class AccountViewModel
     /// <summary>
     /// Версия сущности
     /// </summary>
-    public required string Version { get; set; }
+    public required uint Version { get; set; }
 }
