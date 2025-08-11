@@ -16,6 +16,17 @@ public class TransactionModelConfiguration : IEntityTypeConfiguration<Transactio
 
         ConfigureProperties(builder);
         ConfigureRelations(builder);
+        ConfigureIndexes(builder);
+    }
+
+    private static void ConfigureIndexes(EntityTypeBuilder<Transaction> builder)
+    {
+        builder
+            .HasIndex(x => new { x.BankAccountId, x.CreatedAt });
+
+        builder
+            .HasIndex(x => x.CreatedAt)
+            .HasMethod("gist");
     }
 
     private static void ConfigureProperties(EntityTypeBuilder<Transaction> builder)
