@@ -1,5 +1,4 @@
-﻿using AccountService.Infrastructure.Enums;
-using AccountService.Infrastructure.Models;
+﻿using AccountService.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -16,6 +15,14 @@ public class AccountModelConfiguration : IEntityTypeConfiguration<Account>
             .HasKey(x => x.Id);
 
         ConfigureProperties(builder);
+        ConfigureIndexes(builder);
+    }
+
+    private static void ConfigureIndexes(EntityTypeBuilder<Account> builder)
+    {
+        builder
+            .HasIndex(x => x.OwnerId)
+            .HasMethod("hash");
     }
 
     private static void ConfigureProperties(EntityTypeBuilder<Account> builder)
