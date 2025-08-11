@@ -3,7 +3,6 @@ using AccountService.Api.Features.Account.PatchAccount;
 using AccountService.Api.ViewModels;
 using AccountService.Infrastructure;
 using AccountService.Infrastructure.Enums;
-using AccountService.Infrastructure.Models;
 using FluentAssertions;
 using FluentValidation;
 using MediatR;
@@ -14,7 +13,7 @@ namespace AccountService.UnitTests;
 public class AccountFeatureTest : TestBase
 {
     [Fact]
-    public async Task CreateAccount_WhenValidData_Successfull()
+    public async Task CreateAccount_WhenValidData_Successful()
     {
         var expectedData = new AccountViewModel
         {
@@ -55,7 +54,7 @@ public class AccountFeatureTest : TestBase
         {
             OwnerId = Guid.Parse("d3b07384-d9a6-4b5e-bc8d-23f7c1a1a111"),
             Type = AccountType.Checking,
-            Currency = "asdfg",
+            Currency = "data",
             ClosingDate = DateTime.Now.AddDays(100)
         };
 
@@ -70,7 +69,7 @@ public class AccountFeatureTest : TestBase
     {
         var expectedData = new AccountViewModel
         {
-            Id = DefaultGuids[1],
+            Id = Guids[1],
             OwnerId = Guid.Parse("a5f5c3b2-1e74-4e6d-9c9d-8bfbec79a222"),
             Type = AccountType.Deposit,
             Currency = "USD",
@@ -78,7 +77,7 @@ public class AccountFeatureTest : TestBase
             InterestRate = 0,
             OpeningDate = DateTime.MinValue,
             ClosingDate = null,
-            Version = 3,
+            Version = 3
         };
 
         var context = GetService<ApplicationDbContext>();
@@ -87,7 +86,7 @@ public class AccountFeatureTest : TestBase
 
         var accountCommand = new PatchAccountCommand
         {
-            Id = DefaultGuids[1],
+            Id = Guids[1],
             ClosingDate = null,
             InterestRate = 0,
             Version = 3

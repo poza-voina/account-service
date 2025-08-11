@@ -5,7 +5,6 @@ using AccountService.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
-using System.Data.Common;
 
 namespace AccountService.Api.ObjectStorage;
 
@@ -15,7 +14,7 @@ public class UnitOfWork(ApplicationDbContext context, IServiceProvider servicePr
 
     public async Task<IDbContextTransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken)
     {
-        if (_transaction is { })
+        if (_transaction is not null)
         {
             throw new InvalidOperationException("Transaction already started");
         }
@@ -24,7 +23,7 @@ public class UnitOfWork(ApplicationDbContext context, IServiceProvider servicePr
 
         if (connection.State is not ConnectionState.Open)
         {
-            await connection.OpenAsync();
+            await connection.OpenAsync(cancellationToken);
         }
 
         var dbTransaction = await connection.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
@@ -62,25 +61,19 @@ public class UnitOfWork(ApplicationDbContext context, IServiceProvider servicePr
 
     public T GetRepository<T>() where T : class
     {
-        if (typeof(IDatabaseModel).IsAssignableFrom(typeof(T)))
+        if (!typeof(IDatabaseModel).IsAssignableFrom(typeof(T)))
         {
-            var repoType = typeof(IRepository<>).MakeGenericType(typeof(T));
-            return (T)serviceProvider.GetRequiredService(repoType);
+            return serviceProvider.GetRequiredService<T>();
         }
 
-        return serviceProvider.GetRequiredService<T>();
+        var repoType = typeof(IRepository<>).MakeGenericType(typeof(T));
+        
+        return (T)serviceProvider.GetRequiredService(repoType);
     }
-
-    public async Task SaveChangesAsync(CancellationToken cancellationToken) =>
-        await context.SaveChangesAsync(cancellationToken);
-
-    public IExecutionStrategy CreateExecutionStrategy() =>
-        context.Database.CreateExecutionStrategy();
 
     public void Dispose()
     {
-        // TODO: Замените UnitOfWork.Dispose() вызовом GC.SuppressFinalize(object). В результате для производных типов, использующих метод завершения, отпадет необходимость в повторной реализации "IDisposable" для вызова этого метода. Предложение студии
         _transaction?.Dispose();
-        context?.Dispose();
+        context.Dispose();
     }
 }

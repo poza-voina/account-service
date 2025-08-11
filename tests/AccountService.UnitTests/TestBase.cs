@@ -10,7 +10,7 @@ namespace AccountService.UnitTests;
 
 public abstract class TestBase : IAsyncLifetime
 {
-    protected ServiceProvider ServiceProvider { get; private set; } = default!;
+    protected ServiceProvider ServiceProvider { get; private set; } = null!;
 
     public virtual async Task AddDataAsync(ApplicationDbContext context)
     {
@@ -63,32 +63,29 @@ public abstract class TestBase : IAsyncLifetime
 
     public async Task DisposeAsync()
     {
-        if (ServiceProvider is { })
-        {
-            await ServiceProvider.DisposeAsync();
-        }
+        await ServiceProvider.DisposeAsync();
     }
 
-    private static Guid[] _defaultGuids =
+    private static readonly Guid[] _guids =
     [
-        new Guid("00000000-0000-0000-0000-000000000000"),
-        new Guid("11111111-1111-1111-1111-111111111111"),
-        new Guid("22222222-2222-2222-2222-222222222222"),
-        new Guid("33333333-3333-3333-3333-333333333333"),
-        new Guid("44444444-4444-4444-4444-444444444444"),
-        new Guid("55555555-5555-5555-5555-555555555555"),
-        new Guid("66666666-6666-6666-6666-666666666666"),
-        new Guid("77777777-7777-7777-7777-777777777777"),
-        new Guid("88888888-8888-8888-8888-888888888888")
+        new("00000000-0000-0000-0000-000000000000"),
+        new("11111111-1111-1111-1111-111111111111"),
+        new("22222222-2222-2222-2222-222222222222"),
+        new("33333333-3333-3333-3333-333333333333"),
+        new("44444444-4444-4444-4444-444444444444"),
+        new("55555555-5555-5555-5555-555555555555"),
+        new("66666666-6666-6666-6666-666666666666"),
+        new("77777777-7777-7777-7777-777777777777"),
+        new("88888888-8888-8888-8888-888888888888")
     ];
 
-    public Guid[] DefaultGuids => _defaultGuids;
+    public Guid[] Guids => _guids;
 
     public IEnumerable<Account> DefaultAccounts { get; } = new List<Account>
     {
-        new Account
+        new()
         {
-            Id = _defaultGuids[0],
+            Id = _guids[0],
             OwnerId = Guid.Parse("d3b07384-d9a6-4b5e-bc8d-23f7c1a1a111"),
             Type = AccountType.Checking,
             Currency = "USD",
@@ -101,9 +98,9 @@ public abstract class TestBase : IAsyncLifetime
             Transactions = new List<Transaction>(),
             CounterPartyTransactions = new List<Transaction>()
         },
-        new Account
+        new()
         {
-            Id = _defaultGuids[1],
+            Id = _guids[1],
             OwnerId = Guid.Parse("a5f5c3b2-1e74-4e6d-9c9d-8bfbec79a222"),
             Type = AccountType.Deposit,
             Currency = "USD",

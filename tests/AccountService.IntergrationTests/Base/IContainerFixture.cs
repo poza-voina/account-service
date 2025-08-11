@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace AccountService.IntergrationTests.Base;
+namespace AccountService.IntegrationTests.Base;
 
 public interface IContainerFixture : IAsyncLifetime
 {

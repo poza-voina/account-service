@@ -4,7 +4,6 @@ using AccountService.Api;
 using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Api.Scheduler;
 using Hangfire;
-using System.Reflection;
 
 public class Program
 {
@@ -64,7 +63,7 @@ public class Program
         {
             app.UseSwagger();
 
-            var authenticationOptions = configuration.GetRequiredSection(EnvironmentContants.AUTHENTICATION_SECTION).GetRequired<AuthenticationOptions>();
+            var authenticationOptions = configuration.GetRequiredSection(EnvironmentConstants.AuthenticationSection).GetRequired<AuthenticationOptions>();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
@@ -74,7 +73,7 @@ public class Program
                 c.OAuthScopes("openid", "profile");
             });
 
-            app.UseHangfireDashboard("/hangfire");
+            app.UseHangfireDashboard();
 
             JobConfigurator.Configure(app.Services);
         }

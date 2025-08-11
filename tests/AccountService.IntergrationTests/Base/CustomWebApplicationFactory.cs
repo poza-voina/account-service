@@ -1,8 +1,4 @@
-﻿using AccountService.Api.Scheduler;
-using AccountService.Api.Scheduler.Jobs;
-using AccountService.Infrastructure;
-using Hangfire;
-using Hangfire.Server;
+﻿using AccountService.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -10,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AccountService.IntergrationTests.Base;
+namespace AccountService.IntegrationTests.Base;
 
-public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisposable
+public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private CustomWebApplicationFactoryOptions FactoryOptions { get; set; } = new();
-    private bool _disposed = false;
+    private CustomWebApplicationFactoryOptions FactoryOptions { get; } = new();
+    private bool _disposed;
 
     public CustomWebApplicationFactory(Action<CustomWebApplicationFactoryOptions>? options = null)
     {
@@ -26,9 +22,9 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         builder.UseEnvironment("Testing");
 
-        if (FactoryOptions.PathToEnvironment is { })
+        if (FactoryOptions.PathToEnvironment is not null)
         {
-            builder.ConfigureAppConfiguration((context, configBuilder) =>
+            builder.ConfigureAppConfiguration((_, configBuilder) =>
             {
                 configBuilder.Sources.Clear();
                 configBuilder.SetBasePath(Directory.GetCurrentDirectory())
@@ -45,7 +41,7 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 services.Remove(descriptor);
             }
 
-            if (FactoryOptions.ConnectionString is { } && FactoryOptions.DatabaseSchemaName is { })
+            if (FactoryOptions is { ConnectionString: not null, DatabaseSchemaName: not null })
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseNpgsql(FactoryOptions.ConnectionString));
@@ -55,7 +51,7 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 {
 #pragma warning disable
                     context.Database.ExecuteSqlRaw($"CREATE SCHEMA IF NOT EXISTS \"{FactoryOptions.DatabaseSchemaName}\"");
-                    context.Database.ExecuteSqlRaw($"CREATE EXTENSION IF NOT EXISTS btree_gist;");
+                    context.Database.ExecuteSqlRaw("CREATE EXTENSION IF NOT EXISTS btree_gist;");
 #pragma warning restore                    
                     context.Database.Migrate();
                 }, serviceProvider);
@@ -66,7 +62,7 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 services.AddScoped<ApplicationDbContext>();
             }
 
-            services.AddAuthentication("Test").AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
+            services.AddAuthentication("Test").AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
 
             services.PostConfigure<AuthenticationOptions>(options =>
             {
@@ -76,21 +72,18 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
         });
     }
 
-    public ApplicationDbContext DbContext =>
-         Services.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
     protected override void Dispose(bool disposing)
     {
         if (!_disposed)
         {
-            if (disposing && FactoryOptions.ConnectionString is { } && FactoryOptions.DatabaseSchemaName is { })
+            if (disposing && FactoryOptions is { ConnectionString: not null, DatabaseSchemaName: not null })
             {
                 ExecuteInScope(context =>
                 {
 #pragma warning disable
                     context.Database.ExecuteSqlRaw($"DROP SCHEMA IF EXISTS \"{FactoryOptions.DatabaseSchemaName}\" CASCADE");
 #pragma warning restore
-                }); ;
+                });
             }
 
             _disposed = true;

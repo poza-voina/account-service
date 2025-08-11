@@ -16,12 +16,12 @@ public class GetStatementQuery : IRequest<AccountWithTransactionsViewModel>
     public required Guid AccountId { get; set; }
 
     /// <summary>
-    /// Начала диапозона выписки
+    /// Начала диапазона выписки
     /// </summary>
     public DateTime? StartDateTime { get; set; }
 
     /// <summary>
-    /// Конец диапозона выписки
+    /// Конец диапазона выписки
     /// </summary>
     public DateTime? EndDateTime { get; set; }
 }

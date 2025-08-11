@@ -4,24 +4,26 @@ using AccountService.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
+namespace MigrationRunner;
+
 public class Program
 {
-    static async Task Main(string[] args)
+    private static async Task Main()
     {
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddEnvironmentVariables()
             .Build();
 
-        var connectionSection = configuration.GetRequiredSection(EnvironmentContants.CONNECTION_SECTION);
-        var connectionString = connectionSection.GetRequiredValue<string>(EnvironmentContants.DEFAULT_CONNECTION_STRING_KEY);
+        var connectionSection = configuration.GetRequiredSection(EnvironmentConstants.ConnectionSection);
+        var connectionString = connectionSection.GetRequiredValue<string>(EnvironmentConstants.DefaultConnectionStringKey);
 
         Console.WriteLine(connectionString);
 
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
         optionsBuilder.UseNpgsql(connectionString);
 
-        using var context = new ApplicationDbContext(optionsBuilder.Options);
+        await using var context = new ApplicationDbContext(optionsBuilder.Options);
 
         Console.WriteLine("Applying migrations...");
         await context.Database.MigrateAsync();

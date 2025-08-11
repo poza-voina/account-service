@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using JetBrains.Annotations;
+using MediatR;
 
 namespace AccountService.Api.Features.Account.RemoveAccount;
 
@@ -12,5 +13,6 @@ public class RemoveAccountCommand : IRequest<Unit>
     /// <summary>
     /// Версия сущности
     /// </summary>
+    [UsedImplicitly]
     public uint Version { get; set; }
 }

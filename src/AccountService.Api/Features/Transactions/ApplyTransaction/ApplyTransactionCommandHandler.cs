@@ -1,10 +1,9 @@
 using AccountService.Abstractions.Exceptions;
-using AccountService.Api.Features.Account.Interfaces;
 using AccountService.Api.Features.Transactions.Interfaces;
-using Models = AccountService.Infrastructure.Models;
 using AccountService.Infrastructure.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.Features.Transactions.ApplyTransaction;
 
@@ -18,7 +17,7 @@ public class ApplyTransactionCommandHandler(ITransactionStorageService transacti
         var transaction = await transactionStorageService.GetTransactionAsync(
             request.AnyTransaction.TransactionId,
             cancellationToken,
-            x => x.Include(x => x.BankAccount));
+            x => x.Include(transaction => transaction.BankAccount));
 
         var account = transaction.BankAccount!;
 

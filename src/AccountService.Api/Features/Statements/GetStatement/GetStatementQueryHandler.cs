@@ -21,7 +21,7 @@ public class GetStatementQueryHandler(
         var account = await accountStorageService.GetAccountAsync(
             request.AccountId,
             cancellationToken,
-            x => x.Include(x => x.Transactions));
+            x => x.Include(account => account.Transactions));
 
         account.Transactions = [.. account.Transactions.Where(
                 x =>

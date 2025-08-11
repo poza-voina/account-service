@@ -14,7 +14,7 @@ public class ExecuteTransactionCommandHandler(IUnitOfWork unitOfWork, IMediator 
 {
     public async Task<TransactionViewModel> Handle(ExecuteTransactionCommand request, CancellationToken cancellationToken)
     {
-        using var _ = await unitOfWork.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
+        await using var _ = await unitOfWork.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
 
         try
         {
@@ -22,10 +22,10 @@ public class ExecuteTransactionCommandHandler(IUnitOfWork unitOfWork, IMediator 
             await mediator.Send(
                 new ApplyTransactionCommand
                 {
-                    AnyTransaction = new()
+                    AnyTransaction = new TransactionInfo
                     {
                         TransactionId = transaction.Id,
-                        AccountVersion = request.BankAccountVersion,
+                        AccountVersion = request.BankAccountVersion
                     }
                 },
                 cancellationToken);
