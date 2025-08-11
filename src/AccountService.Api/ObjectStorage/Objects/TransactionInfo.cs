@@ -1,5 +1,4 @@
-﻿using AccountService.Infrastructure.Enums;
-using Models = AccountService.Infrastructure.Models;
+﻿using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.ObjectStorage.Objects;
 
@@ -22,7 +21,4 @@ public class TransactionInfo
         TransactionId = transaction.Id;
         return this;
     }
-
-    public TransactionType GetTransactionType() =>
-        Transaction.Type;
 }

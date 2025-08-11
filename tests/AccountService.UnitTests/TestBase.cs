@@ -63,10 +63,7 @@ public abstract class TestBase : IAsyncLifetime
 
     public async Task DisposeAsync()
     {
-        if (ServiceProvider is { })
-        {
-            await ServiceProvider.DisposeAsync();
-        }
+        await ServiceProvider.DisposeAsync();
     }
 
     public static readonly Guid[] Guids =
@@ -82,7 +79,7 @@ public abstract class TestBase : IAsyncLifetime
         new("88888888-8888-8888-8888-888888888888")
     ];
 
-    public Guid[] DefaultGuids => _defaultGuids;
+    public Guid[] Guids => _guids;
 
     public IEnumerable<Account> DefaultAccounts { get; } = new List<Account>
     {

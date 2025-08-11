@@ -3,7 +3,6 @@ using AccountService.Api.Features.Account.PatchAccount;
 using AccountService.Api.ViewModels;
 using AccountService.Infrastructure;
 using AccountService.Infrastructure.Enums;
-using AccountService.Infrastructure.Models;
 using FluentAssertions;
 using FluentValidation;
 using MediatR;
