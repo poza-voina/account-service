@@ -19,14 +19,15 @@ public class ApplyTransactionPairCommandHandler(ITransactionStorageService trans
         var transactions = await transactionStorageService.GetTransactionsAsync(
             [request.CreditTransaction.TransactionId, request.DebitTransaction.TransactionId],
             cancellationToken,
-            x => x.Include(x => x.BankAccount));
+            x => x.Include(transaction => transaction.BankAccount));
 
+        var transactionsList = transactions.ToList();
         var credit = request.CreditTransaction.WithTransaction(
-            transactions.FirstOrDefault(x => x.Type == TransactionType.Credit)
+            transactionsList.FirstOrDefault(x => x.Type == TransactionType.Credit)
             ?? throw new NotFoundException(CreditTransactionNotFoundErrorMessage));
 
         var debit = request.DebitTransaction.WithTransaction(
-            transactions.FirstOrDefault(x => x.Type == TransactionType.Debit)
+            transactionsList.FirstOrDefault(x => x.Type == TransactionType.Debit)
             ?? throw new NotFoundException(DebitTransactionNotFoundErrorMessage));
 
 

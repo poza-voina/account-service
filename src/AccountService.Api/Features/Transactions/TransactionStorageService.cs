@@ -1,9 +1,8 @@
 ﻿using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Transactions.Interfaces;
-using Models = AccountService.Infrastructure.Models;
 using AccountService.Infrastructure.Repositories.Interfaces;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.Features.Transactions;
 
@@ -27,12 +26,13 @@ public class TransactionStorageService(IRepository<Models.Account> accountReposi
         IEnumerable<Models.Account> accounts,
         CancellationToken cancellationToken)
     {
-        foreach (var transaction in transactions)
+        var models = transactions.ToList();
+        foreach (var transaction in models)
         {
             transaction.IsApply = true;
         }
 
-        await transactionRepository.UpdateRangeAsync(transactions);
+        await transactionRepository.UpdateRangeAsync(models);
         await accountRepository.UpdateRangeAsync(accounts);
     }
 
@@ -61,12 +61,12 @@ public class TransactionStorageService(IRepository<Models.Account> accountReposi
     {
         var query = transactionRepository.GetAll();
 
-        if (configureQuery is { })
+        if (configureQuery is not null)
         {
             query = configureQuery(query);
         }
 
-        var transaction = await query.FirstOrDefaultAsync(x => x.Id == id) ??
+        var transaction = await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken) ??
             throw new NotFoundException(TransactionNotFound);
 
         return transaction;
@@ -79,8 +79,9 @@ public class TransactionStorageService(IRepository<Models.Account> accountReposi
             IQueryable<Models.Transaction>>? configureQuery = null)
     {
         ids = [.. ids];
-        var prevIdsLength = ids.Count();
-        ids = ids.ToHashSet();
+        var guids = ids.ToList();
+        var prevIdsLength = guids.Count;
+        ids = guids.ToHashSet();
 
         if (ids.Count() != prevIdsLength)
         {
@@ -89,7 +90,7 @@ public class TransactionStorageService(IRepository<Models.Account> accountReposi
 
         var query = transactionRepository.GetAll();
 
-        if (configureQuery is { })
+        if (configureQuery is not null)
         {
             query = configureQuery(query);
         }

@@ -7,7 +7,7 @@ namespace AccountService.Api.ViewModels;
 public class AccountViewModel
 {
     /// <summary>
-    /// Индентификатор счета
+    /// Идентификатор счета
     /// </summary>
     public Guid Id { get; set; }
 

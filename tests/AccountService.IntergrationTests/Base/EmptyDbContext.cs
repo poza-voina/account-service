@@ -1,11 +1,6 @@
 ﻿using AccountService.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
-namespace AccountService.IntergrationTests.Base;
+namespace AccountService.IntegrationTests.Base;
 
-public class EmptyDbContext : ApplicationDbContext
-{
-    public EmptyDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-    {
-    }
-}
+public class EmptyDbContext(DbContextOptions<ApplicationDbContext> options) : ApplicationDbContext(options);

@@ -4,19 +4,19 @@ using AccountService.Api.Features.Transactions.ExecuteTransaction;
 using AccountService.Api.Features.Transactions.TransferTransaction;
 using AccountService.Api.ViewModels;
 using AccountService.Infrastructure.Enums;
-using AccountService.IntergrationTests.Base;
+using AccountService.IntegrationTests.Base;
 using FluentAssertions;
-using System.Net;
 using System.Net.Http.Json;
 using Xunit;
 using Xunit.Abstractions;
 using AccountResponse = AccountService.Api.ViewModels.Result.MbResult<AccountService.Api.ViewModels.AccountViewModel>;
 using StatementResponse = AccountService.Api.ViewModels.Result.MbResult<AccountService.Api.ViewModels.AccountWithTransactionsViewModel>;
 
-namespace AccountService.IntergrationTests;
+namespace AccountService.IntegrationTests;
 
-public class ParallelTransferTests(PostgreSqlFixture fixture, ITestOutputHelper output) : ControllerTestsBase, IClassFixture<PostgreSqlFixture>
+public class ParallelTransferTests(PostgresSqlFixture fixture, ITestOutputHelper output) : ControllerTestsBase, IClassFixture<PostgresSqlFixture>
 {
+    // ReSharper disable once StringLiteralTypo
     private IsolatedClientOptions DefaultIsolatedClientOptions { get; } = new() { ContainerFixture = fixture, PathToEnvironment = "TestConfigs/appsettings.test.json" };
 
     [Theory]
@@ -25,11 +25,11 @@ public class ParallelTransferTests(PostgreSqlFixture fixture, ITestOutputHelper 
     {
         // Arrange
         var client = CreateIsolatedClient(DefaultIsolatedClientOptions);
-        var path = "/accounts";
-        var pathToMoney = "/transactions/execute";
-        var pathToStatement = "/statements/{0}?ownerId={1}";
-        var pathToTransfer = "/transactions/transfer";
-        var expectedBalance = 20000;
+        const string path = "/accounts";
+        const string pathToMoney = "/transactions/execute";
+        const string pathToStatement = "/statements/{0}?ownerId={1}";
+        const string pathToTransfer = "/transactions/transfer";
+        const int expectedBalance = 20000;
 
         var account = new CreateAccountCommand
         {
@@ -53,13 +53,14 @@ public class ParallelTransferTests(PostgreSqlFixture fixture, ITestOutputHelper 
 
         List<AccountViewModel> accounts =
             [
-                (await responseAccount1.Content.ReadFromJsonAsync<AccountResponse>(DefaultSerializerOptions))!.Result,
-                (await responseAccount2.Content.ReadFromJsonAsync<AccountResponse>(DefaultSerializerOptions))!.Result,
+                (await responseAccount1.Content.ReadFromJsonAsync<AccountResponse>(DefaultSerializerOptions))!.Result ?? throw new InvalidOperationException(),
+                (await responseAccount2.Content.ReadFromJsonAsync<AccountResponse>(DefaultSerializerOptions))!.Result ?? throw new InvalidOperationException()
             ];
 
         var transaction = new ExecuteTransactionCommand
         {
             BankAccountId = accounts.ElementAt(0).Id,
+            // ReSharper disable once PossibleLossOfFraction Хочется делить на два, так как две операции пополнения
             Amount = expectedBalance / 2,
             Currency = "USD",
             Type = TransactionType.Debit,
@@ -84,11 +85,12 @@ public class ParallelTransferTests(PostgreSqlFixture fixture, ITestOutputHelper 
         //Act
         var tasks = new List<Task<int>>();
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             var fromIndex = i % 2 == 0 ? 0 : 1;
             var toIndex = 1 - fromIndex;
 
+            var i1 = i;
             tasks.Add
                 (
                     Task.Run
@@ -118,7 +120,7 @@ public class ParallelTransferTests(PostgreSqlFixture fixture, ITestOutputHelper 
                                     CounterpartyBankAccountVersion = getAccountToIndexVersion,
                                     Amount = 10,
                                     Currency = "USD",
-                                    Description = $"iter = {i}"
+                                    Description = $"iter = {i1}"
                                 };
 
                                 var transferRequest = new HttpRequestBuilder(HttpMethod.Post, pathToTransfer)

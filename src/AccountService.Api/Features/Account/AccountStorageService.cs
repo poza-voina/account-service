@@ -10,8 +10,6 @@ namespace AccountService.Api.Features.Account;
 public class AccountStorageService(IRepository<Models.Account> accountRepository, IMapper mapper) : IAccountStorageService
 {
     private const string AccountNotFoundErrorMessage = "Счет не найден";
-    private const string AccountsNotFoundErrorMessage = "Некоторые аккаунты не найдены";
-    private const string DuplicateAccountIdsErrorMessage = "Список идентификаторов счетов содержит дубликаты";
 
     public async Task<Models.Account> CreateAccountAsync(
         Models.Account account,
@@ -38,12 +36,12 @@ public class AccountStorageService(IRepository<Models.Account> accountRepository
     {
         var query = accountRepository.GetAll();
 
-        if (configureQuery is { })
+        if (configureQuery is not null)
         {
             query = configureQuery(query);
         }
 
-        return await query.FirstOrDefaultAsync(x => x.Id == id) ?? throw new NotFoundException(AccountNotFoundErrorMessage);
+        return await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken) ?? throw new NotFoundException(AccountNotFoundErrorMessage);
     }
 
     public async Task<Models.Account> UpdateAccountAsync(
@@ -55,26 +53,4 @@ public class AccountStorageService(IRepository<Models.Account> accountRepository
         Guid id,
         CancellationToken cancellationToken) =>
         await accountRepository.GetAll().AnyAsync(x => x.Id == id, cancellationToken: cancellationToken);
-
-    public async Task<IEnumerable<Models.Account>> GetAccountsAsync(
-        CancellationToken cancellationToken,
-        params Guid[] ids)
-    {
-        var idSet = ids.ToHashSet();
-        if (ids.Length != idSet.Count)
-        {
-            throw new UnprocessableException(DuplicateAccountIdsErrorMessage);
-        }
-
-        var result = await accountRepository.GetAll()
-            .Where(account => idSet.Contains(account.Id))
-            .ToListAsync();
-
-        if (result.Count != idSet.Count)
-        {
-            throw new NotFoundException(AccountsNotFoundErrorMessage);
-        }
-
-        return result;
-    }
 }

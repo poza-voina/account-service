@@ -1,22 +1,17 @@
-﻿using AccountService.IntergrationTests.Base;
-using Microsoft.Extensions.DependencyInjection;
-using System.Text;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using AccountService.IntegrationTests.Base;
 
-namespace AccountService.IntergrationTests;
+namespace AccountService.IntegrationTests;
 
 public abstract class ControllerTestsBase
 {
-    private const string SCHEMA_FORMAT = "test_{0}";
+    private const string SchemaFormat = "test_{0}";
 
     public ICollection<Guid> ClientsIds { get; private set; } = [];
 
-    public ControllerTestsBase()
-    {
-    }
-
-    public JsonSerializerOptions DefaultSerializerOptions { get; } = new JsonSerializerOptions
+    public JsonSerializerOptions DefaultSerializerOptions { get; } = new()
     {
         PropertyNameCaseInsensitive = true,
         Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
@@ -27,13 +22,13 @@ public abstract class ControllerTestsBase
         var factory = new CustomWebApplicationFactory(
             options =>
             {
-                if (isolatedClientOptions.ContainerFixture is { })
+                if (isolatedClientOptions.ContainerFixture is not null)
                 {
                     var schemaName = NewSchemaName;
                     options.ConnectionString = $"{isolatedClientOptions.ContainerFixture.ConnectionString};Search Path={schemaName}";
                     options.DatabaseSchemaName = schemaName;
                 }
-                if (isolatedClientOptions.PathToEnvironment is { })
+                if (isolatedClientOptions.PathToEnvironment is not null)
                 {
                     options.PathToEnvironment = isolatedClientOptions.PathToEnvironment;
                 }
@@ -44,10 +39,7 @@ public abstract class ControllerTestsBase
         return factory.CreateClient();
     }
 
-    public StringContent EmptyContent { get; } =
-        new StringContent(string.Empty, Encoding.UTF8, "application/json");
-
-    private string NewSchemaName =>
-        string.Format(SCHEMA_FORMAT, Guid.NewGuid());
+    private static string NewSchemaName =>
+        string.Format(SchemaFormat, Guid.NewGuid());
 
 }

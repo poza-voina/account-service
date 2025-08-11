@@ -1,5 +1,4 @@
-﻿using AccountService.Infrastructure.Enums;
-using Models = AccountService.Infrastructure.Models;
+﻿using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.ObjectStorage.Objects;
 
@@ -12,7 +11,7 @@ public class TransactionInfo
 
     public Models.Transaction Transaction
     {
-        get => _transaction ?? throw new InvalidOperationException("Транзакция не была инициализорована");
+        get => _transaction ?? throw new InvalidOperationException("Транзакция не была инициализирована");
         private set => _transaction = value;
     }
 
@@ -22,7 +21,4 @@ public class TransactionInfo
         TransactionId = transaction.Id;
         return this;
     }
-
-    public TransactionType GetTransactionType() =>
-        Transaction.Type;
 }

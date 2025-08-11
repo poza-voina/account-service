@@ -11,7 +11,7 @@ public class OperationError
     public required string Message { get; set; }
 
     /// <summary>
-    /// Трейс
+    /// Стек вызовов
     /// </summary>
     public string? StackTrace { get; set; }
 

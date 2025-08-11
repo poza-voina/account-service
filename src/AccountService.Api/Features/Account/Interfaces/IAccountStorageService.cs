@@ -9,11 +9,7 @@ public interface IAccountStorageService
         CancellationToken cancellationToken);
     
     Task<IEnumerable<Models.Account>> GetAccountsAsync(CancellationToken cancellationToken);
-    
-    Task<IEnumerable<Models.Account>> GetAccountsAsync(
-        CancellationToken cancellationToken,
-        params Guid[] ids);
-    
+
     Task RemoveAccountAsync(
         Guid id,
         CancellationToken cancellationToken);

@@ -1,4 +1,4 @@
-﻿namespace AccountService.IntergrationTests.Base;
+﻿namespace AccountService.IntegrationTests.Base;
 
 public class CustomWebApplicationFactoryOptions
 {

@@ -10,7 +10,5 @@ public interface IUnitOfWork
         CancellationToken cancellationToken);
     Task CommitAsync(CancellationToken cancellationToken);
     Task RollbackAsync(CancellationToken cancellationToken);
-    Task SaveChangesAsync(CancellationToken cancellationToken);
     public T GetRepository<T>() where T : class;
-    public IExecutionStrategy CreateExecutionStrategy();
 }

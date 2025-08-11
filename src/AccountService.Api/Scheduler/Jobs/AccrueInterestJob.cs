@@ -13,7 +13,6 @@ public class AccrueInterestJob(IUnitOfWork unitOfWork) : IJob
     public async Task Execute()
     {
         var repository = unitOfWork.GetRepository<IRepository<Models.Account>>();
-        var test = repository.GetAll().Where(x => x.Type == AccountType.Deposit).ToList();
 
         await unitOfWork.BeginTransactionAsync(IsolationLevel.Serializable, CancellationToken.None);
 

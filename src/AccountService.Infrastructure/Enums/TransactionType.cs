@@ -6,12 +6,12 @@
 public enum TransactionType
 {
     /// <summary>
-    /// Тразакция списания
+    /// Транзакция списания
     /// </summary>
     Credit,
 
     /// <summary>
-    /// Транзакция пополенения
+    /// Транзакция пополнения
     /// </summary>
     Debit
 }

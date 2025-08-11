@@ -7,6 +7,7 @@ using AccountService.Infrastructure.Enums;
 using AutoMapper;
 using MediatR;
 using System.Data;
+using AccountService.Api.ObjectStorage.Objects;
 
 namespace AccountService.Api.Features.Transactions.TransferTransaction;
 
@@ -23,15 +24,15 @@ public class TransferTransactionCommandHandler(IUnitOfWork unitOfWork, IMediator
 
             var applyTransactionsCommand = new ApplyTransactionPairCommand
             {
-                CreditTransaction = new()
+                CreditTransaction = new TransactionInfo
                 {
                     TransactionId = credit.Id,
                     AccountVersion = request.BankAccountVersion
                 },
-                DebitTransaction = new()
+                DebitTransaction = new TransactionInfo
                 {
                     TransactionId = debit.Id,
-                    AccountVersion = request.CounterpartyBankAccountVersion,
+                    AccountVersion = request.CounterpartyBankAccountVersion
                 }
             };
 

@@ -6,7 +6,7 @@
 public enum AccountType
 {
     /// <summary>
-    /// Дебитовый счет
+    /// Дебетовый счет
     /// </summary>
     Checking,
 

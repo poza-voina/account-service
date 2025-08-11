@@ -48,8 +48,8 @@ public static class DependencyInjection
 
     public static void AddDbContextConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionSection = configuration.GetRequiredSection(EnvironmentContants.CONNECTION_SECTION);
-        var connectionString = connectionSection.GetRequiredValue<string>(EnvironmentContants.DEFAULT_CONNECTION_STRING_KEY);
+        var connectionSection = configuration.GetRequiredSection(EnvironmentConstants.ConnectionSection);
+        var connectionString = connectionSection.GetRequiredValue<string>(EnvironmentConstants.DefaultConnectionStringKey);
 
         services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
     }
@@ -70,7 +70,7 @@ public static class DependencyInjection
 
     public static void AddAuthConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtOptions = configuration.GetRequiredSection(EnvironmentContants.AUTHENTICATION_SECTION).GetRequired<AuthenticationOptions>();
+        var jwtOptions = configuration.GetRequiredSection(EnvironmentConstants.AuthenticationSection).GetRequired<AuthenticationOptions>();
 
         services
             .AddAuthentication(
@@ -160,7 +160,7 @@ public static class DependencyInjection
 
             x.OperationFilter<CamelCaseQueryParametersFilter>();
 
-            var authenticationOptions = configuration.GetRequiredSection(EnvironmentContants.AUTHENTICATION_SECTION).GetRequired<AuthenticationOptions>();
+            var authenticationOptions = configuration.GetRequiredSection(EnvironmentConstants.AuthenticationSection).GetRequired<AuthenticationOptions>();
 
             x.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
             {
@@ -224,10 +224,10 @@ public static class DependencyInjection
 
     public static void AddHangfireConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionSection = configuration.GetRequiredSection(EnvironmentContants.CONNECTION_SECTION);
-        var connectionString = connectionSection.GetRequiredValue<string>(EnvironmentContants.DEFAULT_CONNECTION_STRING_KEY);
+        var connectionSection = configuration.GetRequiredSection(EnvironmentConstants.ConnectionSection);
+        var connectionString = connectionSection.GetRequiredValue<string>(EnvironmentConstants.DefaultConnectionStringKey);
 
-        services.AddHangfire(configuration => configuration
+        services.AddHangfire(globalConfiguration => globalConfiguration
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()

@@ -1,12 +1,15 @@
 ﻿using AccountService.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace AccountService.Infrastructure;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
     public DbSet<Account> Accounts { get; set; }
+    
+    [UsedImplicitly]
     public DbSet<Transaction> Transactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
