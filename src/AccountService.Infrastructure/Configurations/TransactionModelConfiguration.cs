@@ -34,6 +34,7 @@ public class TransactionModelConfiguration : IEntityTypeConfiguration<Transactio
         builder
            .Property(x => x.Id)
            .HasColumnName("id")
+           .HasDefaultValueSql("gen_random_uuid()")
            .IsRequired();
 
         builder

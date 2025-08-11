@@ -9,12 +9,16 @@ using AccountService.Api.Features.Transactions.Interfaces;
 using AccountService.Api.ObjectStorage;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
+using AccountService.Api.Scheduler;
+using AccountService.Api.Scheduler.Jobs;
 using AccountService.Api.SwaggerFilters;
 using AccountService.Api.ViewModels.Result;
 using AccountService.Infrastructure;
 using AccountService.Infrastructure.Repositories;
 using AccountService.Infrastructure.Repositories.Interfaces;
 using FluentValidation;
+using Hangfire;
+using Hangfire.PostgreSql;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -211,5 +215,23 @@ public static class DependencyInjection
     {
         services.AddSingleton<ICurrencyHelper, CurrencyHelper>();
         services.AddSingleton<IDatetimeHelper, DatetimeHelper>();
+    }
+
+    public static void AddHangfireConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionSection = configuration.GetRequiredSection(EnvironmentContants.CONNECTION_SECTION);
+        var connectionString = connectionSection.GetRequiredValue<string>(EnvironmentContants.DEFAULT_CONNECTION_STRING_KEY);
+
+        services.AddHangfire(configuration => configuration
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UsePostgreSqlStorage(x => x.UseNpgsqlConnection(connectionString))
+            );
+
+        services.AddHangfireServer();
+
+        services.AddScoped<AccrueInterestJob>();
+        services.AddSingleton(typeof(JobRunner<>));
     }
 }
