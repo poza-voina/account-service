@@ -3,7 +3,7 @@ using AccountService.Api.ViewModels.Result;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using StatementResponse = AccountService.Api.ViewModels.Result.MbResult<System.Collections.Generic.IEnumerable<AccountService.Api.ViewModels.AccountWithTransactionsViewModel>>;
+using StatementResponse = AccountService.Api.ViewModels.Result.MbResult<AccountService.Api.ViewModels.AccountWithTransactionsViewModel>;
 using StatementResponseError = AccountService.Api.ViewModels.Result.MbResult<object>;
 
 namespace AccountService.Api.Features.Statements;

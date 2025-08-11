@@ -4,6 +4,8 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<PreserveCompilationReferences>true</PreserveCompilationReferences>
+		<PreserveCompilationContext>true</PreserveCompilationContext>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>1591</NoWarn>
 		<NoWarn>$(NoWarn);CS0169</NoWarn>
@@ -29,8 +31,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\AccountService.Abstractions\AccountService.Abstractions.csproj" />
-	  <ProjectReference Include="..\AccountService.Infrastructure\AccountService.Infrastructure.csproj" />
+		<ProjectReference Include="..\AccountService.Abstractions\AccountService.Abstractions.csproj" />
+		<ProjectReference Include="..\AccountService.Infrastructure\AccountService.Infrastructure.csproj" />
 	</ItemGroup>
-
 </Project>
