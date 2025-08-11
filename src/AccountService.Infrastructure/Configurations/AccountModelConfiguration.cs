@@ -47,6 +47,7 @@ public class AccountModelConfiguration : IEntityTypeConfiguration<Account>
         builder
             .Property(x => x.Currency)
             .IsRequired()
+            .HasMaxLength(3)
             .HasColumnName("currency");
 
         builder

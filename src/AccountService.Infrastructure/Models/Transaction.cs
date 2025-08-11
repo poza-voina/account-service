@@ -8,8 +8,10 @@ public class Transaction : IDatabaseModel, IConcurrencyModel
     public required Guid BankAccountId { get; set; }
     public Guid? CounterpartyBankAccountId { get; set; }
     public decimal Amount { get; set; }
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength TransactionConfiguration
     public required string Currency { get; set; }
     public required TransactionType Type { get; set; }
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength TransactionConfiguration
     public required string Description { get; set; }
     public required bool IsApply { get; set; }
     public required DateTime CreatedAt { get; set; }

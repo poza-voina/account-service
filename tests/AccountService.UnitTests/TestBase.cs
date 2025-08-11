@@ -66,7 +66,7 @@ public abstract class TestBase : IAsyncLifetime
         await ServiceProvider.DisposeAsync();
     }
 
-    private static readonly Guid[] _guids =
+    public static readonly Guid[] Guids =
     [
         new("00000000-0000-0000-0000-000000000000"),
         new("11111111-1111-1111-1111-111111111111"),
@@ -79,13 +79,11 @@ public abstract class TestBase : IAsyncLifetime
         new("88888888-8888-8888-8888-888888888888")
     ];
 
-    public Guid[] Guids => _guids;
-
     public IEnumerable<Account> DefaultAccounts { get; } = new List<Account>
     {
         new()
         {
-            Id = _guids[0],
+            Id = Guids[0],
             OwnerId = Guid.Parse("d3b07384-d9a6-4b5e-bc8d-23f7c1a1a111"),
             Type = AccountType.Checking,
             Currency = "USD",
@@ -100,7 +98,7 @@ public abstract class TestBase : IAsyncLifetime
         },
         new()
         {
-            Id = _guids[1],
+            Id = Guids[1],
             OwnerId = Guid.Parse("a5f5c3b2-1e74-4e6d-9c9d-8bfbec79a222"),
             Type = AccountType.Deposit,
             Currency = "USD",
