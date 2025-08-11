@@ -1,6 +1,8 @@
-﻿using AccountService.Infrastructure.Models;
+﻿using AccountService.Infrastructure.Enums;
+using AccountService.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AccountService.Infrastructure.Configurations;
 
