@@ -54,6 +54,7 @@ public class TransactionModelConfiguration : IEntityTypeConfiguration<Transactio
         builder
             .Property(x => x.Currency)
             .HasColumnName("currency")
+            .HasMaxLength(3)
             .IsRequired();
 
         builder
@@ -64,6 +65,7 @@ public class TransactionModelConfiguration : IEntityTypeConfiguration<Transactio
 
         builder
             .Property(x => x.Description)
+            .HasMaxLength(200)
             .HasColumnName("description")
             .IsRequired();
 

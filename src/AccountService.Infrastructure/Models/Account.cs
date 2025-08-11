@@ -7,6 +7,7 @@ public class Account : IDatabaseModel, IConcurrencyModel
     public Guid Id { get; set; }
     public Guid OwnerId { get; set; }
     public AccountType Type { get; set; }
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength AccountConfiguration
     public required string Currency { get; set; }
     public decimal Balance { get; set; }
     public decimal? InterestRate { get; set; }

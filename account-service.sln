@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigrationRunner", "src\Migr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountService.IntergrationTests", "tests\AccountService.IntergrationTests\AccountService.IntergrationTests.csproj", "{BF57F347-E5C0-49B2-B8DB-AD3E59843207}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountService.IntegrationTests", "tests\AccountService.IntergrationTests\AccountService.IntegrationTests.csproj", "{BF57F347-E5C0-49B2-B8DB-AD3E59843207}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountService.UnitTests", "tests\AccountService.UnitTests\AccountService.UnitTests.csproj", "{1143C8DD-D30F-4DFD-A23E-BAA6A4959D19}"
 EndProject

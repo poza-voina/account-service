@@ -1,9 +1,10 @@
 using AccountService.Abstractions.Constants;
 using AccountService.Abstractions.Extensions;
-using AccountService.Api;
 using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Api.Scheduler;
 using Hangfire;
+
+namespace AccountService.Api;
 
 public class Program
 {
