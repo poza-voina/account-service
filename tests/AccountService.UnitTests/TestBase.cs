@@ -79,8 +79,6 @@ public abstract class TestBase : IAsyncLifetime
         new("88888888-8888-8888-8888-888888888888")
     ];
 
-    public Guid[] Guids => _guids;
-
     public IEnumerable<Account> DefaultAccounts { get; } = new List<Account>
     {
         new()
