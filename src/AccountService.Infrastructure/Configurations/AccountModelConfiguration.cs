@@ -1,6 +1,8 @@
-﻿using AccountService.Infrastructure.Models;
+﻿using AccountService.Infrastructure.Enums;
+using AccountService.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AccountService.Infrastructure.Configurations;
 
@@ -30,7 +32,8 @@ public class AccountModelConfiguration : IEntityTypeConfiguration<Account>
         builder
             .Property(x => x.Id)
             .IsRequired()
-            .HasColumnName("id");
+            .HasColumnName("id")
+            .HasDefaultValueSql("gen_random_uuid()");
 
         builder
             .Property(x => x.OwnerId)
@@ -40,6 +43,7 @@ public class AccountModelConfiguration : IEntityTypeConfiguration<Account>
         builder
             .Property(x => x.Type)
             .IsRequired()
+            .HasConversion<string>()
             .HasColumnName("type");
 
         builder

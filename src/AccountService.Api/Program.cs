@@ -2,12 +2,13 @@ using AccountService.Abstractions.Constants;
 using AccountService.Abstractions.Extensions;
 using AccountService.Api;
 using AccountService.Api.ObjectStorage.Objects;
+using AccountService.Api.Scheduler;
+using Hangfire;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
-
 
 services.AddMockClients();
 
@@ -37,6 +38,8 @@ services.AddServices();
 
 services.AddAutoMapper(x => x.AddMaps(Assembly.GetExecutingAssembly()));
 
+services.AddHangfireConfiguration(configuration);
+
 var app = builder.Build();
 
 app.UseCors();
@@ -56,5 +59,9 @@ app.UseSwaggerUI(c =>
     c.OAuthUsePkce();
     c.OAuthScopes("openid", "profile");
 });
+
+app.UseHangfireDashboard("/hangfire");
+
+JobConfigurator.Configure(app.Services);
 
 app.Run();
