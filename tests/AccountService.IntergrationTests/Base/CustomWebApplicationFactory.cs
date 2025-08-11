@@ -1,5 +1,7 @@
 ﻿using AccountService.Api;
 using AccountService.Infrastructure;
+using Hangfire;
+using Hangfire.Server;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -72,6 +74,9 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
             });
         });
     }
+
+    public ApplicationDbContext DbContext =>
+         Services.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
     protected override void Dispose(bool disposing)
     {

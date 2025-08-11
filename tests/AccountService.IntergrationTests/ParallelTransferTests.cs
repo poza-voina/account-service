@@ -6,6 +6,7 @@ using AccountService.Api.ViewModels;
 using AccountService.Infrastructure.Enums;
 using AccountService.IntegrationTests.Base;
 using FluentAssertions;
+using System.Net;
 using System.Net.Http.Json;
 using Xunit;
 using Xunit.Abstractions;

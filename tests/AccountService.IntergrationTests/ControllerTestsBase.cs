@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AccountService.IntergrationTests.Base;
+using Microsoft.Extensions.DependencyInjection;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using AccountService.IntegrationTests.Base;
