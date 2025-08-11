@@ -41,7 +41,7 @@ public class Program
 
         services.AddServices();
 
-        services.AddAutoMapper(x => x.AddMaps(Assembly.GetExecutingAssembly()));
+        services.AddAutoMapperConfiguration();
 
         if (environmentName != "Testing")
         {

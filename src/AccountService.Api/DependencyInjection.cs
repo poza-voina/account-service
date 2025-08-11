@@ -206,6 +206,11 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
+    public static void AddAutoMapperConfiguration(this IServiceCollection services)
+    {
+        services.AddAutoMapper(x => x.AddMaps(Assembly.GetExecutingAssembly()));
+    }
+
     public static void AddRepositories(this IServiceCollection services)
     {
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
