@@ -1,4 +1,3 @@
-using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Transactions.ApplyTransactionPair;
 using AccountService.Api.Features.Transactions.RegisterTransaction;
 using AccountService.Api.ObjectStorage.Interfaces;
@@ -8,7 +7,6 @@ using AccountService.Infrastructure.Enums;
 using AutoMapper;
 using MediatR;
 using System.Data;
-using AccountService.Api.ObjectStorage.Objects;
 
 namespace AccountService.Api.Features.Transactions.TransferTransaction;
 
