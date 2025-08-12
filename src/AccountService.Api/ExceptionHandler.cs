@@ -33,6 +33,7 @@ public class ExceptionHandler : IExceptionHandler
             result = MbResultFactory.WithOperationError(exception, statusCode);
         }
 
+        httpContext.Response.StatusCode = statusCode;
         await httpContext.Response.WriteAsJsonAsync(result, cancellationToken);
 
         return true;

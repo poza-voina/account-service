@@ -17,8 +17,8 @@ echo '{
   "directAccessGrantsEnabled": true,
   "rootUrl": "http://localhost:'"$ACCOUNT_SERVICE_API_PORT"'",
   "baseUrl": "/",
-  "redirectUris": ["http://localhost:'"$ACCOUNT_SERVICE_API_PORT"'/*"],
-  "webOrigins": ["http://localhost:'"$ACCOUNT_SERVICE_API_PORT"'"],
+  "redirectUris": ["http://localhost/*", "http://localhost:'"$ACCOUNT_SERVICE_API_PORT"'/*"],
+  "webOrigins": ["http://localhost", "http://localhost:'"$ACCOUNT_SERVICE_API_PORT"'"],
   "attributes": {
     "post.logout.redirect.uris": "http://localhost:'"$ACCOUNT_SERVICE_API_PORT"'"
   }

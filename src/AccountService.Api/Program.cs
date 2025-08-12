@@ -74,7 +74,10 @@ public class Program
                 c.OAuthScopes("openid", "profile");
             });
 
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = [new AllowAllAuthorizationFilter()]
+            });
 
             JobConfigurator.Configure(app.Services);
         }

@@ -1,13 +1,12 @@
-using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Transactions.ApplyTransactionPair;
 using AccountService.Api.Features.Transactions.RegisterTransaction;
 using AccountService.Api.ObjectStorage.Interfaces;
+using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Api.ViewModels;
 using AccountService.Infrastructure.Enums;
 using AutoMapper;
 using MediatR;
 using System.Data;
-using AccountService.Api.ObjectStorage.Objects;
 
 namespace AccountService.Api.Features.Transactions.TransferTransaction;
 
@@ -41,10 +40,10 @@ public class TransferTransactionCommandHandler(IUnitOfWork unitOfWork, IMediator
             await unitOfWork.CommitAsync(cancellationToken);
             return new TransferTransactionViewModel { Credit = credit, Debit = debit };
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             await unitOfWork.RollbackAsync(cancellationToken);
-            throw new UnprocessableException("Не удалось перенести деньги", ex);
+            throw;
         }
     }
 
