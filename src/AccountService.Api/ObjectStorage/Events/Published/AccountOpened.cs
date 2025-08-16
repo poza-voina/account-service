@@ -1,6 +1,6 @@
 ﻿namespace AccountService.Api.ObjectStorage.Events.Published;
 
-public class AccountOpened
+public class AccountOpened : IEventPayload
 {
     public required Guid AccountId { get; set; }
     public required Guid OwnerId { get; set; }

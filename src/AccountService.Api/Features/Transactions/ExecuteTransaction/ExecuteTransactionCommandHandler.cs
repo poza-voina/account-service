@@ -35,7 +35,10 @@ public class ExecuteTransactionCommandHandler(
 
         try
         {
-            return await ExcecuteTransactionBody(request, cancellationToken);
+            var result = await ExcecuteTransactionBody(request, cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
+
+            return result;
         }
         catch (Exception ex)
         {
@@ -58,8 +61,6 @@ public class ExecuteTransactionCommandHandler(
                 }
             },
             cancellationToken);
-
-        await unitOfWork.CommitAsync(cancellationToken);
 
         return transaction;
     }

@@ -1,6 +1,6 @@
 ﻿namespace AccountService.Api.ObjectStorage.Events.Published;
 
-public class TransferCompleted
+public class TransferCompleted : IEventPayload
 {
     public required Guid SourceAccountId { get; set; }
     public required Guid DestinationAccountId { get; set; }

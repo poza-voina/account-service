@@ -14,7 +14,7 @@ public class Event<TPayload> : BaseEvent
 public abstract class BaseEvent : IEvent, INotification
 {
     public required Guid EventId { get; set; }
-    public string? OccuratedAt { get; set; }
+    public required string OccuratedAt { get; set; }
     public required EventMeta Meta { get; set; }
     public abstract object? Payload { get; }
     public abstract Type GetPayloadType();
@@ -23,7 +23,7 @@ public abstract class BaseEvent : IEvent, INotification
 public interface IEvent
 {
     Guid EventId { get; set; }
-    string? OccuratedAt { get; set; }
+    string OccuratedAt { get; set; }
     EventMeta Meta { get; set; }
     object? Payload { get; }
     Type GetPayloadType();

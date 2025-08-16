@@ -1,6 +1,7 @@
 using AccountService.Abstractions.Constants;
 using AccountService.Api.Features.Account.Interfaces;
 using AccountService.Api.Features.Transactions.ExecuteTransaction;
+using AccountService.Api.ObjectStorage;
 using AccountService.Api.ObjectStorage.Events;
 using AccountService.Api.ObjectStorage.Events.Published;
 using AccountService.Api.ObjectStorage.Interfaces;
@@ -10,6 +11,7 @@ using AutoMapper;
 using MediatR;
 using Newtonsoft.Json.Bson;
 using System.Threading;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.Features.Account.CreateAccount;
@@ -20,7 +22,8 @@ public class CreateAccountCommandHandler(
     IAccountStorageService accountStorageService,
     IMapper mapper,
     IClientVerificationService clientVerificationService,
-    IHttpContextAccessor httpContextAccessor
+    IHttpContextAccessor httpContextAccessor,
+    IEventFactory eventFactory
     ) : IRequestHandler<CreateAccountCommand, AccountViewModel>
 {
     public async Task<AccountViewModel> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
@@ -62,21 +65,9 @@ public class CreateAccountCommandHandler(
 
         var result = mapper.Map<AccountViewModel>(account);
 
-        var e = new Event<AccountOpened>
-        {
-            EventId = Guid.NewGuid(),
-            OccuratedAt = DateTime.UtcNow.ToString(),
-            Meta = new EventMeta
-            {
-                Version = "v1",
-                CausationId = Guid.NewGuid(),
-                CorrelationId = Guid.NewGuid(),
-                Source = nameof(CreateAccountCommandHandler)
-            },
-            Data = mapper.Map<AccountOpened>(account)
-        };
+        var @event = eventFactory.CreateEvent(mapper.Map<AccountOpened>(account), nameof(CreateAccountCommandHandler));
 
-        await mediator.Publish(e, cancellationToken);
+        await mediator.Publish(@event, cancellationToken);
 
         return result;
     }

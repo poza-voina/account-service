@@ -1,6 +1,6 @@
 ﻿namespace AccountService.Api.ObjectStorage.Events.Published;
 
-public class InterestAccrued
+public class InterestAccrued : IEventPayload
 {
     public required Guid AccountId { get; set; }
     public required DateTime PeriodFrom { get; set; }

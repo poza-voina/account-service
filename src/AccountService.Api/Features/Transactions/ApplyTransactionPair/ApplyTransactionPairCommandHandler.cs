@@ -1,13 +1,21 @@
 using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Transactions.Interfaces;
+using AccountService.Api.ObjectStorage;
+using AccountService.Api.ObjectStorage.Events.Published;
+using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Infrastructure.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.Features.Transactions.ApplyTransactionPair;
 
-public class ApplyTransactionPairCommandHandler(ITransactionStorageService transactionStorageService) : IRequestHandler<ApplyTransactionPairCommand, Unit>
+public class ApplyTransactionPairCommandHandler(
+    ITransactionStorageService transactionStorageService,
+    IMediator mediator,
+    IEventFactory eventFactory)
+    : IRequestHandler<ApplyTransactionPairCommand, Unit>
 {
     private const string InvalidTransactionLinkErrorMessage = "Транзакции не формируют взаимную связь";
     private const string AccountNotFoundMoney = "На счете недостаточно средств";
@@ -39,8 +47,12 @@ public class ApplyTransactionPairCommandHandler(ITransactionStorageService trans
         }
 
         ChangeVersion(credit, debit);
+
         ProcessCredit(credit);
+        await ProcessCreditEvent(credit.Transaction);
+
         ProcessDebit(debit);
+        await ProcessDebitEvent(debit.Transaction);
 
         await transactionStorageService.ApplyTransactionsAsync(
             [credit.Transaction, debit.Transaction],
@@ -48,6 +60,37 @@ public class ApplyTransactionPairCommandHandler(ITransactionStorageService trans
             cancellationToken);
 
         return Unit.Value;
+    }
+
+    private async Task ProcessCreditEvent(Models.Transaction transaction)
+    {
+        var moneyCredited = new MoneyCredited
+        {
+            AccountId = transaction.BankAccountId,
+            Amount = transaction.Amount,
+            Currency = transaction.Currency,
+            OperationId = transaction.Id,
+        };
+
+        var @event = eventFactory.CreateEvent(moneyCredited, nameof(ApplyTransactionPairCommandHandler));
+
+        await mediator.Publish(@event);
+    }
+
+    private async Task ProcessDebitEvent(Models.Transaction transaction)
+    {
+        var moneyDebited = new MoneyDebited
+        {
+            AccountId = transaction.BankAccountId,
+            Amount = transaction.Amount,
+            Currency = transaction.Currency,
+            OperationId = transaction.Id,
+            Reason = transaction.Description
+        };
+
+        var @event = eventFactory.CreateEvent(moneyDebited, nameof(ApplyTransactionPairCommandHandler));
+
+        await mediator.Publish(@event);
     }
 
     private static void ChangeVersion(TransactionInfo credit, TransactionInfo debit)

@@ -215,6 +215,7 @@ public static class DependencyInjection
         services.AddScoped<ITransactionStorageService, TransactionStorageService>();
         services.AddScoped<ICurrencyService, CurrencyService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddSingleton<IEventFactory, EventFactory>();
     }
 
     public static void AddAutoMapperConfiguration(this IServiceCollection services)

@@ -5,8 +5,17 @@ namespace AccountService.Api.ObjectStorage.Middlewares;
 
 public class EventDispatchMiddleware(RequestDelegate next, ILogger<EventDispatchMiddleware> logger)
 {
-    public async Task InvokeAsync(HttpContext context, IEventDispatcher dispatcher, IUnitOfWork unitOfWork)
+    public async Task InvokeAsync(HttpContext context)
     {
+        if (HttpMethods.IsGet(context.Request.Method))
+        {
+            await next(context);
+            return;
+        }
+
+        var dispatcher = context.RequestServices.GetRequiredService<IEventDispatcher>();
+        var unitOfWork = context.RequestServices.GetRequiredService<IUnitOfWork>();
+
         if (context.Items.ContainsKey(SystemConstatns.TRANSACTION_STARTED_KEY))
         {
             logger.LogWarning($"Транзакция была начата до {nameof(EventDispatchMiddleware)}");

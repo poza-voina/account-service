@@ -1,6 +1,6 @@
 ﻿namespace AccountService.Api.ObjectStorage.Events.Published;
 
-public class MoneyCredited
+public class MoneyCredited : IEventPayload
 {
     public required Guid AccountId { get; set; }
     public required decimal Amount { get; set; }
