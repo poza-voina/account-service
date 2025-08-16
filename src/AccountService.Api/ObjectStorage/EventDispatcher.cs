@@ -16,13 +16,23 @@ public class EventDispatcher(IEventCollector eventCollector, IRepository<OutboxM
         {
             return;
         }
+        
+        var correlationId = Guid.NewGuid();
 
-        var outboxMessages = events.Select(x => new OutboxMessage
-        {
-            EventType = x.GetPayloadType().FullName ?? throw new InvalidOperationException("Не удалось найти тип payload"), // TODO придумать что-то с ошибкой
-            EventPayload = JsonSerializer.Serialize(x),
-            Status = OutboxStatus.Pending
-        }).ToList();
+        var outboxMessages = events.Select(x => 
+            {
+                x.Meta.CorrelationId = correlationId;
+
+                var message = new OutboxMessage
+                {
+                    EventType = x.GetPayloadType().FullName ?? throw new InvalidOperationException("Не удалось найти тип payload"), // TODO придумать что-то с ошибкой
+                    EventPayload = JsonSerializer.Serialize(x),
+                    Status = OutboxStatus.Pending
+                };
+
+                return message;
+            })
+            .ToList();
 
 
         await repository.AddRangeAsync(outboxMessages, cancellationToken);
