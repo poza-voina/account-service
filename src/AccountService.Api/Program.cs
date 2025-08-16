@@ -1,5 +1,6 @@
 using AccountService.Abstractions.Constants;
 using AccountService.Abstractions.Extensions;
+using AccountService.Api.ObjectStorage.Middlewares;
 using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Api.Scheduler;
 using Hangfire;
@@ -14,6 +15,10 @@ public class Program
         var services = builder.Services;
         var configuration = builder.Configuration;
         var environmentName = builder.Environment.EnvironmentName;
+
+        services.AddHttpContextAccessor();
+
+        services.AddEventConfiguration();
 
         services.AddMockClients();
 
@@ -49,6 +54,8 @@ public class Program
         }
 
         var app = builder.Build();
+
+        app.UseMiddleware<EventDispatchMiddleware>();
 
         if (!app.Environment.IsEnvironment("Testing"))
         {

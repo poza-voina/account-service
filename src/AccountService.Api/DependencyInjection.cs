@@ -3,10 +3,12 @@ using AccountService.Abstractions.Extensions;
 using AccountService.Api.Behaviors;
 using AccountService.Api.Features.Account;
 using AccountService.Api.Features.Account.Interfaces;
+using AccountService.Api.Features.Events.HandlePublishedEvent;
 using AccountService.Api.Features.Statements.GetStatement;
 using AccountService.Api.Features.Transactions;
 using AccountService.Api.Features.Transactions.Interfaces;
 using AccountService.Api.ObjectStorage;
+using AccountService.Api.ObjectStorage.Events;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Api.Scheduler;
@@ -32,6 +34,12 @@ namespace AccountService.Api;
 
 public static class DependencyInjection
 {
+    public static void AddEventConfiguration(this IServiceCollection services)
+    {
+        services.AddScoped<IEventCollector, EventCollector>();
+        services.AddScoped<IEventDispatcher, EventDispatcher>();
+    }
+
     public static void AddMockClients(this IServiceCollection services)
     {
         services.AddSingleton<ICollection<Guid>>(_ =>
@@ -120,7 +128,12 @@ public static class DependencyInjection
 
     public static void AddMediatrConfiguration(this IServiceCollection services)
     {
-        services.AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+        services.AddMediatR(
+            x => 
+            {
+                x.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            });
+
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
     }
 
