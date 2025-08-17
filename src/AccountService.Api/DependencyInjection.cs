@@ -3,12 +3,10 @@ using AccountService.Abstractions.Extensions;
 using AccountService.Api.Behaviors;
 using AccountService.Api.Features.Account;
 using AccountService.Api.Features.Account.Interfaces;
-using AccountService.Api.Features.Events.HandlePublishedEvent;
 using AccountService.Api.Features.Statements.GetStatement;
 using AccountService.Api.Features.Transactions;
 using AccountService.Api.Features.Transactions.Interfaces;
 using AccountService.Api.ObjectStorage;
-using AccountService.Api.ObjectStorage.Events;
 using AccountService.Api.ObjectStorage.Events.Published;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
@@ -22,17 +20,11 @@ using AccountService.Infrastructure.Repositories.Interfaces;
 using FluentValidation;
 using Hangfire;
 using Hangfire.PostgreSql;
-using MassTransit;
-using MassTransit.SqlTransport.Topology;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using RabbitMQ.Client;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -267,7 +259,7 @@ public static class DependencyInjection
 
     public static void AddRabbitMqConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        var settings = configuration.GetRequiredSection("Brokers:RabbitMq").Get<RabbitMqSettings>();
+        var settings = configuration.GetRequiredSection("Brokers:RabbitMq").Get<RabbitMqConfiguration>();
 
         var rabbitMqConfiguration = configuration.GetRequiredSection("Brokers:RabbitMq").GetRequired<RabbitMqConfiguration>()
             .Map<AccountOpened>("account.opened")
