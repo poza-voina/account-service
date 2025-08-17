@@ -59,7 +59,7 @@ public class RabbitMqPublishJob(IRabbitMqService rabbitMqService, IUnitOfWork un
         {
             try
             {
-                await rabbitMqService.PublishAsync(item.EventType, item.EventPayload);
+                await rabbitMqService.PublishAsync(item.Id, item.EventType, item.EventPayload);
                 item.Status = OutboxStatus.Sent;
             }
             catch (Exception)

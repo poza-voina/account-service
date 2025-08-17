@@ -16,7 +16,7 @@ public class RabbitMqService(
     private const string CorrelationIdPropertyName = "CorrelationId";
     private const string CausationIdPropertyName = "CausationId";
 
-    public async Task PublishAsync(string @event, string message, CancellationToken cancellationToken = default)
+    public async Task PublishAsync(Guid messageId, string @event, string message, CancellationToken cancellationToken = default)
     {
         if (!configuration.GetBindings().TryGetValue(@event, out var routingKey))
         {
@@ -26,6 +26,7 @@ public class RabbitMqService(
         var (correlationId, causationId) = ProcessProperties(message);
 
         await InternalPublishAsync(
+            messageId: messageId,
             routingKey: routingKey,
             message: message,
             correlationId: correlationId,
@@ -48,7 +49,7 @@ public class RabbitMqService(
         return (correlationId, causationId);
     }
 
-    public async Task PublishAsync<T>(T message, CancellationToken cancellationToken = default) where T: IEventBase
+    public async Task PublishAsync<T>(Guid messageId, T message, CancellationToken cancellationToken = default) where T: IEventBase
     {
         if (!configuration.GetBindings().TryGetValue(nameof(T), out var routingKey))
         {
@@ -60,8 +61,8 @@ public class RabbitMqService(
         var correlationId = message.Meta.CorrelationId.ToString() ?? throw new InvalidOperationException($"{CorrelationIdPropertyName} не найдено");
         var causationId = message.Meta.CausationId.ToString();
 
-
         await InternalPublishAsync(
+             messageId: messageId,
              routingKey: routingKey,
              message: json,
              correlationId: correlationId,
@@ -70,6 +71,7 @@ public class RabbitMqService(
     }
 
     private async Task InternalPublishAsync(
+        Guid messageId,
         string routingKey,
         string message,
         string correlationId,
@@ -92,7 +94,7 @@ public class RabbitMqService(
             {
                 Persistent = true,
                 Timestamp = new AmqpTimestamp(DateTimeOffset.UtcNow.ToUnixTimeSeconds()),
-                MessageId = Guid.NewGuid().ToString(),
+                MessageId = messageId.ToString(),
                 Headers = new Dictionary<string, object?>
                 {
                     { "X-Correlation-Id", correlationId },

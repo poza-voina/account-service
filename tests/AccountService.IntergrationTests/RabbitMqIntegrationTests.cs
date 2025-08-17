@@ -140,4 +140,88 @@ public class RabbitMqIntegrationTests(PostgresSqlFixture postgresFixture, Rabbit
 
         transferResponse.StatusCode.Should().Be(HttpStatusCode.Conflict);
     }
+
+    [Fact]
+    public async Task Bebra()
+    {
+        var client = CreateIsolatedClient(DefaultIsolatedClientOptions);
+        const string path = "/accounts";
+
+        var createAccountCommand = new CreateAccountCommand
+        {
+            OwnerId = ClientsIds.ElementAt(0),
+            Type = AccountType.Checking,
+            Currency = "USD"
+        };
+
+        var createAccountRequest1 = new HttpRequestBuilder(HttpMethod.Post, path)
+            .WithJsonContent(createAccountCommand)
+            .Build();
+
+        createAccountCommand.OwnerId = ClientsIds.ElementAt(1);
+
+        var createAccountRequest2 = new HttpRequestBuilder(HttpMethod.Post, path)
+            .WithJsonContent(createAccountCommand)
+            .Build();
+
+        var responseAccount1 = await client.SendAsync(createAccountRequest1);
+        var responseAccount2 = await client.SendAsync(createAccountRequest2);
+
+        List<AccountViewModel> accounts =
+            [
+                (await responseAccount1.Content.ReadFromJsonAsync<AccountResponse>(DefaultSerializerOptions))!.Result ?? throw new InvalidOperationException(),
+                (await responseAccount2.Content.ReadFromJsonAsync<AccountResponse>(DefaultSerializerOptions))!.Result ?? throw new InvalidOperationException()
+            ];
+
+
+        var factory = new ConnectionFactory
+        {
+            HostName = rabbitmqFixture.Hostname,
+            Port = rabbitmqFixture.Port,
+            UserName = rabbitmqFixture.Username,
+            Password = rabbitmqFixture.Password
+        };
+
+        await using var connection = await factory.CreateConnectionAsync();
+        await using var channel = await connection.CreateChannelAsync();
+
+        var account = accounts[0];
+
+        var eventId = Guid.NewGuid();
+        var body = new Event<ClientBlocked>
+        {
+            EventId = eventId,
+            OccuratedAt = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
+            Meta = new EventMeta
+            {
+                Version = "v1",
+                Source = "lorem ipsum",
+                CorrelationId = Guid.NewGuid(),
+                CausationId = Guid.NewGuid()
+            },
+            Payload = new ClientBlocked
+            {
+                EventId = eventId,
+                OccurredAt = DateTime.Now,
+                ClientId = account.OwnerId
+            },
+            EventType = nameof(ClientBlocked)
+        };
+
+        var props = new BasicProperties
+        {
+            MessageId = Guid.NewGuid().ToString(),
+            ContentType = "application/json"
+        };
+
+        await channel.BasicPublishAsync(
+            exchange: "account.events",
+            routingKey: "client.blocked",
+            body: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(body)),
+            basicProperties: props,
+            mandatory: false
+        );
+
+        await Task.Delay(10000);
+    }
 }

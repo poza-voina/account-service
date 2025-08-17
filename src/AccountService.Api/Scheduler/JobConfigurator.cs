@@ -15,6 +15,6 @@ public static class JobConfigurator
         RecurringJob.AddOrUpdate<JobRunner<RabbitMqPublishJob>>(
             nameof(RabbitMqPublishJob),
             runner => runner.Run(),
-            Cron.Monthly);
+            "*/ 10 * * * * *");
     }
 }
