@@ -5,11 +5,11 @@ using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Infrastructure.Models;
 using AccountService.Infrastructure.Repositories.Interfaces;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace AccountService.Api.ObjectStorage.Events.Consumers;
 
@@ -19,6 +19,9 @@ public abstract class ConsumerBase(
     IServiceProvider serviceProvider)
     : BackgroundService
 {
+    private const string EventTypePropertyName = "EventType";
+    private const string EventIdPropertyName = "EventId";
+
     protected abstract Task HandleMessageAsync(string eventType, string message, CancellationToken stoppingToken);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -47,9 +50,11 @@ public abstract class ConsumerBase(
         {
             var message = Encoding.UTF8.GetString(ea.Body.ToArray());
 
+            Guid messageId = GetMessageId(message, ea.BasicProperties.MessageId);
+
             try
             {
-                var (eventType, messageId) = ProcessProperties(message);
+                var eventType = ProcessProperties(message);
 
                 await CheckMessageIdAsync(messageId, message);
 
@@ -95,45 +100,47 @@ public abstract class ConsumerBase(
         await Task.Delay(Timeout.Infinite, stoppingToken);
     }
 
+    private Guid GetMessageId(string message, string? messageId)
+    {
+        if (messageId is null)
+        {
+            throw new ConsumerHandleMessageException(message, "MessageId не найдено");
+        }
+
+        if (!Guid.TryParse(messageId, out var result))
+        {
+            throw new ConsumerHandleMessageException(message, "MessageId не удалось преобразовать в GUID");
+        }
+        
+        return result;
+    }
+
     private async Task CheckMessageIdAsync(Guid messageId, string message)
     {
         using (var scope = serviceProvider.CreateScope())
         {
             var repository = scope.ServiceProvider.GetRequiredService<IRepository<InboxConsumed>>();
 
-            if (repository.GetAll().Any(x => x.MessageId == messageId))
+            if (await repository.GetAll().AnyAsync(x => x.MessageId == messageId))
             {
                 throw new ConsumerHandleMessageException(message, "Сообщение уже было принято");
             }
         }
     }
 
-    private (string EventType, Guid MessageId) ProcessProperties(string message)
+    private string ProcessProperties(string message)
     {
         using var doc = JsonDocument.Parse(message);
         var root = doc.RootElement;
 
-        JsonElement typeProperty;
-        JsonElement eventId;
-        if (!root.TryGetProperty("EventType", out typeProperty) ||
-            !root.TryGetProperty("EventId", out eventId))
+        if (!root.TryGetProperty(EventTypePropertyName, out var typeProperty))
         {
-            throw new ConsumerHandleMessageException(message, "Не удалось найти EventType и EventId");
+            throw new ConsumerHandleMessageException(message, $"{EventTypePropertyName}");
         }
 
-        var eventType = typeProperty.GetString() ?? throw new ConsumerHandleMessageException(message, "Не удалось найти eventType");
+        var eventType = typeProperty.GetString() ?? throw new ConsumerHandleMessageException(message, $"{EventTypePropertyName} не найдено");
 
-        Guid messageId;
-        try
-        {
-            messageId = eventId.GetGuid();
-        }
-        catch (Exception ex)
-        {
-            throw new ConsumerHandleMessageException(eventType, message, "Не удалось найти eventId", ex);
-        }
-
-        return (eventType, messageId);
+        return eventType;
     }
 
     protected async Task<bool> TrySendToMediatorAsync<T>(T command)

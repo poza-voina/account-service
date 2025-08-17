@@ -1,4 +1,5 @@
-﻿using AccountService.Api.ObjectStorage.Interfaces;
+﻿using AccountService.Api.ObjectStorage.Events;
+using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -12,6 +13,10 @@ public class RabbitMqService(
     ILogger<RabbitMqService> logger)
     : IRabbitMqService
 {
+    private const string MetaPropertyName = "Meta";
+    private const string CorrelationIdPropertyName = "CorrelationId";
+    private const string CausationIdPropertyName = "CausationId";
+
     public async Task PublishAsync(string @event, string message, CancellationToken cancellationToken = default)
     {
         if (!configuration.GetBindings().TryGetValue(@event, out var routingKey))
@@ -19,10 +24,32 @@ public class RabbitMqService(
             throw new InvalidOperationException($"Routing key not configured for {@event}");
         }
 
-        await InternalPublishAsync(routingKey, message, cancellationToken);
+        var (correlationId, causationId) = ProcessProperties(message);
+
+        await InternalPublishAsync(
+            routingKey: routingKey,
+            message: message,
+            correlationId: correlationId,
+            causationId: causationId,
+            cancellationToken: cancellationToken);
     }
 
-    public async Task PublishAsync<T>(T message, CancellationToken cancellationToken = default)
+    private (string CorrelationId, string CausationId) ProcessProperties(string message)
+    {
+        using var doc = JsonDocument.Parse(message);
+        var root = doc.RootElement;
+
+        var meta = root.GetProperty(MetaPropertyName);
+
+        var correlationId = meta.GetProperty(CorrelationIdPropertyName).GetString() 
+            ?? throw new InvalidOperationException($"{CorrelationIdPropertyName} не найдено");
+        var causationId = meta.GetProperty(CausationIdPropertyName).GetString()
+            ?? throw new InvalidOperationException($"{CausationIdPropertyName} не найдено");
+
+        return (correlationId, causationId);
+    }
+
+    public async Task PublishAsync<T>(T message, CancellationToken cancellationToken = default) where T: IEventBase
     {
         if (!configuration.GetBindings().TryGetValue(nameof(T), out var routingKey))
         {
@@ -30,10 +57,24 @@ public class RabbitMqService(
         }
 
         var json = JsonSerializer.Serialize(message);
-        await InternalPublishAsync(routingKey, json, cancellationToken);
+
+        var correlationId = message.Meta.CorrelationId.ToString() ?? throw new InvalidOperationException($"{CorrelationIdPropertyName} не найдено");
+        var causationId = message.Meta.CausationId.ToString();
+
+
+        await InternalPublishAsync(
+             routingKey: routingKey,
+             message: json,
+             correlationId: correlationId,
+             causationId: causationId,
+             cancellationToken: cancellationToken);
     }
 
-    private async Task InternalPublishAsync(string routingKey, string message, CancellationToken cancellationToken)
+    private async Task InternalPublishAsync(
+        string routingKey,
+        string message,
+        string correlationId,
+        string causationId, CancellationToken cancellationToken)
     {
         try
         {
@@ -52,7 +93,12 @@ public class RabbitMqService(
             {
                 Persistent = true,
                 Timestamp = new AmqpTimestamp(DateTimeOffset.UtcNow.ToUnixTimeSeconds()),
-                MessageId = Guid.NewGuid().ToString()
+                MessageId = Guid.NewGuid().ToString(),
+                Headers = new Dictionary<string, object?>
+                {
+                    { "X-Correlation-Id", correlationId },
+                    { "X-Causation-Id", causationId }
+                }
             };
 
             await channel.BasicPublishAsync(
