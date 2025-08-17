@@ -1,10 +1,12 @@
-﻿using DotNet.Testcontainers.Builders;
+﻿using Docker.DotNet.Models;
+using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using Npgsql;
+using Xunit.Abstractions;
 
 namespace AccountService.IntegrationTests.Base;
 
-public class PostgresSqlFixture : IContainerFixture
+public class PostgresSqlFixture : IPostgresqlContainterFixture
 {
     private readonly IContainer _container = new ContainerBuilder()
         .WithImage("postgres:15")
@@ -14,18 +16,24 @@ public class PostgresSqlFixture : IContainerFixture
         .WithPortBinding(5432, true)
         .Build();
 
-    public string ConnectionString => $"Host=localhost;Port={_container.GetMappedPublicPort(5432)};Username=postgres;Password=password;Database=database";
+    public int Port => _container.GetMappedPublicPort(5432);
+
+    public string ConnectionString => $"Host=localhost;Port={Port};Username=postgres;Password=password;Database=database";
+
+    public IContainer Container => _container;
 
     public async Task InitializeAsync()
     {
         await _container.StartAsync();
-        await WaitForPostgresReady();
+        await WaitForReady();
     }
 
-    private async Task WaitForPostgresReady()
+    public async Task WaitForReady()
     {
-        var retries = 10;
-        while (retries-- > 0)
+        int maxAttempts = 10;
+        int delayMs = 1000;
+
+        for (int attempt = 1; attempt <= maxAttempts; attempt++)
         {
             try
             {
@@ -35,7 +43,9 @@ public class PostgresSqlFixture : IContainerFixture
             }
             catch
             {
-                await Task.Delay(500);
+                if (attempt == maxAttempts)
+                    throw;
+                await Task.Delay(delayMs);
             }
         }
 

@@ -3,11 +3,11 @@
 public class RabbitMqConfiguration
 {
     private readonly Dictionary<string, string> _bindings = new();
-    public required string HostName { get; init; }
-    public required int Port { get; init; }
-    public required string UserName { get; init; }
-    public required string Password { get; init; }
-    public required string Exchange { get; init; }
+    public required string HostName { get; set; }
+    public required int Port { get; set; }
+    public required string UserName { get; set; }
+    public required string Password { get; set; }
+    public required string Exchange { get; set; }
     public List<RabbitMqQueue> Queues { get; set; } = [];
 
     public RabbitMqConfiguration Map<T>(string routingKey)

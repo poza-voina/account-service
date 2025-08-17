@@ -29,6 +29,7 @@ public abstract class ConsumerBase(
         var factory = new ConnectionFactory
         {
             HostName = rabbitMqConfiguration.HostName,
+            Port = rabbitMqConfiguration.Port,
             UserName = rabbitMqConfiguration.UserName,
             Password = rabbitMqConfiguration.Password
         };

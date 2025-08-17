@@ -17,7 +17,7 @@ namespace AccountService.IntegrationTests;
 public class ParallelTransferTests(PostgresSqlFixture fixture, ITestOutputHelper output) : ControllerTestsBase, IClassFixture<PostgresSqlFixture>
 {
     // ReSharper disable once StringLiteralTypo
-    private IsolatedClientOptions DefaultIsolatedClientOptions { get; } = new() { ContainerFixture = fixture, PathToEnvironment = "TestConfigs/appsettings.test.json" };
+    private IsolatedClientOptions DefaultIsolatedClientOptions { get; } = new() { PostgresContainerFixture = fixture, PathToEnvironment = "TestConfigs/appsettings.test.json" };
 
     [Theory]
     [InlineData(50)]
