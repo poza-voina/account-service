@@ -11,7 +11,7 @@ public class CreateDeadLetterCommandHandler(IRepository<Models.InboxDeadLetter> 
     {
         var model = mapper.Map<Models.InboxDeadLetter>(request);
 
-        await repository.AddAsync(model);
+        await repository.AddAsync(model, cancellationToken);
 
         return Unit.Value;
     }

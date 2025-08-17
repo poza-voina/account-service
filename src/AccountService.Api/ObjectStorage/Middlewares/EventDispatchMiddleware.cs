@@ -5,6 +5,7 @@ namespace AccountService.Api.ObjectStorage.Middlewares;
 
 public class EventDispatchMiddleware(RequestDelegate next, ILogger<EventDispatchMiddleware> logger)
 {
+    // ReSharper disable once UnusedMember.Global Нужен используется для event
     public async Task InvokeAsync(HttpContext context)
     {
         if (HttpMethods.IsGet(context.Request.Method))
@@ -16,14 +17,14 @@ public class EventDispatchMiddleware(RequestDelegate next, ILogger<EventDispatch
         var dispatcher = context.RequestServices.GetRequiredService<IEventDispatcher>();
         var unitOfWork = context.RequestServices.GetRequiredService<IUnitOfWork>();
 
-        if (context.Items.ContainsKey(SystemConstants.TRANSACTION_STARTED_KEY))
+        if (context.Items.ContainsKey(SystemConstants.TransactionStartedKey))
         {
             logger.LogWarning($"Транзакция была начата до {nameof(EventDispatchMiddleware)}");
         }
 
-        await unitOfWork.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, CancellationToken.None); //TODO что-то с canellationToken
+        await unitOfWork.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, CancellationToken.None);
 
-        context.Items[SystemConstants.TRANSACTION_STARTED_KEY] = true;
+        context.Items[SystemConstants.TransactionStartedKey] = true;
 
         try
         {
@@ -31,11 +32,11 @@ public class EventDispatchMiddleware(RequestDelegate next, ILogger<EventDispatch
 
             await dispatcher.DispatchAllAsync(CancellationToken.None);
 
-            await unitOfWork.CommitAsync(CancellationToken.None); //TODO что-то с canellationToken
+            await unitOfWork.CommitAsync(CancellationToken.None);
         }
         catch (Exception)
         {
-            await unitOfWork.RollbackAsync(CancellationToken.None); //TODO что-то с canellationToken
+            await unitOfWork.RollbackAsync(CancellationToken.None);
 
             throw;
         }

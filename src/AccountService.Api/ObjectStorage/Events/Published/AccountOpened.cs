@@ -1,5 +1,8 @@
-﻿namespace AccountService.Api.ObjectStorage.Events.Published;
+﻿using JetBrains.Annotations;
 
+namespace AccountService.Api.ObjectStorage.Events.Published;
+
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public class AccountOpened : IEventPayload
 {
     public required Guid AccountId { get; set; }

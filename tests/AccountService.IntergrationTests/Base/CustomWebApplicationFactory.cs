@@ -83,22 +83,18 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
     private void EditRabbitMqConfiguration(IServiceCollection services)
     {
         var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(RabbitMqConfiguration));
-        if (descriptor != null)
-        {
-            services.Remove(descriptor);
+        if (descriptor == null) return;
+        
+        services.Remove(descriptor);
 
-            var existingConfig = descriptor.ImplementationInstance as RabbitMqConfiguration;
+        if (descriptor.ImplementationInstance is not RabbitMqConfiguration existingConfig) return;
 
-            if (existingConfig is not null)
-            {
-                existingConfig.HostName = FactoryOptions.RabbitMqTestOptions!.Hostname;
-                existingConfig.Port = FactoryOptions.RabbitMqTestOptions!.Port;
-                existingConfig.UserName = FactoryOptions.RabbitMqTestOptions!.Username;
-                existingConfig.Password = FactoryOptions.RabbitMqTestOptions!.Password;
+        existingConfig.HostName = FactoryOptions.RabbitMqTestOptions!.Hostname;
+        existingConfig.Port = FactoryOptions.RabbitMqTestOptions!.Port;
+        existingConfig.UserName = FactoryOptions.RabbitMqTestOptions!.Username;
+        existingConfig.Password = FactoryOptions.RabbitMqTestOptions!.Password;
 
-                services.AddSingleton(existingConfig);
-            }
-        }
+        services.AddSingleton(existingConfig);
     }
 
     protected override void Dispose(bool disposing)

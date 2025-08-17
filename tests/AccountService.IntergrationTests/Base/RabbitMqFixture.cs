@@ -6,7 +6,7 @@ namespace AccountService.IntegrationTests.Base;
 
 public class RabbitMqFixture : IRabbitMqContainerFixture
 {
-    private readonly IContainer _container = new ContainerBuilder()
+    public IContainer Container { get; } = new ContainerBuilder()
         .WithImage("rabbitmq:3-management")
         .WithEnvironment("RABBITMQ_DEFAULT_USER", "test")
         .WithEnvironment("RABBITMQ_DEFAULT_PASS", "test")
@@ -14,7 +14,6 @@ public class RabbitMqFixture : IRabbitMqContainerFixture
         .WithPortBinding(15672, true)
         .Build();
 
-    public IContainer Container => _container;
     public string Username => "test";
     public string Password => "test";
     public int Port => Container.GetMappedPublicPort(5672);
@@ -22,23 +21,23 @@ public class RabbitMqFixture : IRabbitMqContainerFixture
 
     public async Task InitializeAsync()
     {
-        await _container.StartAsync();
+        await Container.StartAsync();
         await WaitForReady();
     }
 
     public async Task DisposeAsync()
     {
-        await _container.StopAsync();
-        await _container.DisposeAsync();
+        await Container.StopAsync();
+        await Container.DisposeAsync();
     }
 
-    public async Task StartAsync() => await _container.StartAsync();
-    public async Task StopAsync() => await _container.StopAsync();
+    public async Task StartAsync() => await Container.StartAsync();
+    public async Task StopAsync() => await Container.StopAsync();
 
     public async Task WaitForReady()
     {
-        int maxAttempts = 10;
-        int delayMs = 3000;
+        const int maxAttempts = 10;
+        const int delayMs = 3000;
 
         var factory = new ConnectionFactory
         {
@@ -49,7 +48,7 @@ public class RabbitMqFixture : IRabbitMqContainerFixture
             RequestedConnectionTimeout = TimeSpan.FromSeconds(2)
         };
 
-        for (int attempt = 1; attempt <= maxAttempts; attempt++)
+        for (var attempt = 1; attempt <= maxAttempts; attempt++)
         {
             try
             {

@@ -7,16 +7,13 @@ using AccountService.Api.ViewModels;
 using AccountService.Infrastructure.Enums;
 using AccountService.IntegrationTests.Base;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
 using RabbitMQ.Client;
-using System.ComponentModel;
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
 using Xunit;
-using Xunit.Abstractions;
 using AccountResponse = AccountService.Api.ViewModels.Result.MbResult<AccountService.Api.ViewModels.AccountViewModel>;
 
 namespace AccountService.IntegrationTests;
@@ -26,7 +23,7 @@ public class RabbitMqIntegrationTests(PostgresSqlFixture postgresFixture, Rabbit
     private IsolatedClientOptions DefaultIsolatedClientOptions { get; } = new() { RabbitMqContainerFixture = rabbitmqFixture, PostgresContainerFixture = postgresFixture, PathToEnvironment = "TestConfigs/appsettings.test.json" };
 
     [Fact]
-    public async Task AccountBlockedEvent_WhenAccountFroznen_ShouldReturn409()
+    public async Task AccountBlockedEvent_WhenAccountFrozen_ShouldReturn409()
     {
         var client = CreateIsolatedClient(DefaultIsolatedClientOptions);
         const string path = "/accounts";
@@ -68,16 +65,16 @@ public class RabbitMqIntegrationTests(PostgresSqlFixture postgresFixture, Rabbit
             Password = rabbitmqFixture.Password
         };
 
-        using var connection = await factory.CreateConnectionAsync();
-        using var channel = await connection.CreateChannelAsync();
+        await using var connection = await factory.CreateConnectionAsync();
+        await using var channel = await connection.CreateChannelAsync();
 
         var account = accounts[0];
 
-        Guid eventId = Guid.NewGuid();
+        var eventId = Guid.NewGuid();
         var body = new Event<ClientBlocked>
         {
             EventId = eventId,
-            OccuratedAt = DateTime.UtcNow.ToString(),
+            OccuratedAt = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
             Meta = new EventMeta
             {
                 Version = "v1",
@@ -132,7 +129,7 @@ public class RabbitMqIntegrationTests(PostgresSqlFixture postgresFixture, Rabbit
             CounterpartyBankAccountVersion = getAccountSecondVersion,
             Amount = 10,
             Currency = "USD",
-            Description = $"test"
+            Description = "test"
         };
 
         var transferRequest = new HttpRequestBuilder(HttpMethod.Post, pathToTransfer)

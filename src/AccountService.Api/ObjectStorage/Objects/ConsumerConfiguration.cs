@@ -7,7 +7,7 @@ public class ConsumerConfiguration
 
     public ConsumerConfiguration Map<T>()
     {
-        EventType = typeof(T).Name.ToString();
+        EventType = typeof(T).Name;
         
         return this;
     }

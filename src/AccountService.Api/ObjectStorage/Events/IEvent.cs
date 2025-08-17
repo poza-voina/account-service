@@ -1,6 +1,6 @@
 ﻿namespace AccountService.Api.ObjectStorage.Events;
 
-public interface IEvent<TPayload> : IEventBase
+public interface IEvent<out TPayload> : IEventBase
 {
     TPayload? Payload { get; }
 }

@@ -13,8 +13,8 @@ public class RabbitMqPublishJob(IRabbitMqService rabbitMqService, IUnitOfWork un
     {
         var repository = unitOfWork.GetRepository<IRepository<OutboxMessage>>();
 
-        List<OutboxMessage> batch = new List<OutboxMessage>();
-        var batchSize = 100;
+        var batch = new List<OutboxMessage>();
+        const int batchSize = 100;
 
         var data = repository.GetAll()
                 .Where(x => x.Status == OutboxStatus.Pending || x.Status == OutboxStatus.Failed)
@@ -24,11 +24,9 @@ public class RabbitMqPublishJob(IRabbitMqService rabbitMqService, IUnitOfWork un
         {
             batch.Add(item);
 
-            if (batch.Count >= batchSize)
-            {
-                await ProcessBatchAsync(batch, repository);
-                batch.Clear();
-            }
+            if (batch.Count < batchSize) continue;
+            await ProcessBatchAsync(batch, repository);
+            batch.Clear();
         }
 
         if (batch.Count > 0)

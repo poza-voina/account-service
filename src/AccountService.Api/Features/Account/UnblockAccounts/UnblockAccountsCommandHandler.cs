@@ -11,19 +11,19 @@ public class UnblockAccountsCommandHandler(IUnitOfWork unitOfWork) : IRequestHan
 {
     public async Task<Unit> Handle(UnblockAccountsCommand request, CancellationToken cancellationToken)
     {
-        var respository = unitOfWork.GetRepository<IRepository<Models.Account>>();
+        var repository = unitOfWork.GetRepository<IRepository<Models.Account>>();
 
         await unitOfWork.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
 
         try
         {
-            var accounts = await respository.GetAll()
+            var accounts = await repository.GetAll()
                 .Where(x => x.OwnerId == request.OwnerId && x.IsFrozen)
-                .ToListAsync();
+                .ToListAsync(cancellationToken: cancellationToken);
 
             accounts.ForEach(x => x.IsFrozen = false);
 
-            await respository.UpdateRangeAsync(accounts);
+            await repository.UpdateRangeAsync(accounts);
 
             await unitOfWork.CommitAsync(cancellationToken);
         }

@@ -1,15 +1,11 @@
 using AccountService.Abstractions.Exceptions;
-using AccountService.Api.Features.Account.CreateAccount;
 using AccountService.Api.Features.Transactions.Interfaces;
-using AccountService.Api.ObjectStorage.Events;
 using AccountService.Api.ObjectStorage.Events.Published;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Infrastructure.Enums;
 using AccountService.Infrastructure.Models;
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Principal;
 using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.Features.Transactions.ApplyTransaction;
@@ -62,7 +58,7 @@ public class ApplyTransactionCommandHandler(
             AccountId = transaction.BankAccountId,
             Amount = transaction.Amount,
             Currency = transaction.Currency,
-            OperationId = transaction.Id,
+            OperationId = transaction.Id
         };
 
         var @event = eventFactory.CreateEvent(moneyCredited, nameof(ApplyTransactionCommandHandler));
@@ -70,7 +66,7 @@ public class ApplyTransactionCommandHandler(
         await mediator.Publish(@event);
     }
 
-    private async Task ProcessDebitEvent(Models.Transaction transaction)
+    private async Task ProcessDebitEvent(Transaction transaction)
     {
         var moneyDebited = new MoneyDebited
         {
@@ -86,12 +82,12 @@ public class ApplyTransactionCommandHandler(
         await mediator.Publish(@event);
     }
 
-    public static void ProcessDebit(Models.Transaction transaction, Models.Account account)
+    public static void ProcessDebit(Transaction transaction, Models.Account account)
     {
         account.Balance += transaction.Amount;
     }
 
-    public static void ProcessCredit(Models.Transaction transaction, Models.Account account)
+    public static void ProcessCredit(Transaction transaction, Models.Account account)
     {
         if (transaction.Amount > account.Balance)
         {

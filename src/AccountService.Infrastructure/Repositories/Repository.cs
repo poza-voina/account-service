@@ -70,8 +70,9 @@ public class Repository<TModel>(ApplicationDbContext context) : IRepository<TMod
         IEnumerable<TModel> entities,
         CancellationToken cancellationToken = default)
     {
-        await context.Set<TModel>().AddRangeAsync(entities, cancellationToken);
+        var entitiesList = entities.ToList();
+        await context.Set<TModel>().AddRangeAsync(entitiesList, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
-        return entities;
+        return entitiesList;
     }
 }

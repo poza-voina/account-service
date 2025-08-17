@@ -23,10 +23,8 @@ public class ExecuteTransactionCommandHandler(
         {
             return await ExcecuteTransactionBody(request, cancellationToken);
         }
-        else
-        {
-            return await ExcecuteTransaction(request, cancellationToken);
-        }
+
+        return await ExcecuteTransaction(request, cancellationToken);
     }
 
     private async Task<TransactionViewModel> ExcecuteTransaction(ExecuteTransactionCommand request, CancellationToken cancellationToken)
@@ -68,5 +66,5 @@ public class ExecuteTransactionCommandHandler(
     private bool IsTransactionStarted =>
         httpContextAccessor.HttpContext
         ?.Items
-        .ContainsKey(SystemConstants.TRANSACTION_STARTED_KEY) is true;
+        .ContainsKey(SystemConstants.TransactionStartedKey) is true;
 }

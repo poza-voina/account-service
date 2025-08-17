@@ -1,12 +1,8 @@
-﻿using AccountService.Api.Features.Account.CreateAccount;
-using AccountService.Api.ObjectStorage.Events;
-using AccountService.Api.ObjectStorage.Events.Published;
+﻿using AccountService.Api.ObjectStorage.Events.Published;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.Scheduler.Interfaces;
 using AccountService.Infrastructure.Enums;
-using AccountService.Infrastructure.Models;
 using AccountService.Infrastructure.Repositories.Interfaces;
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Data;

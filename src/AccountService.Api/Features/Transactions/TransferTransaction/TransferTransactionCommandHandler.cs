@@ -1,7 +1,6 @@
 using AccountService.Abstractions.Constants;
 using AccountService.Api.Features.Transactions.ApplyTransactionPair;
 using AccountService.Api.Features.Transactions.RegisterTransaction;
-using AccountService.Api.ObjectStorage;
 using AccountService.Api.ObjectStorage.Events.Published;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
@@ -44,7 +43,7 @@ public class TransferTransactionCommandHandler(
 
         var @event = eventFactory.CreateEvent(transferCompleted, nameof(TransferTransactionCommandHandler));
 
-        await mediator.Publish(@event);
+        await mediator.Publish(@event, cancellationToken);
 
         return result;
     }
@@ -113,5 +112,5 @@ public class TransferTransactionCommandHandler(
     private bool IsTransactionStarted =>
         httpContextAccessor.HttpContext
         ?.Items
-        .ContainsKey(SystemConstants.TRANSACTION_STARTED_KEY) is true;
+        .ContainsKey(SystemConstants.TransactionStartedKey) is true;
 }

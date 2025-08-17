@@ -1,10 +1,8 @@
 ﻿using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Account.BlockAccounts;
-using AccountService.Api.Features.Account.CheckAccountExists;
 using AccountService.Api.Features.Account.UnblockAccounts;
 using AccountService.Api.ObjectStorage.Events.Consumed;
 using AccountService.Api.ObjectStorage.Objects;
-using MediatR;
 using System.Text.Json;
 
 namespace AccountService.Api.ObjectStorage.Events.Consumers;

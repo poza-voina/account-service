@@ -1,7 +1,6 @@
 ﻿using AccountService.Api.ObjectStorage.Events;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
-using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
@@ -34,7 +33,7 @@ public class RabbitMqService(
             cancellationToken: cancellationToken);
     }
 
-    private (string CorrelationId, string CausationId) ProcessProperties(string message)
+    private static (string CorrelationId, string CausationId) ProcessProperties(string message)
     {
         using var doc = JsonDocument.Parse(message);
         var root = doc.RootElement;
@@ -85,8 +84,8 @@ public class RabbitMqService(
                 Password = configuration.Password
             };
 
-            using var connection = await factory.CreateConnectionAsync(cancellationToken);
-            using var channel = await connection.CreateChannelAsync();
+            await using var connection = await factory.CreateConnectionAsync(cancellationToken);
+            await using var channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
 
             var body = Encoding.UTF8.GetBytes(message);
             var properties = new BasicProperties

@@ -19,7 +19,7 @@ public class BlockAccountsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandl
         {
             var accounts = await repository.GetAll()
                 .Where(x => x.OwnerId == request.OwnerId)
-                .ToListAsync();
+                .ToListAsync(cancellationToken: cancellationToken);
 
             accounts.ForEach(x => x.IsFrozen = true);
 

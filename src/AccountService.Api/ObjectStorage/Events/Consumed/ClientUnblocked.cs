@@ -1,5 +1,8 @@
-﻿namespace AccountService.Api.ObjectStorage.Events.Consumed;
+﻿using JetBrains.Annotations;
 
+namespace AccountService.Api.ObjectStorage.Events.Consumed;
+
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public class ClientUnblocked : IEventPayload
 {
     public Guid EventId { get; init; }

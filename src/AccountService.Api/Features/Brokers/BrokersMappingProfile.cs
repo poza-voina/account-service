@@ -3,7 +3,6 @@ using AccountService.Api.Features.Brokers.CreateInboxConsumed;
 using AccountService.Infrastructure.Models;
 using AutoMapper;
 using JetBrains.Annotations;
-using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.Features.Brokers;
 

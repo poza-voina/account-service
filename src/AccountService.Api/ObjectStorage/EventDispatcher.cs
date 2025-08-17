@@ -10,7 +10,7 @@ public class EventDispatcher(IEventCollector eventCollector, IRepository<OutboxM
 {
     public async Task DispatchAllAsync(CancellationToken cancellationToken)
     {
-        var events = eventCollector.GetEvents();
+        var events = eventCollector.GetEvents().ToList();
 
         if (!events.Any())
         {
@@ -25,7 +25,7 @@ public class EventDispatcher(IEventCollector eventCollector, IRepository<OutboxM
 
                 var message = new OutboxMessage
                 {
-                    EventType = x.GetPayloadType().Name ?? throw new InvalidOperationException("Не удалось найти тип payload"), // TODO придумать что-то с ошибкой
+                    EventType = x.GetPayloadType().Name ?? throw new InvalidOperationException("Не удалось найти тип payload"),
                     EventPayload = JsonSerializer.Serialize(x),
                     Status = OutboxStatus.Pending
                 };

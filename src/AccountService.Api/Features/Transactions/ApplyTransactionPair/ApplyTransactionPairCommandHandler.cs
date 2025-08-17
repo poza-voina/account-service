@@ -1,6 +1,5 @@
 using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Transactions.Interfaces;
-using AccountService.Api.ObjectStorage;
 using AccountService.Api.ObjectStorage.Events.Published;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
@@ -69,7 +68,7 @@ public class ApplyTransactionPairCommandHandler(
             AccountId = transaction.BankAccountId,
             Amount = transaction.Amount,
             Currency = transaction.Currency,
-            OperationId = transaction.Id,
+            OperationId = transaction.Id
         };
 
         var @event = eventFactory.CreateEvent(moneyCredited, nameof(ApplyTransactionPairCommandHandler));

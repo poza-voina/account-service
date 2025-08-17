@@ -1,10 +1,9 @@
-using Models = AccountService.Infrastructure.Models;
-using AccountService.Api.Features.Brokers.CreateInboxConsumed;
 using AccountService.Infrastructure.Repositories.Interfaces;
-using MediatR;
 using AutoMapper;
+using MediatR;
+using Models = AccountService.Infrastructure.Models;
 
-namespace AccountService.Api.Features.Brokers;
+namespace AccountService.Api.Features.Brokers.CreateInboxConsumed;
 
 public class CreateInboxConsumedCommandHandler(IRepository<Models.InboxConsumed> repository, IMapper mapper) : IRequestHandler<CreateInboxConsumedCommand, Unit>
 {
@@ -12,7 +11,7 @@ public class CreateInboxConsumedCommandHandler(IRepository<Models.InboxConsumed>
     {
         var model = mapper.Map<Models.InboxConsumed>(request);
         
-        await repository.AddAsync(model);
+        await repository.AddAsync(model, cancellationToken);
 
         return Unit.Value;
     }

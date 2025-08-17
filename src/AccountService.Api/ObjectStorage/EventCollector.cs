@@ -5,11 +5,11 @@ namespace AccountService.Api.ObjectStorage;
 
 public class EventCollector : IEventCollector
 {
-    private readonly List<IEventBase> events = [];
+    private readonly List<IEventBase> _events = [];
 
     public void AddEvent(IEventBase @event) =>
-        events.Add(@event);
+        _events.Add(@event);
 
     public IEnumerable<IEventBase> GetEvents() =>
-        events;
+        _events;
 }

@@ -20,7 +20,6 @@ public abstract class ConsumerBase(
     : BackgroundService
 {
     private const string EventTypePropertyName = "EventType";
-    private const string EventIdPropertyName = "EventId";
 
     protected abstract Task HandleMessageAsync(string eventType, string message, CancellationToken stoppingToken);
 
@@ -35,7 +34,7 @@ public abstract class ConsumerBase(
         };
 
         await using var connection = await factory.CreateConnectionAsync(stoppingToken);
-        await using var channel = await connection.CreateChannelAsync();
+        await using var channel = await connection.CreateChannelAsync(cancellationToken: stoppingToken);
 
         await channel.QueueDeclareAsync(
             queue: consumerConfiguration.QueueName,
@@ -51,7 +50,7 @@ public abstract class ConsumerBase(
         {
             var message = Encoding.UTF8.GetString(ea.Body.ToArray());
 
-            Guid messageId = GetMessageId(message, ea.BasicProperties.MessageId);
+            var messageId = GetMessageId(message, ea.BasicProperties.MessageId);
 
             try
             {
@@ -69,6 +68,7 @@ public abstract class ConsumerBase(
 
                 await TrySendToMediatorAsync(command);
 
+                // ReSharper disable once AccessToDisposedClosure Это backgroundService
                 await channel.BasicAckAsync(ea.DeliveryTag, false, stoppingToken);
             }
             catch (ConsumerHandleMessageException exception)
@@ -83,10 +83,12 @@ public abstract class ConsumerBase(
                 await TrySendToMediatorAsync(command);
 
 
+                // ReSharper disable once AccessToDisposedClosure Это backgroundService
                 await channel.BasicNackAsync(ea.DeliveryTag, false, false, stoppingToken);
             }
             catch
             {
+                // ReSharper disable once AccessToDisposedClosure Это backgroundService
                 await channel.BasicNackAsync(ea.DeliveryTag, false, true, stoppingToken);
             }
         };
@@ -101,7 +103,7 @@ public abstract class ConsumerBase(
         await Task.Delay(Timeout.Infinite, stoppingToken);
     }
 
-    private Guid GetMessageId(string message, string? messageId)
+    private static Guid GetMessageId(string message, string? messageId)
     {
         if (messageId is null)
         {
@@ -118,18 +120,16 @@ public abstract class ConsumerBase(
 
     private async Task CheckMessageIdAsync(Guid messageId, string message)
     {
-        using (var scope = serviceProvider.CreateScope())
-        {
-            var repository = scope.ServiceProvider.GetRequiredService<IRepository<InboxConsumed>>();
+        using var scope = serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IRepository<InboxConsumed>>();
 
-            if (await repository.GetAll().AnyAsync(x => x.MessageId == messageId))
-            {
-                throw new ConsumerHandleMessageException(message, "Сообщение уже было принято");
-            }
+        if (await repository.GetAll().AnyAsync(x => x.MessageId == messageId))
+        {
+            throw new ConsumerHandleMessageException(message, "Сообщение уже было принято");
         }
     }
 
-    private string ProcessProperties(string message)
+    private static string ProcessProperties(string message)
     {
         using var doc = JsonDocument.Parse(message);
         var root = doc.RootElement;
@@ -148,12 +148,10 @@ public abstract class ConsumerBase(
     {
         try
         {
-            using (var scope = serviceProvider.CreateScope())
-            {
-                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+            using var scope = serviceProvider.CreateScope();
+            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                await mediator.Send(command!);
-            }
+            await mediator.Send(command!);
         }
         catch
         {
