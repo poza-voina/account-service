@@ -4,6 +4,7 @@ using AccountService.Api.Features.Account.Interfaces;
 using AccountService.Api.Features.Transactions.Interfaces;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ViewModels;
+using AccountService.Infrastructure.Enums;
 using AutoMapper;
 using MediatR;
 using Models = AccountService.Infrastructure.Models;
@@ -23,6 +24,11 @@ public class RegisterTransactionCommandHandler(
     public async Task<TransactionViewModel> Handle(RegisterTransactionCommand request, CancellationToken cancellationToken)
     {
         var account = await accountStorageService.GetAccountAsync(request.BankAccountId, cancellationToken);
+
+        if (account.IsFrozen && request.Type == TransactionType.Credit)
+        {
+            throw new ConflictException("Аккаунт замарожен");
+        }
 
         if (request.CounterpartyBankAccountId.HasValue)
         {
