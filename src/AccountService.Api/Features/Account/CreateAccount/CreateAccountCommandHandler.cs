@@ -1,17 +1,10 @@
 using AccountService.Abstractions.Constants;
 using AccountService.Api.Features.Account.Interfaces;
-using AccountService.Api.Features.Transactions.ExecuteTransaction;
-using AccountService.Api.ObjectStorage;
-using AccountService.Api.ObjectStorage.Events;
 using AccountService.Api.ObjectStorage.Events.Published;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ViewModels;
-using AccountService.Infrastructure.Models;
 using AutoMapper;
 using MediatR;
-using Newtonsoft.Json.Bson;
-using System.Threading;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.Features.Account.CreateAccount;
@@ -34,6 +27,7 @@ public class CreateAccountCommandHandler(
 
         account.Id = Guid.NewGuid();
         account.IsDeleted = false;
+        account.IsFrozen = false;
 
         if (IsTransactionStarted)
         {

@@ -3,6 +3,7 @@ using System;
 using AccountService.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AccountService.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250817093636_IsFrozenMigration")]
+    partial class IsFrozenMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,63 +89,6 @@ namespace AccountService.Infrastructure.Migrations
                     b.ToTable("accounts", (string)null);
                 });
 
-            modelBuilder.Entity("AccountService.Infrastructure.Models.InboxConsumed", b =>
-                {
-                    b.Property<Guid>("MessageId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("messageId");
-
-                    b.Property<string>("Handler")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("handler");
-
-                    b.Property<DateTime>("ProcessedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("failedAt")
-                        .HasDefaultValueSql("now() at time zone 'utc'");
-
-                    b.HasKey("MessageId");
-
-                    b.ToTable("inboxConsumed", (string)null);
-                });
-
-            modelBuilder.Entity("AccountService.Infrastructure.Models.InboxDeadLetter", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("EventType")
-                        .HasColumnType("text")
-                        .HasColumnName("eventType");
-
-                    b.Property<string>("ExceptionMessage")
-                        .HasColumnType("text")
-                        .HasColumnName("exceptionMessage");
-
-                    b.Property<DateTime>("FailedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("failedAt")
-                        .HasDefaultValueSql("now() at time zone 'utc'");
-
-                    b.Property<string>("Payload")
-                        .HasColumnType("text")
-                        .HasColumnName("payload");
-
-                    b.Property<string>("StackTrace")
-                        .HasColumnType("text")
-                        .HasColumnName("stackTrace");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("inboxDeadLetter", (string)null);
-                });
-
             modelBuilder.Entity("AccountService.Infrastructure.Models.OutboxMessage", b =>
                 {
                     b.Property<Guid>("Id")
@@ -177,7 +123,7 @@ namespace AccountService.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("outboxMessages", (string)null);
+                    b.ToTable("outboxMesages", (string)null);
                 });
 
             modelBuilder.Entity("AccountService.Infrastructure.Models.Transaction", b =>

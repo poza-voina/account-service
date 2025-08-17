@@ -7,6 +7,7 @@ using AccountService.Api.Features.Statements.GetStatement;
 using AccountService.Api.Features.Transactions;
 using AccountService.Api.Features.Transactions.Interfaces;
 using AccountService.Api.ObjectStorage;
+using AccountService.Api.ObjectStorage.Events.Consumers;
 using AccountService.Api.ObjectStorage.Events.Published;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
@@ -271,5 +272,12 @@ public static class DependencyInjection
         services.AddSingleton(rabbitMqConfiguration);
         services.AddHostedService<RabbitMqInitializer>();
         services.AddScoped<IRabbitMqService, RabbitMqService>();
+
+        var consumerConfiguration = new ConsumerConfiguration()
+            .WithQueueName("account.antifraud")
+            .Map<AntifraudConsumerV1>();
+
+        services.AddSingleton(consumerConfiguration);
+        services.AddHostedService<AntifraudConsumerV1>();
     }
 }

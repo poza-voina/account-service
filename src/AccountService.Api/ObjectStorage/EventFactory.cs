@@ -12,6 +12,7 @@ public class EventFactory : IEventFactory
             OccuratedAt = DateTime.UtcNow.ToString(),
             Payload = data,
             EventId = Guid.NewGuid(),
+            EventType = typeof(TPayload).Name,
             Meta = new EventMeta
             {
                 Version = "v1",

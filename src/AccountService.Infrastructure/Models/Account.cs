@@ -14,6 +14,7 @@ public class Account : IDatabaseModel, IConcurrencyModel
     public DateTime OpeningDate { get; set; }
     public DateTime? ClosingDate { get; set; }
     public bool IsDeleted { get; set; }
+    public bool IsFrozen { get; set; }
     public virtual ICollection<Transaction> Transactions { get; set; } = [];
     public virtual ICollection<Transaction> CounterPartyTransactions { get; set; } = [];
     public uint Version { get; set; }

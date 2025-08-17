@@ -9,7 +9,7 @@ public class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage
     public void Configure(EntityTypeBuilder<OutboxMessage> builder)
     {
         builder
-            .ToTable("outboxMesages");
+            .ToTable("outboxMessages");
 
         builder
             .HasKey(x => x.Id);
