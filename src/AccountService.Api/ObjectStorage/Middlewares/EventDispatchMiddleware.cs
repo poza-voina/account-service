@@ -16,14 +16,14 @@ public class EventDispatchMiddleware(RequestDelegate next, ILogger<EventDispatch
         var dispatcher = context.RequestServices.GetRequiredService<IEventDispatcher>();
         var unitOfWork = context.RequestServices.GetRequiredService<IUnitOfWork>();
 
-        if (context.Items.ContainsKey(SystemConstatns.TRANSACTION_STARTED_KEY))
+        if (context.Items.ContainsKey(SystemConstants.TRANSACTION_STARTED_KEY))
         {
             logger.LogWarning($"Транзакция была начата до {nameof(EventDispatchMiddleware)}");
         }
 
         await unitOfWork.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, CancellationToken.None); //TODO что-то с canellationToken
 
-        context.Items[SystemConstatns.TRANSACTION_STARTED_KEY] = true;
+        context.Items[SystemConstants.TRANSACTION_STARTED_KEY] = true;
 
         try
         {

@@ -48,6 +48,8 @@ public class Program
 
         services.AddAutoMapperConfiguration();
 
+        services.AddRabbitMqConfiguration(configuration);
+
         if (environmentName != "Testing")
         {
             services.AddHangfireConfiguration(configuration);

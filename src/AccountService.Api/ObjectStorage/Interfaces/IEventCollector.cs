@@ -4,6 +4,6 @@ namespace AccountService.Api.ObjectStorage.Interfaces;
 
 public interface IEventCollector
 {
-    IEnumerable<IEvent> GetEvents();
-    void AddEvent(IEvent @event);
+    IEnumerable<IEventBase> GetEvents();
+    void AddEvent(IEventBase @event);
 }

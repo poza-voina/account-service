@@ -1,6 +1,6 @@
 ﻿namespace AccountService.Abstractions.Constants;
 
-public class SystemConstatns
+public class SystemConstants
 {
     public const string TRANSACTION_STARTED_KEY = "TransactionStarted";
 }

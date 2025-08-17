@@ -75,5 +75,5 @@ public class CreateAccountCommandHandler(
     private bool IsTransactionStarted =>
         httpContextAccessor.HttpContext
         ?.Items
-        .ContainsKey(SystemConstatns.TRANSACTION_STARTED_KEY) is true;
+        .ContainsKey(SystemConstants.TRANSACTION_STARTED_KEY) is true;
 }

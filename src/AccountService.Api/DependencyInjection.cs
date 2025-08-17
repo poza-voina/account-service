@@ -9,6 +9,7 @@ using AccountService.Api.Features.Transactions;
 using AccountService.Api.Features.Transactions.Interfaces;
 using AccountService.Api.ObjectStorage;
 using AccountService.Api.ObjectStorage.Events;
+using AccountService.Api.ObjectStorage.Events.Published;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Api.Scheduler;
@@ -21,11 +22,17 @@ using AccountService.Infrastructure.Repositories.Interfaces;
 using FluentValidation;
 using Hangfire;
 using Hangfire.PostgreSql;
+using MassTransit;
+using MassTransit.SqlTransport.Topology;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RabbitMQ.Client;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -129,7 +136,7 @@ public static class DependencyInjection
     public static void AddMediatrConfiguration(this IServiceCollection services)
     {
         services.AddMediatR(
-            x => 
+            x =>
             {
                 x.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             });
@@ -254,6 +261,23 @@ public static class DependencyInjection
         services.AddHangfireServer();
 
         services.AddScoped<AccrueInterestJob>();
+        services.AddScoped<RabbitMqPublishJob>();
         services.AddSingleton(typeof(JobRunner<>));
+    }
+
+    public static void AddRabbitMqConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        var settings = configuration.GetRequiredSection("Brokers:RabbitMq").Get<RabbitMqSettings>();
+
+        var rabbitMqConfiguration = configuration.GetRequiredSection("Brokers:RabbitMq").GetRequired<RabbitMqConfiguration>()
+            .Map<AccountOpened>("account.opened")
+            .Map<InterestAccrued>("money.*")
+            .Map<MoneyCredited>("money.*")
+            .Map<MoneyDebited>("money.*")
+            .Map<TransferCompleted>("money.*");
+
+        services.AddSingleton(rabbitMqConfiguration);
+        services.AddHostedService<RabbitMqInitializer>();
+        services.AddScoped<IRabbitMqService, RabbitMqService>();
     }
 }

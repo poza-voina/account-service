@@ -4,7 +4,7 @@ using MediatR;
 
 namespace AccountService.Api.Features.Events.HandlePublishedEvent;
 
-public class HandlePublishedEventHandler<TEvent>(IEventCollector eventCollector) : INotificationHandler<TEvent> where TEvent : BaseEvent
+public class HandlePublishedEventHandler<TEvent>(IEventCollector eventCollector) : INotificationHandler<TEvent> where TEvent : IEventBase
 {
     public Task Handle(TEvent notification, CancellationToken cancellationToken)
     {
