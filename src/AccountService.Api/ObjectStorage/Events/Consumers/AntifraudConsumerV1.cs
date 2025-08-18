@@ -4,7 +4,6 @@ using AccountService.Api.Features.Account.UnblockAccounts;
 using AccountService.Api.ObjectStorage.Events.Consumed;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
-using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace AccountService.Api.ObjectStorage.Events.Consumers;
@@ -20,7 +19,7 @@ public class AntifraudConsumerV1(
     {
         try
         {
-            await ExecuteMessageAsync(eventType,message, logData, cancelationToken);
+            await ExecuteMessageAsync(eventType,message, logData);
         }
         catch (Exception ex)
         {
@@ -28,7 +27,7 @@ public class AntifraudConsumerV1(
         }
     }
 
-    private async Task ExecuteMessageAsync(string eventType, string message, MessageLogData logData, CancellationToken cancellationToken)
+    private async Task ExecuteMessageAsync(string eventType, string message, MessageLogData logData)
     {
         var options = new JsonSerializerOptions
         {
@@ -62,7 +61,7 @@ public class AntifraudConsumerV1(
         logData.EventId = message.EventId.ToString();
         logData.Type = message.EventType;
         logData.CorrelationId = message.Meta.CorrelationId.ToString();
-        logData.Version = message.Meta.Version.ToString();
+        logData.Version = message.Meta.Version;
     }
 
     private static void CheckVersion<T>(IEvent<T> message) where T: IEventPayload

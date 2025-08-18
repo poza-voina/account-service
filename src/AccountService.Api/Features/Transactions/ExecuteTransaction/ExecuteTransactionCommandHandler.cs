@@ -21,19 +21,19 @@ public class ExecuteTransactionCommandHandler(
     {
         if (IsTransactionStarted)
         {
-            return await ExcecuteTransactionBody(request, cancellationToken);
+            return await ExecuteTransactionBody(request, cancellationToken);
         }
 
-        return await ExcecuteTransaction(request, cancellationToken);
+        return await ExecuteTransaction(request, cancellationToken);
     }
 
-    private async Task<TransactionViewModel> ExcecuteTransaction(ExecuteTransactionCommand request, CancellationToken cancellationToken)
+    private async Task<TransactionViewModel> ExecuteTransaction(ExecuteTransactionCommand request, CancellationToken cancellationToken)
     {
         await using var _ = await unitOfWork.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
 
         try
         {
-            var result = await ExcecuteTransactionBody(request, cancellationToken);
+            var result = await ExecuteTransactionBody(request, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
 
             return result;
@@ -45,7 +45,7 @@ public class ExecuteTransactionCommandHandler(
         }
     }
 
-    private async Task<TransactionViewModel> ExcecuteTransactionBody(ExecuteTransactionCommand request, CancellationToken cancellationToken)
+    private async Task<TransactionViewModel> ExecuteTransactionBody(ExecuteTransactionCommand request, CancellationToken cancellationToken)
     {
         var transaction = await mediator.Send(mapper.Map<RegisterTransactionCommand>(request), cancellationToken);
 

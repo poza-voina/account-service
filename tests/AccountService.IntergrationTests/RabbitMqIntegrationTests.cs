@@ -20,6 +20,7 @@ namespace AccountService.IntegrationTests;
 
 public class RabbitMqIntegrationTests(PostgresSqlFixture postgresFixture, RabbitMqFixture rabbitmqFixture) : ControllerTestsBase, IClassFixture<PostgresSqlFixture>, IClassFixture<RabbitMqFixture>
 {
+    // ReSharper disable once StringLiteralTypo
     private IsolatedClientOptions DefaultIsolatedClientOptions { get; } = new() { RabbitMqContainerFixture = rabbitmqFixture, PostgresContainerFixture = postgresFixture, PathToEnvironment = "TestConfigs/appsettings.test.json" };
 
     [Fact]
@@ -74,7 +75,7 @@ public class RabbitMqIntegrationTests(PostgresSqlFixture postgresFixture, Rabbit
         var body = new Event<ClientBlocked>
         {
             EventId = eventId,
-            OccuratedAt = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
+            OccurredAt = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
             Meta = new EventMeta
             {
                 Version = "v1",
@@ -100,12 +101,20 @@ public class RabbitMqIntegrationTests(PostgresSqlFixture postgresFixture, Rabbit
         await channel.BasicPublishAsync(
             exchange: "account.events",
             routingKey: "client.blocked",
-            body: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(body)),
+            body: Encoding.UTF8.GetBytes(
+                JsonSerializer.Serialize(
+                    body,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                    }
+                )
+            ),
             basicProperties: props,
             mandatory: false
         );
 
-        await Task.Delay(10000);
+        await Task.Delay(30000);
 
         var getAccountFirstQuery = new GetStatementQuery { AccountId = accounts.ElementAt(0).Id, OwnerId = accounts.ElementAt(0).OwnerId };
         var getAccountSecondQuery = new GetStatementQuery { AccountId = accounts.ElementAt(1).Id, OwnerId = accounts.ElementAt(1).OwnerId };

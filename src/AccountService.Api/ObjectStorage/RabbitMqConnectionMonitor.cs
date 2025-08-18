@@ -2,28 +2,29 @@
 using AccountService.Api.ObjectStorage.Objects;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
-using System.Runtime.InteropServices;
-using System.Threading;
 
 namespace AccountService.Api.ObjectStorage;
 
 public class RabbitMqConnectionMonitor : IHostedService, IDisposable, IRabbitMqConnectionMonitor
 {
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local Получает значение
     private Timer? _timer;
     private IConnection? _connection;
-    private ConnectionFactory _factory;
+    private readonly ConnectionFactory _factory;
     private IChannel? _publishChannel;
-    private RabbitMqConfiguration _configuration;
-    private ILogger<IRabbitMqConnectionMonitor> _logger;
+    private readonly RabbitMqConfiguration _configuration;
+    private readonly ILogger<IRabbitMqConnectionMonitor> _logger;
     private CancellationTokenSource? _cancellationTokenSource;
     private const int Period = 3;
-    private bool _isInitialized = false;
-    private readonly object _lock = new object();
+    private bool _isInitialized;
+    private readonly Lock _lock = new();
+    private readonly SemaphoreSlim _semaphore = new(1, 1);
 
-    public RabbitMqConnectionMonitor(RabbitMqConfiguration configuration, ILogger<RabbitMqConnectionMonitor> logger)
+    public RabbitMqConnectionMonitor(RabbitMqConfiguration configuration, ILogger<RabbitMqConnectionMonitor> logger, Timer? timer)
     {
         _configuration = configuration;
         _logger = logger;
+        _timer = timer;
 
         _factory = new ConnectionFactory
         {
@@ -37,7 +38,7 @@ public class RabbitMqConnectionMonitor : IHostedService, IDisposable, IRabbitMqC
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _cancellationTokenSource = new CancellationTokenSource();
-        _ = Task.Run(() => RunPeriodicCheckAsync(_cancellationTokenSource.Token));
+        _ = Task.Run(() => RunPeriodicCheckAsync(_cancellationTokenSource.Token), cancellationToken);
         return Task.CompletedTask;
     }
 
@@ -49,9 +50,23 @@ public class RabbitMqConnectionMonitor : IHostedService, IDisposable, IRabbitMqC
         {
             try
             {
-                if (await CheckConnectionAsync() && !_isInitialized)
+                // ReSharper disable once InconsistentlySynchronizedField Читать могу без проблем
+                if (!_isInitialized && await CheckConnectionAsync())
                 {
-                    _isInitialized = await TryInitializeAsync();
+                    await _semaphore.WaitAsync(cancellationToken);
+                    try
+                    {
+                        // ReSharper disable once InconsistentlySynchronizedField Читать могу без проблем
+                        if (!_isInitialized)
+                        {
+                            // ReSharper disable once InconsistentlySynchronizedField Lock Semaphore
+                            _isInitialized = await TryInitializeAsync();
+                        }
+                    }
+                    finally
+                    {
+                        _semaphore.Release();
+                    }
                 }
                 await timer.WaitForNextTickAsync(cancellationToken);
             }
@@ -89,21 +104,21 @@ public class RabbitMqConnectionMonitor : IHostedService, IDisposable, IRabbitMqC
     {
         try
         {
-            if (_connection == null || !_connection.IsOpen)
+            if (_connection is not { IsOpen: true })
             { 
             
                 _connection = await _factory.CreateConnectionAsync();
                 _publishChannel = await _connection.CreateChannelAsync();
 
-                _logger.LogInformation($"Connection open: {_connection?.IsOpen}");
-                _logger.LogInformation($"Channel open: {_publishChannel?.IsOpen}");
+                _logger.LogInformation("Connection open: {ConnectionIsOpen}", _connection?.IsOpen);
+                _logger.LogInformation("Channel open: {PublishChannelIsOpen}", _publishChannel?.IsOpen);
             }
         }
         catch (BrokerUnreachableException)
         {
             _connection = null;
             _publishChannel = null;
-            _logger.LogWarning($"RabbitMQ is unavailable, retrying in {Period}");
+            _logger.LogWarning("RabbitMQ is unavailable, retrying in {I}", Period);
             return false;
         }
 

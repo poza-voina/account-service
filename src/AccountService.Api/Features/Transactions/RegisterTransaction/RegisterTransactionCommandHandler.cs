@@ -27,7 +27,7 @@ public class RegisterTransactionCommandHandler(
 
         if (account.IsFrozen && request.Type == TransactionType.Credit)
         {
-            throw new ConflictException("Аккаунт замарожен");
+            throw new ConflictException("Аккаунт заморожен");
         }
 
         if (request.CounterpartyBankAccountId.HasValue)

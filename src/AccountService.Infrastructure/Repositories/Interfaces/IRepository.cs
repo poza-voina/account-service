@@ -25,4 +25,6 @@ public interface IRepository<TModel> where TModel : class, IDatabaseModel
     Task<IEnumerable<TModel>> AddRangeAsync(
         IEnumerable<TModel> entities,
         CancellationToken cancellationToken = default);
+
+    Task<bool> CanConnectToDb();
 }

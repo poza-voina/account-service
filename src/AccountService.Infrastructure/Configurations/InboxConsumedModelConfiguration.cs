@@ -27,6 +27,7 @@ public class InboxConsumedModelConfiguration : IEntityTypeConfiguration<InboxCon
 
         builder
             .Property(x => x.Handler)
+            .HasMaxLength(100)
             .HasColumnName("handler")
             .IsRequired();
 

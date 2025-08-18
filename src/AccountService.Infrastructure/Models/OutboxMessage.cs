@@ -10,8 +10,10 @@ public class OutboxMessage : IDatabaseModel
 
     public DateTime? ProcessedAt { get; set; }
 
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength Не знаю размера
     public string EventType { get; set; } = string.Empty;
 
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength Не знаю размера
     public string EventPayload { get; set; } = string.Empty;
 
     public Guid CorrelationId { get; set; }

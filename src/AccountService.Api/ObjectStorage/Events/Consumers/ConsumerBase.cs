@@ -5,10 +5,8 @@ using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Infrastructure.Models;
 using AccountService.Infrastructure.Repositories.Interfaces;
-using Hangfire.Storage;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Diagnostics;
@@ -38,23 +36,23 @@ public abstract class ConsumerBase<T>(
             }
             catch(Exception ex)
             {
-                logger.LogCritical(ex.Message);
+                logger.LogCritical("{message}", ex.Message);
             }
         }
     }
 
     protected async Task Handle(CancellationToken stoppingToken)
     {
-        int attempts = 0;
+        var attempts = 0;
         while (monitor.Connection is null && attempts < 5)
         {
-            await Task.Delay(500);
+            await Task.Delay(500, stoppingToken);
             attempts++;
         }
 
         if (monitor.Connection is null)
         {
-            throw new Exception("Консюмеру не удалось установить соединение с RabbitMQ");
+            throw new Exception("Consumer не удалось установить соединение с RabbitMQ");
         }
 
         await using var channel = await monitor.Connection.CreateChannelAsync(cancellationToken: stoppingToken);
@@ -69,19 +67,20 @@ public abstract class ConsumerBase<T>(
         );
 
         var consumer = new AsyncEventingBasicConsumer(channel);
-        consumer.ReceivedAsync += async (ch, ea) =>
+        consumer.ReceivedAsync += async (_, ea) =>
         {
 
-            var logdata = new MessageLogData
+            var logData = new MessageLogData
             {
                 Stopwatch = Stopwatch.StartNew()
             };
 
-            await ProcessMessage(ea, channel, logdata, stoppingToken);
+            // ReSharper disable once AccessToDisposedClosure работает
+            await ProcessMessage(ea, channel, logData, stoppingToken);
 
-            logdata.Stopwatch.Stop();
-            logdata.Latency = logdata.Stopwatch.ElapsedMilliseconds.ToString();
-            logger.LogInformation("Message received: {@LogData}", logdata);
+            logData.Stopwatch.Stop();
+            logData.Latency = logData.Stopwatch.ElapsedMilliseconds.ToString();
+            logger.LogInformation("Message received: {@LogData}", logData);
         };
 
         await channel.BasicConsumeAsync(
@@ -93,33 +92,33 @@ public abstract class ConsumerBase<T>(
 
         while (monitor.Connection?.IsOpen is true)
         {
-            await Task.Delay(1000);
+            await Task.Delay(1000, stoppingToken);
         }
 
         throw new Exception("Connection lost: RabbitMQ broker unreachable");
     }
 
-    private async Task ProcessMessage(BasicDeliverEventArgs ea, IChannel channel, MessageLogData logdata, CancellationToken stoppingToken)
+    private async Task ProcessMessage(BasicDeliverEventArgs ea, IChannel channel, MessageLogData logData, CancellationToken stoppingToken)
     {
         var message = Encoding.UTF8.GetString(ea.Body.ToArray());
 
         var messageId = ea.BasicProperties.MessageId;
 
-        logdata.MessageId = messageId?.ToString();
+        logData.MessageId = messageId;
 
         try
         {
             var eventType = ProcessProperties(message);
 
-            var parsedMesageId = ParseMessageId(message, messageId);
+            var parsedMessageId = ParseMessageId(message, messageId);
 
-            await CheckMessageIdAsync(parsedMesageId, message);
+            await CheckMessageIdAsync(parsedMessageId, message);
 
-            await HandleMessageAsync(eventType, message, logdata, stoppingToken);
+            await HandleMessageAsync(eventType, message, logData, stoppingToken);
 
             var command = new CreateInboxConsumedCommand
             {
-                MessageId = parsedMesageId,
+                MessageId = parsedMessageId,
                 Handler = typeof(T).Name
             };
 
@@ -142,14 +141,14 @@ public abstract class ConsumerBase<T>(
             // ReSharper disable once AccessToDisposedClosure Это backgroundService
             await channel.BasicNackAsync(ea.DeliveryTag, false, false, stoppingToken);
 
-            logger.LogCritical("Не удалось обработать сообщение с messageId {MessageId}", logdata.MessageId);
+            logger.LogCritical("Не удалось обработать сообщение с messageId {MessageId}", logData.MessageId);
         }
         catch
         {
             // ReSharper disable once AccessToDisposedClosure Это backgroundService
             await channel.BasicNackAsync(ea.DeliveryTag, false, true, stoppingToken);
 
-            logger.LogCritical("Не удалось обработать сообщение с messageId {MessageId}", logdata.MessageId);
+            logger.LogCritical("Не удалось обработать сообщение с messageId {MessageId}", logData.MessageId);
         }
     }
 
@@ -194,7 +193,7 @@ public abstract class ConsumerBase<T>(
         return eventType;
     }
 
-    protected async Task<bool> TrySendToMediatorAsync<T>(T command)
+    protected async Task<bool> TrySendToMediatorAsync<TCommand>(TCommand command)
     {
         try
         {

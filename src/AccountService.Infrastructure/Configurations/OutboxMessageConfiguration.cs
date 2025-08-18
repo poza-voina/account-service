@@ -38,7 +38,7 @@ public class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage
 
         builder
             .Property(x => x.RetryCount)
-            .HasColumnName("RertyCount")
+            .HasColumnName("retryCount")
             .HasDefaultValue(0)
             .IsRequired();
 

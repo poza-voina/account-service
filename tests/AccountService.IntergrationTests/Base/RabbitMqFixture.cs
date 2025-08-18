@@ -32,9 +32,6 @@ public class RabbitMqFixture : IRabbitMqContainerFixture
         await Container.DisposeAsync();
     }
 
-    public async Task StartAsync() => await Container.StartAsync();
-    public async Task StopAsync() => await Container.StopAsync();
-
     public async Task WaitForReady()
     {
         const int maxAttempts = 10;

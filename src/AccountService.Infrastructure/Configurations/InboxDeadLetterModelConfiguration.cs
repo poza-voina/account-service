@@ -27,6 +27,7 @@ public class InboxDeadLetterModelConfiguration : IEntityTypeConfiguration<InboxD
 
         builder
             .Property(x => x.EventType)
+            .HasMaxLength(100)
             .HasColumnName("eventType");
 
         builder

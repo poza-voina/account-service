@@ -3,15 +3,12 @@ using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Infrastructure;
 using Hangfire;
 using Hangfire.MemoryStorage;
-using Hangfire.PostgreSql;
-using Hangfire.Server;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using AuthenticationOptions = Microsoft.AspNetCore.Authentication.AuthenticationOptions;
 
 namespace AccountService.IntegrationTests.Base;
@@ -87,7 +84,7 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
         });
     }
 
-    private void EditHangfire(IServiceCollection services)
+    private static void EditHangfire(IServiceCollection services)
     {
         var hangfireDescriptors = services
             .Where(d => d.ServiceType.FullName?.Contains("Hangfire") == true)

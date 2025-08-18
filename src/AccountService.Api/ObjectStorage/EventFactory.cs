@@ -10,7 +10,7 @@ public class EventFactory : IEventFactory
     {
         return new Event<TPayload>
         {
-            OccuratedAt = DateTime.UtcNow.ToString(CultureInfo.CurrentCulture),
+            OccurredAt = DateTime.UtcNow.ToString(CultureInfo.CurrentCulture),
             Payload = data,
             EventId = Guid.NewGuid(),
             EventType = typeof(TPayload).Name,

@@ -8,12 +8,6 @@ public class HttpRequestBuilder(HttpMethod method, string url)
     private const string ContentType = "application/json";
     private readonly HttpRequestMessage _request = new(method, url);
 
-    public HttpRequestBuilder WithContent(HttpContent content)
-    {
-        _request.Content = content;
-        return this;
-    }
-
     public HttpRequestBuilder WithJsonContent<T>(T obj)
     {
         var json = JsonSerializer.Serialize(obj);

@@ -10,12 +10,13 @@ namespace AccountService.IntegrationTests;
 
 public class OutboxTests(PostgresSqlFixture postgresFixture, RabbitMqFixture rabbitmqFixture) : ControllerTestsBase, IClassFixture<PostgresSqlFixture>, IClassFixture<RabbitMqFixture>
 {
+    // ReSharper disable once StringLiteralTypo так файл называется
     private IsolatedClientOptions DefaultIsolatedClientOptions { get; } = new() { RabbitMqContainerFixture = rabbitmqFixture, PostgresContainerFixture = postgresFixture, PathToEnvironment = "TestConfigs/appsettings.test.json" };
 
     [Fact]
     public async Task OutboxTest_WhenConnectionLost_MessagesSent() //НЕ СМОГ СДЕЛАТЬ ТЕСТ С ПАДЕНИЕМ КОНТЕЙНЕРА
     {        
-        var queueName = "account.crm";
+        const string queueName = "account.crm";
 
         var client = CreateIsolatedClient(DefaultIsolatedClientOptions);
         const string path = "/accounts";
@@ -27,7 +28,7 @@ public class OutboxTests(PostgresSqlFixture postgresFixture, RabbitMqFixture rab
             Currency = "USD"
         };
 
-        foreach (var item in ClientsIds)
+        foreach (var unused in ClientsIds)
         {
             var request = new HttpRequestBuilder(HttpMethod.Post, path)
                 .WithJsonContent(createAccountCommand)
@@ -38,7 +39,7 @@ public class OutboxTests(PostgresSqlFixture postgresFixture, RabbitMqFixture rab
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
-        await Task.Delay(15000);
+        await Task.Delay(50000);
 
         var factory = new ConnectionFactory
         {

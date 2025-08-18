@@ -24,12 +24,12 @@ public class UnitOfWork(ApplicationDbContext context, IServiceProvider servicePr
         if (connection.State is not ConnectionState.Open)
         {
             await connection.OpenAsync(cancellationToken);
-    }
+        }
 
         var dbTransaction = await connection.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
 
         _transaction = await context.Database.UseTransactionAsync(dbTransaction, cancellationToken)
-            ?? throw new InvalidOperationException("Failed to bind transaction");
+                       ?? throw new InvalidOperationException("Failed to bind transaction");
 
         return _transaction;
     }

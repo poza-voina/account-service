@@ -27,7 +27,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using RabbitMQ.Client;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -218,6 +217,7 @@ public static class DependencyInjection
         services.AddScoped<ICurrencyService, CurrencyService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddSingleton<IEventFactory, EventFactory>();
+        services.AddScoped<IHealthCheckService, HealthCheckService>();
     }
 
     public static void AddAutoMapperConfiguration(this IServiceCollection services)
@@ -257,8 +257,6 @@ public static class DependencyInjection
 
     public static void AddRabbitMqConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        var settings = configuration.GetRequiredSection("Brokers:RabbitMq").Get<RabbitMqConfiguration>();
-
         var rabbitMqConfiguration = configuration.GetRequiredSection("Brokers:RabbitMq").GetRequired<RabbitMqConfiguration>()
             .Map<AccountOpened>("account.opened")
             .Map<InterestAccrued>("money.*")

@@ -14,7 +14,6 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         var services = builder.Services;
         var configuration = builder.Configuration;
-        var environmentName = builder.Environment.EnvironmentName;
 
         services.AddHttpContextAccessor();
 

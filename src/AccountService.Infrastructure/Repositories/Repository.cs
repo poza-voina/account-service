@@ -61,7 +61,7 @@ public class Repository<TModel>(ApplicationDbContext context) : IRepository<TMod
     public async Task UpdateRangeAsync(IEnumerable<TModel> entities)
     {
         foreach (var entity in entities)
-{
+        {
             await UpdateAsync(entity);
         }
     }
@@ -74,5 +74,10 @@ public class Repository<TModel>(ApplicationDbContext context) : IRepository<TMod
         await context.Set<TModel>().AddRangeAsync(entitiesList, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
         return entitiesList;
+    }
+
+    public async Task<bool> CanConnectToDb()
+    {
+        return await context.Database.CanConnectAsync();
     }
 }

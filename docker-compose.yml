@@ -22,6 +22,10 @@ services:
       - Authentication__ClientId=${CLIENT_ID}
       - Authentication__ClientSecret=${CLIENT_SECRET}
       - ConnectionStrings__PostgreSqlConnection=User ID=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Server=postgres;Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Pooling=true;
+      - Brokers__RabbitMQ__HostName=rabbitmq
+      - Brokers__RabbitMQ__Port=${RABBITMQ_CONNECTION}
+      - Brokers__RabbitMQ__UserName=${RABBITMQ_USERNAME}
+      - Brokers__RabbitMQ__Password=${RABBITMQ_PASSWORD}
 
   postgres:
     image: postgres:17
