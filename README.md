@@ -8,20 +8,87 @@
 - Регистрировать и выполнять транзакцию
 - Переносить деньги между счетами (т.е создать две транзакции. Одна транзакция на списание, другая на пополнение. После их создания они применяются.)
 
+## Где, что запускается
+
+### API
+
+`http://localhost/swagger/index.html` 
+
+### RabbitMq Management
+`http://localhost:15672`
+
+Username = testuser
+
+Password = testpassword
+
+### Hangfire
+
+`http://localhost/hangfire`
+
+### Keycloak
+
+`http://localhost:8080`
+
+**Админ кейклока**
+
+Username = admin
+
+Password = admin
+
+**Клиент приложения**
+
+Username = testuser
+
+Password = testpassword
+
+## Примеры эвентов
+Нужно указывать message_id (уникальное)
+### Пример эвента для блокировки аккаунта
+```
+{
+  "eventId": "10000000-0000-0000-0000-000000000000",
+  "occurredAt": "2025-08-18T12:34:56.789Z",
+  "meta": {
+    "source": "system",
+    "version": "v1",
+    "correlationId": "20000000-0000-0000-0000-000000000000",
+    "causationId": "20000000-0000-0000-0000-000000000000"
+  },
+  "payload": {
+    "eventId": "10000000-0000-0000-0000-000000000000",
+    "occurredAt": "2025-08-18T12:34:56.789Z",
+    "clientId": "7c9fcf13-6df1-4eb1-9404-0e4380e2bba5"
+  },
+  "eventType": "ClientBlocked"
+}
+```
+### Пример эвента для разблокировки счета
+```
+{
+  "eventId": "10000000-0000-0000-0000-000000000000",
+  "occurredAt": "2025-08-18T12:34:56.789Z",
+  "meta": {
+    "source": "system",
+    "version": "v1",
+    "correlationId": "20000000-0000-0000-0000-000000000000",
+    "causationId": "20000000-0000-0000-0000-000000000000"
+  },
+  "payload": {
+    "eventId": "10000000-0000-0000-0000-000000000000",
+    "occurredAt": "2025-08-18T12:34:56.789Z",
+    "clientId": "7c9fcf13-6df1-4eb1-9404-0e4380e2bba5"
+  },
+  "eventType": "ClientUnblocked"
+}
+```
+
 ## [Документация API](./docs/api.md)
 ## [Задание 1](./docs/task1.md)
 ## [Задание 2](./docs/task2.md)
 ## [Задание 3](./docs/task3.md)
+## [Задание 4](./docs/task4.md)
 
 ## Запуск в Docker
-Приложениt запускается на 80 порту и имеют такие url:
-
-`http://localhost/swagger/index.html`
-
-`http://localhost/hangfire`
-
-`http://localhost:8080` - keycloak
-
 ```docker compose up -d```
 порядок запуска сервисов
 keycloak -> keycloak-init -> postgres -> migrationRunner -> accountservice.api

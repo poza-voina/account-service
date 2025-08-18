@@ -1,13 +1,20 @@
 using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Transactions.Interfaces;
+using AccountService.Api.ObjectStorage.Events.Published;
+using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Infrastructure.Enums;
+using AccountService.Infrastructure.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.Features.Transactions.ApplyTransaction;
 
-public class ApplyTransactionCommandHandler(ITransactionStorageService transactionStorageService) : IRequestHandler<ApplyTransactionCommand, Unit>
+public class ApplyTransactionCommandHandler(
+    IMediator mediator,
+    ITransactionStorageService transactionStorageService,
+    IEventFactory eventFactory)
+    : IRequestHandler<ApplyTransactionCommand, Unit>
 {
     private const string EnumErrorMessage = "Недопустимое значение перечисления";
     private const string NotEnoughMoneyErrorMessage = "На счете недостаточно средств";
@@ -27,10 +34,12 @@ public class ApplyTransactionCommandHandler(ITransactionStorageService transacti
         {
             case TransactionType.Debit:
                 ProcessDebit(transaction, account);
+                await ProcessDebitEvent(transaction);
                 break;
 
             case TransactionType.Credit:
                 ProcessCredit(transaction, account);
+                await ProcessCreditEvent(transaction);
                 break;
 
             default:
@@ -42,12 +51,43 @@ public class ApplyTransactionCommandHandler(ITransactionStorageService transacti
         return Unit.Value;
     }
 
-    public static void ProcessDebit(Models.Transaction transaction, Models.Account account)
+    private async Task ProcessCreditEvent(Transaction transaction)
+    {
+        var moneyCredited = new MoneyCredited
+        {
+            AccountId = transaction.BankAccountId,
+            Amount = transaction.Amount,
+            Currency = transaction.Currency,
+            OperationId = transaction.Id
+        };
+
+        var @event = eventFactory.CreateEvent(moneyCredited, nameof(ApplyTransactionCommandHandler));
+
+        await mediator.Publish(@event);
+    }
+
+    private async Task ProcessDebitEvent(Transaction transaction)
+    {
+        var moneyDebited = new MoneyDebited
+        {
+            AccountId = transaction.BankAccountId,
+            Amount = transaction.Amount,
+            Currency = transaction.Currency,
+            OperationId = transaction.Id,
+            Reason = transaction.Description
+        };
+
+        var @event = eventFactory.CreateEvent(moneyDebited, nameof(ApplyTransactionCommandHandler));
+
+        await mediator.Publish(@event);
+    }
+
+    public static void ProcessDebit(Transaction transaction, Models.Account account)
     {
         account.Balance += transaction.Amount;
     }
 
-    public static void ProcessCredit(Models.Transaction transaction, Models.Account account)
+    public static void ProcessCredit(Transaction transaction, Models.Account account)
     {
         if (transaction.Amount > account.Balance)
         {

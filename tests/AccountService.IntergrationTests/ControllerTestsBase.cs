@@ -22,12 +22,24 @@ public abstract class ControllerTestsBase
         var factory = new CustomWebApplicationFactory(
             options =>
             {
-                if (isolatedClientOptions.ContainerFixture is not null)
+                if (isolatedClientOptions.PostgresContainerFixture is not null)
                 {
                     var schemaName = NewSchemaName;
-                    options.ConnectionString = $"{isolatedClientOptions.ContainerFixture.ConnectionString};Search Path={schemaName}";
+                    options.ConnectionString = $"{isolatedClientOptions.PostgresContainerFixture.ConnectionString};Search Path={schemaName}";
                     options.DatabaseSchemaName = schemaName;
                 }
+
+                if (isolatedClientOptions.RabbitMqContainerFixture is not null)
+                {
+                    options.RabbitMqTestOptions = new RabbitMqTestOptions
+                    {
+                        Hostname = isolatedClientOptions.RabbitMqContainerFixture.Container.Hostname,
+                        Port = isolatedClientOptions.RabbitMqContainerFixture.Port,
+                        Password = isolatedClientOptions.RabbitMqContainerFixture.Password,
+                        Username = isolatedClientOptions.RabbitMqContainerFixture.Username
+                    };
+                }
+
                 if (isolatedClientOptions.PathToEnvironment is not null)
                 {
                     options.PathToEnvironment = isolatedClientOptions.PathToEnvironment;

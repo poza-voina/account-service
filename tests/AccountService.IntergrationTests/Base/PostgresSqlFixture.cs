@@ -4,9 +4,13 @@ using Npgsql;
 
 namespace AccountService.IntegrationTests.Base;
 
-public class PostgresSqlFixture : IContainerFixture
+public class PostgresSqlFixture : IPostgresqlContainterFixture
 {
-    private readonly IContainer _container = new ContainerBuilder()
+    public int Port => Container.GetMappedPublicPort(5432);
+
+    public string ConnectionString => $"Host=localhost;Port={Port};Username=postgres;Password=password;Database=database";
+
+    public IContainer Container { get; } = new ContainerBuilder()
         .WithImage("postgres:15")
         .WithEnvironment("POSTGRES_DB", "database")
         .WithEnvironment("POSTGRES_USER", "postgres")
@@ -14,18 +18,18 @@ public class PostgresSqlFixture : IContainerFixture
         .WithPortBinding(5432, true)
         .Build();
 
-    public string ConnectionString => $"Host=localhost;Port={_container.GetMappedPublicPort(5432)};Username=postgres;Password=password;Database=database";
-
     public async Task InitializeAsync()
     {
-        await _container.StartAsync();
-        await WaitForPostgresReady();
+        await Container.StartAsync();
+        await WaitForReady();
     }
 
-    private async Task WaitForPostgresReady()
+    public async Task WaitForReady()
     {
-        var retries = 10;
-        while (retries-- > 0)
+        const int maxAttempts = 10;
+        const int delayMs = 1000;
+
+        for (var attempt = 1; attempt <= maxAttempts; attempt++)
         {
             try
             {
@@ -35,7 +39,9 @@ public class PostgresSqlFixture : IContainerFixture
             }
             catch
             {
-                await Task.Delay(500);
+                if (attempt == maxAttempts)
+                    throw;
+                await Task.Delay(delayMs);
             }
         }
 
@@ -44,7 +50,7 @@ public class PostgresSqlFixture : IContainerFixture
 
     public async Task DisposeAsync()
     {
-        await _container.StopAsync();
-        await _container.DisposeAsync();
+        await Container.StopAsync();
+        await Container.DisposeAsync();
     }
 }

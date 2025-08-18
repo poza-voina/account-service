@@ -72,5 +72,10 @@ public class AccountModelConfiguration : IEntityTypeConfiguration<Account>
         builder
             .Property(x => x.IsDeleted)
             .HasColumnName("isDeleted");
+
+        builder
+            .Property(x => x.IsFrozen)
+            .HasColumnName("isFrozen")
+            .IsRequired();
     }
 }

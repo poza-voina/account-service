@@ -1,11 +1,15 @@
 ﻿using AccountService.Api;
+using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Infrastructure;
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using AuthenticationOptions = Microsoft.AspNetCore.Authentication.AuthenticationOptions;
 
 namespace AccountService.IntegrationTests.Base;
 
@@ -42,6 +46,13 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 services.Remove(descriptor);
             }
 
+            if (FactoryOptions.RabbitMqTestOptions is not null)
+            {
+                EditRabbitMqConfiguration(services);
+            }
+
+            EditHangfire(services);
+
             if (FactoryOptions is { ConnectionString: not null, DatabaseSchemaName: not null })
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
@@ -56,7 +67,7 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
 #pragma warning restore                    
                     context.Database.Migrate();
                 }, serviceProvider);
-            } 
+            }
             else
             {
                 services.AddSingleton(new DbContextOptions<ApplicationDbContext>());
@@ -71,6 +82,45 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 options.DefaultChallengeScheme = "Test";
             });
         });
+    }
+
+    private static void EditHangfire(IServiceCollection services)
+    {
+        var hangfireDescriptors = services
+            .Where(d => d.ServiceType.FullName?.Contains("Hangfire") == true)
+            .ToList();
+
+        if (!hangfireDescriptors.Any())
+        {
+            throw new InvalidOperationException("Не удалось найти hangfire");
+        }
+
+        foreach (var descriptor in hangfireDescriptors)
+        {
+            services.Remove(descriptor);
+        }
+
+        services.AddHangfire(config =>
+            config.UseMemoryStorage()
+        );
+        services.AddHangfireServer();
+    }
+
+    private void EditRabbitMqConfiguration(IServiceCollection services)
+    {
+        var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(RabbitMqConfiguration));
+        if (descriptor == null) return;
+        
+        services.Remove(descriptor);
+
+        if (descriptor.ImplementationInstance is not RabbitMqConfiguration existingConfig) return;
+
+        existingConfig.HostName = FactoryOptions.RabbitMqTestOptions!.Hostname;
+        existingConfig.Port = FactoryOptions.RabbitMqTestOptions!.Port;
+        existingConfig.UserName = FactoryOptions.RabbitMqTestOptions!.Username;
+        existingConfig.Password = FactoryOptions.RabbitMqTestOptions!.Password;
+
+        services.AddSingleton(existingConfig);
     }
 
     protected override void Dispose(bool disposing)

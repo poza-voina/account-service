@@ -9,6 +9,8 @@ services:
         condition: service_healthy
       keycloak-init:
         condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
     ports:
         - "${ACCOUNT_SERVICE_API_PORT}:80"
     environment:
@@ -20,6 +22,10 @@ services:
       - Authentication__ClientId=${CLIENT_ID}
       - Authentication__ClientSecret=${CLIENT_SECRET}
       - ConnectionStrings__PostgreSqlConnection=User ID=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Server=postgres;Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Pooling=true;
+      - Brokers__RabbitMQ__HostName=rabbitmq
+      - Brokers__RabbitMQ__Port=${RABBITMQ_CONNECTION}
+      - Brokers__RabbitMQ__UserName=${RABBITMQ_USERNAME}
+      - Brokers__RabbitMQ__Password=${RABBITMQ_PASSWORD}
 
   postgres:
     image: postgres:17
@@ -78,5 +84,29 @@ services:
       - ./.env:/opt/keycloak/.env:ro
     restart: no
 
+  rabbitmq:
+    image: rabbitmq:latest
+    hostname: rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "${RABBITMQ_MANAGEMENT}:15672"
+      - "${RABBITMQ_CONNECTION}:5672"
+    command: >
+      bash -c "
+        rabbitmq-plugins enable --offline rabbitmq_management &&
+        rabbitmq-server
+      "
+    # volumes:
+    #   - rabbitmq-data:/var/lib/rabbitmq
+
 volumes:
   postgres_data:
+  rabbitmq-data:
