@@ -127,14 +127,8 @@ public class RabbitMqConnectionMonitor : IHostedService, IDisposable, IRabbitMqC
         {
             lock (_lock)
             {
-                if (!_isInitialized || _connection is null || !_connection.IsOpen)
+                if (!_isInitialized || _connection is null || !_connection.IsOpen || _publishChannel?.IsOpen is false)
                     return null;
-
-                if (_publishChannel == null || !_publishChannel.IsOpen)
-                {
-                    _publishChannel = _connection.CreateChannel();
-                    _logger.LogInformation("Publish channel recreated");
-                }
 
                 return _publishChannel;
             }
