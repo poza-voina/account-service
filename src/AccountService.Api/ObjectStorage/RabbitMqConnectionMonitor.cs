@@ -20,11 +20,10 @@ public class RabbitMqConnectionMonitor : IHostedService, IDisposable, IRabbitMqC
     private readonly Lock _lock = new();
     private readonly SemaphoreSlim _semaphore = new(1, 1);
 
-    public RabbitMqConnectionMonitor(RabbitMqConfiguration configuration, ILogger<RabbitMqConnectionMonitor> logger, Timer? timer)
+    public RabbitMqConnectionMonitor(RabbitMqConfiguration configuration, ILogger<RabbitMqConnectionMonitor> logger)
     {
         _configuration = configuration;
         _logger = logger;
-        _timer = timer;
 
         _factory = new ConnectionFactory
         {
