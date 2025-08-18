@@ -1,4 +1,5 @@
-﻿using AccountService.Abstractions.Constants;
+﻿using Serilog;
+using AccountService.Abstractions.Constants;
 using AccountService.Abstractions.Extensions;
 using AccountService.Api.Behaviors;
 using AccountService.Api.Features.Account;
@@ -287,5 +288,11 @@ public static class DependencyInjection
 
         services.AddSingleton(consumerConfiguration);
         services.AddHostedService<AntifraudConsumerV1>();
+    }
+
+    public static void AddSerilog(this WebApplicationBuilder builder)
+    {
+        builder.Host.UseSerilog((context, configuration) =>
+            configuration.ReadFrom.Configuration(context.Configuration));
     }
 }

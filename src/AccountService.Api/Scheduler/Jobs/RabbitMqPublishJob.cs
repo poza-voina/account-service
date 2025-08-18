@@ -4,10 +4,11 @@ using AccountService.Infrastructure.Enums;
 using AccountService.Infrastructure.Models;
 using AccountService.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace AccountService.Api.Scheduler.Jobs;
 
-public class RabbitMqPublishJob(IRabbitMqPublisher rabbitMqPublisher, IUnitOfWork unitOfWork) : IJob
+public class RabbitMqPublishJob(IRabbitMqPublisher rabbitMqPublisher, IUnitOfWork unitOfWork, ILogger<RabbitMqPublishJob> logger) : IJob
 {
     public async Task Execute()
     {
@@ -55,15 +56,30 @@ public class RabbitMqPublishJob(IRabbitMqPublisher rabbitMqPublisher, IUnitOfWor
 
     private async Task PublishBatchAsync(List<OutboxMessage> batch)
     {
+        var stopwatch = Stopwatch.StartNew();
+
         foreach (var item in batch)
         {
             try
             {
                 await rabbitMqPublisher.PublishAsync(item.Id, item.EventType, item.EventPayload);
+
+                logger.LogInformation(
+                    "Message published: EventId={EventId}, Type={Type}, CorrelationId={CorrelationId}, Retry={Retry}, Latency={Latency}ms",
+                    item.Id, item.EventType, item.CorrelationId, item.RetryCount, stopwatch.ElapsedMilliseconds);
+
+                item.ProcessedAt = DateTime.UtcNow;
+                item.RetryCount++;
                 item.Status = OutboxStatus.Sent;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                logger.LogError(
+                    "Failed to publish message: EventId={EventId}, Type={Type}, CorrelationId={CorrelationId}, Retry={Retry}, {exception}",
+                    item.Id, item.EventType, item.CorrelationId, item.RetryCount, exception.Message);
+
+                item.ProcessedAt = DateTime.UtcNow;
+                item.RetryCount++;
                 item.Status = OutboxStatus.Failed;
             }
         }

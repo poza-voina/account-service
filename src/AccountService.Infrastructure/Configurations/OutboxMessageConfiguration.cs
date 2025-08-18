@@ -32,6 +32,17 @@ public class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage
             .IsRequired();
 
         builder
+            .Property(x => x.CorrelationId)
+            .HasColumnName("correlationId")
+            .IsRequired();
+
+        builder
+            .Property(x => x.RetryCount)
+            .HasColumnName("RertyCount")
+            .HasDefaultValue(0)
+            .IsRequired();
+
+        builder
             .Property(x => x.ProcessedAt)
             .HasColumnName("processedAt");
 

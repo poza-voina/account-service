@@ -5,10 +5,13 @@ using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Infrastructure.Models;
 using AccountService.Infrastructure.Repositories.Interfaces;
+using Hangfire.Storage;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 
@@ -21,9 +24,9 @@ public abstract class ConsumerBase<T>(
     IServiceProvider serviceProvider)
     : BackgroundService
 {
-    private const string EventTypePropertyName = "EventType";
+    private const string EventTypePropertyName = "eventType";
 
-    protected abstract Task HandleMessageAsync(string eventType, string message, CancellationToken stoppingToken);
+    protected abstract Task HandleMessageAsync(string eventType, string message, MessageLogData logData, CancellationToken stoppingToken);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -68,7 +71,17 @@ public abstract class ConsumerBase<T>(
         var consumer = new AsyncEventingBasicConsumer(channel);
         consumer.ReceivedAsync += async (ch, ea) =>
         {
-            await ProcessMessage(ea, channel, stoppingToken);
+
+            var logdata = new MessageLogData
+            {
+                Stopwatch = Stopwatch.StartNew()
+            };
+
+            await ProcessMessage(ea, channel, logdata, stoppingToken);
+
+            logdata.Stopwatch.Stop();
+            logdata.Latency = logdata.Stopwatch.ElapsedMilliseconds.ToString();
+            logger.LogInformation("Message received: {@LogData}", logdata);
         };
 
         await channel.BasicConsumeAsync(
@@ -83,28 +96,30 @@ public abstract class ConsumerBase<T>(
             await Task.Delay(1000);
         }
 
-        throw new Exception("Соединение разорвано");
+        throw new Exception("Connection lost: RabbitMQ broker unreachable");
     }
 
-    private async Task ProcessMessage(BasicDeliverEventArgs ea, IChannel channel, CancellationToken stoppingToken)
+    private async Task ProcessMessage(BasicDeliverEventArgs ea, IChannel channel, MessageLogData logdata, CancellationToken stoppingToken)
     {
         var message = Encoding.UTF8.GetString(ea.Body.ToArray());
 
-        var messageId = GetMessageId(message, ea.BasicProperties.MessageId);
+        var messageId = ea.BasicProperties.MessageId;
 
-        logger.LogInformation($"Message: {messageId} принято");
+        logdata.MessageId = messageId?.ToString();
 
         try
         {
             var eventType = ProcessProperties(message);
 
-            await CheckMessageIdAsync(messageId, message);
+            var parsedMesageId = ParseMessageId(message, messageId);
 
-            await HandleMessageAsync(eventType, message, stoppingToken);
+            await CheckMessageIdAsync(parsedMesageId, message);
+
+            await HandleMessageAsync(eventType, message, logdata, stoppingToken);
 
             var command = new CreateInboxConsumedCommand
             {
-                MessageId = messageId,
+                MessageId = parsedMesageId,
                 Handler = typeof(T).Name
             };
 
@@ -124,18 +139,21 @@ public abstract class ConsumerBase<T>(
 
             await TrySendToMediatorAsync(command);
 
-
             // ReSharper disable once AccessToDisposedClosure Это backgroundService
             await channel.BasicNackAsync(ea.DeliveryTag, false, false, stoppingToken);
+
+            logger.LogCritical("Не удалось обработать сообщение с messageId {MessageId}", logdata.MessageId);
         }
         catch
         {
             // ReSharper disable once AccessToDisposedClosure Это backgroundService
             await channel.BasicNackAsync(ea.DeliveryTag, false, true, stoppingToken);
+
+            logger.LogCritical("Не удалось обработать сообщение с messageId {MessageId}", logdata.MessageId);
         }
     }
 
-    private static Guid GetMessageId(string message, string? messageId)
+    private static Guid ParseMessageId(string message, string? messageId)
     {
         if (messageId is null)
         {

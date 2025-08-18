@@ -78,7 +78,7 @@ public class RabbitMqConnectionMonitor : IHostedService, IDisposable, IRabbitMqC
         } 
         catch
         {
-            _logger.LogWarning("Не удалось инициализировать");
+            _logger.LogCritical("Queue and exchange initialization failed");
             return false;
         }
 
@@ -103,7 +103,7 @@ public class RabbitMqConnectionMonitor : IHostedService, IDisposable, IRabbitMqC
         {
             _connection = null;
             _publishChannel = null;
-            _logger.LogWarning($"RabbitMQ недоступен, повтор через {Period} с...");
+            _logger.LogWarning($"RabbitMQ is unavailable, retrying in {Period}");
             return false;
         }
 

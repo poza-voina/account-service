@@ -12,9 +12,9 @@ public class RabbitMqPublisher(
     IRabbitMqConnectionManager rabbitMqService,
     ILogger<RabbitMqPublisher> logger) : IRabbitMqPublisher
 {
-    private const string MetaPropertyName = "Meta";
-    private const string CorrelationIdPropertyName = "CorrelationId";
-    private const string CausationIdPropertyName = "CausationId";
+    private const string MetaPropertyName = "meta";
+    private const string CorrelationIdPropertyName = "correlationId";
+    private const string CausationIdPropertyName = "causationId";
 
     public async Task PublishAsync(Guid messageId, string @event, string message, CancellationToken cancellationToken = default)
     {

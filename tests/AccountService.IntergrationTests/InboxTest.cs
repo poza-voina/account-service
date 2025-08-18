@@ -2,7 +2,6 @@
 using AccountService.Infrastructure.Enums;
 using AccountService.IntegrationTests.Base;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using RabbitMQ.Client;
 using System.Net;
 using Xunit;
@@ -14,7 +13,7 @@ public class OutboxTests(PostgresSqlFixture postgresFixture, RabbitMqFixture rab
     private IsolatedClientOptions DefaultIsolatedClientOptions { get; } = new() { RabbitMqContainerFixture = rabbitmqFixture, PostgresContainerFixture = postgresFixture, PathToEnvironment = "TestConfigs/appsettings.test.json" };
 
     [Fact]
-    public async Task OutboxTest_WhenConnectionLost_MessagesSent()
+    public async Task OutboxTest_WhenConnectionLost_MessagesSent() //НЕ СМОГ СДЕЛАТЬ ТЕСТ С ПАДЕНИЕМ КОНТЕЙНЕРА
     {        
         var queueName = "account.crm";
 

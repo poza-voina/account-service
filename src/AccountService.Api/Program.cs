@@ -52,6 +52,8 @@ public class Program
 
         services.AddHangfireConfiguration(configuration);
 
+        builder.AddSerilog();
+
         var app = builder.Build();
 
         app.UseMiddleware<EventDispatchMiddleware>();

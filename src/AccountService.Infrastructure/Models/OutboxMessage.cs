@@ -14,5 +14,9 @@ public class OutboxMessage : IDatabaseModel
 
     public string EventPayload { get; set; } = string.Empty;
 
+    public Guid CorrelationId { get; set; }
+
+    public int RetryCount { get; set; }
+
     public OutboxStatus Status { get; set; } = OutboxStatus.Pending;
 }

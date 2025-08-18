@@ -26,7 +26,15 @@ public class EventDispatcher(IEventCollector eventCollector, IRepository<OutboxM
                 var message = new OutboxMessage
                 {
                     EventType = x.GetPayloadType().Name ?? throw new InvalidOperationException("Не удалось найти тип payload"),
-                    EventPayload = JsonSerializer.Serialize(x),
+                    EventPayload = JsonSerializer.Serialize(
+                        x,
+                        new JsonSerializerOptions
+                        {
+                            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                        }),
+
+                    CorrelationId = correlationId,
+                    RetryCount = 0,
                     Status = OutboxStatus.Pending
                 };
 
