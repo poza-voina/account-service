@@ -79,6 +79,7 @@ public class RabbitMqConnectionMonitor : IHostedService, IDisposable, IRabbitMqC
         catch
         {
             _logger.LogWarning("Не удалось инициализировать");
+            return false;
         }
 
         return true;
@@ -94,7 +95,8 @@ public class RabbitMqConnectionMonitor : IHostedService, IDisposable, IRabbitMqC
                 _connection = await _factory.CreateConnectionAsync();
                 _publishChannel = await _connection.CreateChannelAsync();
 
-                _logger.LogInformation("Соединение с RabbitMq восстановлено");
+                _logger.LogInformation($"Connection open: {_connection?.IsOpen}");
+                _logger.LogInformation($"Channel open: {_publishChannel?.IsOpen}");
             }
         }
         catch (BrokerUnreachableException)
@@ -125,7 +127,16 @@ public class RabbitMqConnectionMonitor : IHostedService, IDisposable, IRabbitMqC
         {
             lock (_lock)
             {
-                return _isInitialized && _connection is not null && _connection.IsOpen ? _publishChannel : null;
+                if (!_isInitialized || _connection is null || !_connection.IsOpen)
+                    return null;
+
+                if (_publishChannel == null || !_publishChannel.IsOpen)
+                {
+                    _publishChannel = _connection.CreateChannel();
+                    _logger.LogInformation("Publish channel recreated");
+                }
+
+                return _publishChannel;
             }
         }
     }
