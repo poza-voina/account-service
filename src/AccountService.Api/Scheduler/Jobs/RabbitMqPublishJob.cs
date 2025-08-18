@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AccountService.Api.Scheduler.Jobs;
 
-public class RabbitMqPublishJob(IRabbitMqService rabbitMqService, IUnitOfWork unitOfWork) : IJob
+public class RabbitMqPublishJob(IRabbitMqPublisher rabbitMqPublisher, IUnitOfWork unitOfWork) : IJob
 {
     public async Task Execute()
     {
@@ -59,7 +59,7 @@ public class RabbitMqPublishJob(IRabbitMqService rabbitMqService, IUnitOfWork un
         {
             try
             {
-                await rabbitMqService.PublishAsync(item.Id, item.EventType, item.EventPayload);
+                await rabbitMqPublisher.PublishAsync(item.Id, item.EventType, item.EventPayload);
                 item.Status = OutboxStatus.Sent;
             }
             catch (Exception)

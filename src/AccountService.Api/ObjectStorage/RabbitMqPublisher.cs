@@ -7,10 +7,10 @@ using System.Text.Json;
 
 namespace AccountService.Api.ObjectStorage;
 
-public class RabbitMqService(
+public class RabbitMqPublisher(
     RabbitMqConfiguration configuration,
-    ILogger<RabbitMqService> logger)
-    : IRabbitMqService
+    IRabbitMqConnectionManager rabbitMqService,
+    ILogger<RabbitMqPublisher> logger) : IRabbitMqPublisher
 {
     private const string MetaPropertyName = "Meta";
     private const string CorrelationIdPropertyName = "CorrelationId";
@@ -41,7 +41,7 @@ public class RabbitMqService(
 
         var meta = root.GetProperty(MetaPropertyName);
 
-        var correlationId = meta.GetProperty(CorrelationIdPropertyName).GetString() 
+        var correlationId = meta.GetProperty(CorrelationIdPropertyName).GetString()
             ?? throw new InvalidOperationException($"{CorrelationIdPropertyName} не найдено");
         var causationId = meta.GetProperty(CausationIdPropertyName).GetString()
             ?? throw new InvalidOperationException($"{CausationIdPropertyName} не найдено");
@@ -49,7 +49,7 @@ public class RabbitMqService(
         return (correlationId, causationId);
     }
 
-    public async Task PublishAsync<T>(Guid messageId, T message, CancellationToken cancellationToken = default) where T: IEventBase
+    public async Task PublishAsync<T>(Guid messageId, T message, CancellationToken cancellationToken = default) where T : IEventBase
     {
         if (!configuration.GetBindings().TryGetValue(nameof(T), out var routingKey))
         {
@@ -79,16 +79,6 @@ public class RabbitMqService(
     {
         try
         {
-            var factory = new ConnectionFactory
-            {
-                HostName = configuration.HostName,
-                UserName = configuration.UserName,
-                Password = configuration.Password
-            };
-
-            await using var connection = await factory.CreateConnectionAsync(cancellationToken);
-            await using var channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
-
             var body = Encoding.UTF8.GetBytes(message);
             var properties = new BasicProperties
             {
@@ -102,7 +92,7 @@ public class RabbitMqService(
                 }
             };
 
-            await channel.BasicPublishAsync(
+            await rabbitMqService.PublishChannel.BasicPublishAsync(
                 exchange: configuration.Exchange,
                 routingKey: routingKey,
                 mandatory: false,

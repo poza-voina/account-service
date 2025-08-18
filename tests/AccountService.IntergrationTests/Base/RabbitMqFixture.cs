@@ -17,6 +17,7 @@ public class RabbitMqFixture : IRabbitMqContainerFixture
     public string Username => "test";
     public string Password => "test";
     public int Port => Container.GetMappedPublicPort(5672);
+    public int ManagerPort => Container.GetMappedPublicPort(15672);
     public string Hostname => Container.Hostname;
 
     public async Task InitializeAsync()

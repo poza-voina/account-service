@@ -20,4 +20,5 @@ public interface IRabbitMqContainerFixture : IContainerFixture
     string Username { get; }
     string Hostname { get; }
     int Port { get; }
+    int ManagerPort { get; }
 }

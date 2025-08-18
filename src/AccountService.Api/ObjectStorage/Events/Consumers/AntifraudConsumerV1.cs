@@ -2,16 +2,18 @@
 using AccountService.Api.Features.Account.BlockAccounts;
 using AccountService.Api.Features.Account.UnblockAccounts;
 using AccountService.Api.ObjectStorage.Events.Consumed;
+using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
 using System.Text.Json;
 
 namespace AccountService.Api.ObjectStorage.Events.Consumers;
 
 public class AntifraudConsumerV1(
-    RabbitMqConfiguration rabbitMqConfiguration,
+    IRabbitMqConnectionMonitor monitor,
     ConsumerConfiguration consumerConfiguration,
+    ILogger<AntifraudConsumerV1> logger,
     IServiceProvider serviceProvider)
-    : ConsumerBase(rabbitMqConfiguration, consumerConfiguration, serviceProvider)
+    : ConsumerBase<AntifraudConsumerV1>(monitor, consumerConfiguration, logger, serviceProvider)
 {
     protected override async Task HandleMessageAsync(string eventType, string message, CancellationToken cancelationToken)
     {

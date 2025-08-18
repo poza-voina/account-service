@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RabbitMQ.Client;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -270,12 +271,19 @@ public static class DependencyInjection
             .Map<TransferCompleted>("money.*");
 
         services.AddSingleton(rabbitMqConfiguration);
-        services.AddHostedService<RabbitMqInitializer>();
-        services.AddScoped<IRabbitMqService, RabbitMqService>();
+
+        services.AddSingleton<RabbitMqConnectionMonitor>();
+        services.AddSingleton<IRabbitMqConnectionMonitor>(sp => sp.GetRequiredService<RabbitMqConnectionMonitor>());
+        services.AddHostedService(sp => sp.GetRequiredService<RabbitMqConnectionMonitor>());
+
+
+        services.AddScoped<IRabbitMqConnectionManager, RabbitMqConnectionManager>();
 
         var consumerConfiguration = new ConsumerConfiguration()
             .WithQueueName("account.antifraud")
             .Map<AntifraudConsumerV1>();
+
+        services.AddScoped<IRabbitMqPublisher, RabbitMqPublisher>();
 
         services.AddSingleton(consumerConfiguration);
         services.AddHostedService<AntifraudConsumerV1>();

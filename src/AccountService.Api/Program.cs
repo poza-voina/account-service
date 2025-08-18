@@ -50,10 +50,7 @@ public class Program
 
         services.AddRabbitMqConfiguration(configuration);
 
-        if (environmentName != "Testing")
-        {
-            services.AddHangfireConfiguration(configuration);
-        }
+        services.AddHangfireConfiguration(configuration);
 
         var app = builder.Build();
 
@@ -68,7 +65,7 @@ public class Program
 
         app.UseExceptionHandler(_ => { });
         app.MapControllers();
-        
+
         if (!app.Environment.IsEnvironment("Testing"))
         {
             app.UseSwagger();
@@ -82,14 +79,14 @@ public class Program
                 c.OAuthUsePkce();
                 c.OAuthScopes("openid", "profile");
             });
-
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions
-            {
-                Authorization = [new AllowAllAuthorizationFilter()]
-            });
-
-            JobConfigurator.Configure(app.Services);
         }
+        app.UseHangfireDashboard("/hangfire", new DashboardOptions
+        {
+            Authorization = [new AllowAllAuthorizationFilter()]
+        });
+
+        JobConfigurator.Configure(app.Services);
+
 
         app.Run();
     }

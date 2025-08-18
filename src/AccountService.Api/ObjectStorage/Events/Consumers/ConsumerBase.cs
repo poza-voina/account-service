@@ -1,6 +1,7 @@
 ﻿using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Brokers.CreateDeadLetter;
 using AccountService.Api.Features.Brokers.CreateInboxConsumed;
+using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Infrastructure.Models;
 using AccountService.Infrastructure.Repositories.Interfaces;
@@ -13,9 +14,10 @@ using System.Text.Json;
 
 namespace AccountService.Api.ObjectStorage.Events.Consumers;
 
-public abstract class ConsumerBase(
-    RabbitMqConfiguration rabbitMqConfiguration,
+public abstract class ConsumerBase<T>(
+    IRabbitMqConnectionMonitor monitor,
     ConsumerConfiguration consumerConfiguration,
+    ILogger<T> logger,
     IServiceProvider serviceProvider)
     : BackgroundService
 {
@@ -25,16 +27,34 @@ public abstract class ConsumerBase(
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var factory = new ConnectionFactory
+        while (!stoppingToken.IsCancellationRequested)
         {
-            HostName = rabbitMqConfiguration.HostName,
-            Port = rabbitMqConfiguration.Port,
-            UserName = rabbitMqConfiguration.UserName,
-            Password = rabbitMqConfiguration.Password
-        };
+            try
+            {
+                await Handle(stoppingToken);
+            }
+            catch(Exception ex)
+            {
+                logger.LogCritical(ex.Message);
+            }
+        }
+    }
 
-        await using var connection = await factory.CreateConnectionAsync(stoppingToken);
-        await using var channel = await connection.CreateChannelAsync(cancellationToken: stoppingToken);
+    protected async Task Handle(CancellationToken stoppingToken)
+    {
+        int attempts = 0;
+        while (monitor.Connection is null && attempts < 5)
+        {
+            await Task.Delay(500);
+            attempts++;
+        }
+
+        if (monitor.Connection is null)
+        {
+            throw new Exception("Консюмеру не удалось установить соединение с RabbitMQ");
+        }
+
+        await using var channel = await monitor.Connection.CreateChannelAsync(cancellationToken: stoppingToken);
 
         await channel.QueueDeclareAsync(
             queue: consumerConfiguration.QueueName,
@@ -48,49 +68,7 @@ public abstract class ConsumerBase(
         var consumer = new AsyncEventingBasicConsumer(channel);
         consumer.ReceivedAsync += async (ch, ea) =>
         {
-            var message = Encoding.UTF8.GetString(ea.Body.ToArray());
-
-            var messageId = GetMessageId(message, ea.BasicProperties.MessageId);
-
-            try
-            {
-                var eventType = ProcessProperties(message);
-
-                await CheckMessageIdAsync(messageId, message);
-
-                await HandleMessageAsync(eventType, message, stoppingToken);
-
-                var command = new CreateInboxConsumedCommand
-                {
-                    MessageId = messageId,
-                    Handler = nameof(ConsumerBase)
-                };
-
-                await TrySendToMediatorAsync(command);
-
-                // ReSharper disable once AccessToDisposedClosure Это backgroundService
-                await channel.BasicAckAsync(ea.DeliveryTag, false, stoppingToken);
-            }
-            catch (ConsumerHandleMessageException exception)
-            {
-                var command = new CreateDeadLetterCommand
-                {
-                    ExceptionMessage = exception.Message,
-                    EventType = exception.EventType,
-                    StackTrace = exception.StackTrace
-                };
-
-                await TrySendToMediatorAsync(command);
-
-
-                // ReSharper disable once AccessToDisposedClosure Это backgroundService
-                await channel.BasicNackAsync(ea.DeliveryTag, false, false, stoppingToken);
-            }
-            catch
-            {
-                // ReSharper disable once AccessToDisposedClosure Это backgroundService
-                await channel.BasicNackAsync(ea.DeliveryTag, false, true, stoppingToken);
-            }
+            await ProcessMessage(ea, channel, stoppingToken);
         };
 
         await channel.BasicConsumeAsync(
@@ -100,7 +78,61 @@ public abstract class ConsumerBase(
             cancellationToken: stoppingToken
         );
 
-        await Task.Delay(Timeout.Infinite, stoppingToken);
+        while (monitor.Connection?.IsOpen is true)
+        {
+            await Task.Delay(1000);
+        }
+
+        throw new Exception("Соединение разорвано");
+    }
+
+    private async Task ProcessMessage(BasicDeliverEventArgs ea, IChannel channel, CancellationToken stoppingToken)
+    {
+        var message = Encoding.UTF8.GetString(ea.Body.ToArray());
+
+        var messageId = GetMessageId(message, ea.BasicProperties.MessageId);
+
+        logger.LogInformation($"Message: {messageId} принято");
+
+        try
+        {
+            var eventType = ProcessProperties(message);
+
+            await CheckMessageIdAsync(messageId, message);
+
+            await HandleMessageAsync(eventType, message, stoppingToken);
+
+            var command = new CreateInboxConsumedCommand
+            {
+                MessageId = messageId,
+                Handler = typeof(T).Name
+            };
+
+            await TrySendToMediatorAsync(command);
+
+            // ReSharper disable once AccessToDisposedClosure Это backgroundService
+            await channel.BasicAckAsync(ea.DeliveryTag, false, stoppingToken);
+        }
+        catch (ConsumerHandleMessageException exception)
+        {
+            var command = new CreateDeadLetterCommand
+            {
+                ExceptionMessage = exception.Message,
+                EventType = exception.EventType,
+                StackTrace = exception.StackTrace
+            };
+
+            await TrySendToMediatorAsync(command);
+
+
+            // ReSharper disable once AccessToDisposedClosure Это backgroundService
+            await channel.BasicNackAsync(ea.DeliveryTag, false, false, stoppingToken);
+        }
+        catch
+        {
+            // ReSharper disable once AccessToDisposedClosure Это backgroundService
+            await channel.BasicNackAsync(ea.DeliveryTag, false, true, stoppingToken);
+        }
     }
 
     private static Guid GetMessageId(string message, string? messageId)
@@ -114,7 +146,7 @@ public abstract class ConsumerBase(
         {
             throw new ConsumerHandleMessageException(message, "MessageId не удалось преобразовать в GUID");
         }
-        
+
         return result;
     }
 

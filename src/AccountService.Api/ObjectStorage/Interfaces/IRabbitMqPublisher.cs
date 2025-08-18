@@ -2,7 +2,7 @@
 
 namespace AccountService.Api.ObjectStorage.Interfaces;
 
-public interface IRabbitMqService
+public interface IRabbitMqPublisher
 {
     // ReSharper disable once UnusedMember.Global Может понадобиться, если отправлять event в через контракт
     Task PublishAsync<T>(Guid messageId, T message, CancellationToken cancellationToken = default) where T : IEventBase;
