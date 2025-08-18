@@ -1,7 +1,7 @@
-using AccountService.Api.Domains.Enums;
-using AccountService.Api.Exceptions;
+using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Account.Interfaces;
 using AccountService.Api.ViewModels;
+using AccountService.Infrastructure.Enums;
 using AutoMapper;
 using MediatR;
 
@@ -22,6 +22,7 @@ public class PatchAccountCommandHandler(IAccountStorageService accountStorageSer
 
         account.InterestRate = request.InterestRate;
         account.ClosingDate = request.ClosingDate;
+        account.Version = request.Version;
 
         account = await accountStorageService.UpdateAccountAsync(account, cancellationToken);
 

@@ -1,22 +1,27 @@
-using AccountService.Api.Domains;
-using AccountService.Api.Domains.Enums;
-using AccountService.Api.Exceptions;
-using AccountService.Api.Features.Account.Interfaces;
+using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Transactions.Interfaces;
+using AccountService.Infrastructure.Enums;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Models = AccountService.Infrastructure.Models;
 
 namespace AccountService.Api.Features.Transactions.ApplyTransaction;
 
-public class ApplyTransactionCommandHandler(ITransactionStorageService transactionStorageService, IAccountStorageService accountStorageService) : IRequestHandler<ApplyTransactionCommand, Unit>
+public class ApplyTransactionCommandHandler(ITransactionStorageService transactionStorageService) : IRequestHandler<ApplyTransactionCommand, Unit>
 {
     private const string EnumErrorMessage = "Недопустимое значение перечисления";
     private const string NotEnoughMoneyErrorMessage = "На счете недостаточно средств";
 
     public async Task<Unit> Handle(ApplyTransactionCommand request, CancellationToken cancellationToken)
     {
-        var transaction = await transactionStorageService.GetTransactionAsync(request.TransactionId, cancellationToken);
+        var transaction = await transactionStorageService.GetTransactionAsync(
+            request.AnyTransaction.TransactionId,
+            cancellationToken,
+            x => x.Include(transaction => transaction.BankAccount));
 
-        var account = await accountStorageService.GetAccountAsync(transaction.BankAccountId, cancellationToken);
+        var account = transaction.BankAccount!;
+
+        account.Version = request.AnyTransaction.AccountVersion;
 
         switch (transaction.Type)
         {
@@ -37,19 +42,17 @@ public class ApplyTransactionCommandHandler(ITransactionStorageService transacti
         return Unit.Value;
     }
 
-    public static void ProcessDebit(Transaction transaction, Domains.Account account)
+    public static void ProcessDebit(Models.Transaction transaction, Models.Account account)
     {
-        transaction.IsApply = true;
         account.Balance += transaction.Amount;
     }
 
-    public static void ProcessCredit(Transaction transaction, Domains.Account account)
+    public static void ProcessCredit(Models.Transaction transaction, Models.Account account)
     {
         if (transaction.Amount > account.Balance)
         {
             throw new UnprocessableException(NotEnoughMoneyErrorMessage);
         }
-        transaction.IsApply = true;
 
         account.Balance -= transaction.Amount;
     }

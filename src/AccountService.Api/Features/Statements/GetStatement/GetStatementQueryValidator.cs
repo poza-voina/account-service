@@ -18,6 +18,6 @@ public class GetStatementQueryValidator : AbstractValidator<GetStatementQuery>
 
         RuleFor(x => x)
             .Must(x => x.StartDateTime is null || x.EndDateTime is null || x.StartDateTime <= x.EndDateTime)
-            .WithMessage("Диапозон выписки может быть (-inf; +inf) (-inf; date] [date; +inf) [date; date]");
+            .WithMessage("Диапазон выписки может быть (-inf; +inf) (-inf; date] [date; +inf) [date; date]");
     }
 }

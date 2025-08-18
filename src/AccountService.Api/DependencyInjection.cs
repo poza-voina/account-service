@@ -1,5 +1,6 @@
-﻿using AccountService.Api.Behaviors;
-using AccountService.Api.Extensions;
+﻿using AccountService.Abstractions.Constants;
+using AccountService.Abstractions.Extensions;
+using AccountService.Api.Behaviors;
 using AccountService.Api.Features.Account;
 using AccountService.Api.Features.Account.Interfaces;
 using AccountService.Api.Features.Statements.GetStatement;
@@ -7,11 +8,20 @@ using AccountService.Api.Features.Transactions;
 using AccountService.Api.Features.Transactions.Interfaces;
 using AccountService.Api.ObjectStorage;
 using AccountService.Api.ObjectStorage.Interfaces;
+using AccountService.Api.ObjectStorage.Objects;
+using AccountService.Api.Scheduler;
+using AccountService.Api.Scheduler.Jobs;
 using AccountService.Api.SwaggerFilters;
 using AccountService.Api.ViewModels.Result;
+using AccountService.Infrastructure;
+using AccountService.Infrastructure.Repositories;
+using AccountService.Infrastructure.Repositories.Interfaces;
 using FluentValidation;
+using Hangfire;
+using Hangfire.PostgreSql;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -22,6 +32,26 @@ namespace AccountService.Api;
 
 public static class DependencyInjection
 {
+    public static void AddMockClients(this IServiceCollection services)
+    {
+        services.AddSingleton<ICollection<Guid>>(_ =>
+            [
+                Guid.Parse("d3b07384-d9a6-4b5e-bc8d-23f7c1a1a111"),
+                Guid.Parse("a5f5c3b2-1e74-4e6d-9c9d-8bfbec79a222"),
+                Guid.Parse("9f8e7d6c-5b4a-3c2d-1e0f-1234567890ab"),
+                Guid.Parse("abcdefab-cdef-abcd-efab-cdefabcdef12"),
+                Guid.Parse("7c9fcf13-6df1-4eb1-9404-0e4380e2bba5")
+            ]);
+    }
+
+    public static void AddDbContextConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionSection = configuration.GetRequiredSection(EnvironmentConstants.ConnectionSection);
+        var connectionString = connectionSection.GetRequiredValue<string>(EnvironmentConstants.DefaultConnectionStringKey);
+
+        services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+    }
+
     public static void AddCorsConfiguration(this IServiceCollection services)
     {
         services.AddCors(options =>
@@ -38,7 +68,7 @@ public static class DependencyInjection
 
     public static void AddAuthConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtOptions = configuration.GetRequiredSection("Authentication").GetRequired<AuthenticationOptions>();
+        var jwtOptions = configuration.GetRequiredSection(EnvironmentConstants.AuthenticationSection).GetRequired<AuthenticationOptions>();
 
         services
             .AddAuthentication(
@@ -128,7 +158,7 @@ public static class DependencyInjection
 
             x.OperationFilter<CamelCaseQueryParametersFilter>();
 
-            var authenticationOptions = configuration.GetRequiredSection("Authentication").GetRequired<AuthenticationOptions>();
+            var authenticationOptions = configuration.GetRequiredSection(EnvironmentConstants.AuthenticationSection).GetRequired<AuthenticationOptions>();
 
             x.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
             {
@@ -171,11 +201,40 @@ public static class DependencyInjection
         services.AddScoped<IAccountStorageService, AccountStorageService>();
         services.AddScoped<ITransactionStorageService, TransactionStorageService>();
         services.AddScoped<ICurrencyService, CurrencyService>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+    }
+
+    public static void AddAutoMapperConfiguration(this IServiceCollection services)
+    {
+        services.AddAutoMapper(x => x.AddMaps(Assembly.GetExecutingAssembly()));
+    }
+
+    public static void AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
     }
 
     public static void AddHelpers(this IServiceCollection services)
     {
         services.AddSingleton<ICurrencyHelper, CurrencyHelper>();
         services.AddSingleton<IDatetimeHelper, DatetimeHelper>();
+    }
+
+    public static void AddHangfireConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionSection = configuration.GetRequiredSection(EnvironmentConstants.ConnectionSection);
+        var connectionString = connectionSection.GetRequiredValue<string>(EnvironmentConstants.DefaultConnectionStringKey);
+
+        services.AddHangfire(globalConfiguration => globalConfiguration
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UsePostgreSqlStorage(x => x.UseNpgsqlConnection(connectionString))
+            );
+
+        services.AddHangfireServer();
+
+        services.AddScoped<AccrueInterestJob>();
+        services.AddSingleton(typeof(JobRunner<>));
     }
 }

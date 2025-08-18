@@ -1,65 +1,73 @@
-using AccountService.Api.Domains;
-using AccountService.Api.Domains.Enums;
-using AccountService.Api.Exceptions;
-using AccountService.Api.Features.Account.Interfaces;
+using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Transactions.Interfaces;
+using AccountService.Api.ObjectStorage.Objects;
+using AccountService.Infrastructure.Enums;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccountService.Api.Features.Transactions.ApplyTransactionPair;
 
-public class ApplyTransactionPairCommandHandler(IAccountStorageService accountStorageService, ITransactionStorageService transactionStorageService) : IRequestHandler<ApplyTransactionPairCommand, Unit>
+public class ApplyTransactionPairCommandHandler(ITransactionStorageService transactionStorageService) : IRequestHandler<ApplyTransactionPairCommand, Unit>
 {
     private const string InvalidTransactionLinkErrorMessage = "Транзакции не формируют взаимную связь";
     private const string AccountNotFoundMoney = "На счете недостаточно средств";
     private const string CreditTransactionNotFoundErrorMessage = "Транзакция на списание не найдена";
     private const string DebitTransactionNotFoundErrorMessage = "Транзакция на пополнение не найдена";
-    private const string CreditAccountNotFoundErrorMessage = "Счет на списание не найден";
-    private const string DebitAccountNotFoundErrorMessage = "Счет на пополенение не найден";
 
     public async Task<Unit> Handle(ApplyTransactionPairCommand request, CancellationToken cancellationToken)
     {
-        var transactions = (await transactionStorageService.GetTransactionsAsync([request.FirstTransactionId, request.SecondTransactionId], cancellationToken)).ToList();
+        var transactions = await transactionStorageService.GetTransactionsAsync(
+            [request.CreditTransaction.TransactionId, request.DebitTransaction.TransactionId],
+            cancellationToken,
+            x => x.Include(transaction => transaction.BankAccount));
 
-        var credit = transactions.FirstOrDefault(x => x.Type == TransactionType.Credit)
-            ?? throw new NotFoundException(CreditTransactionNotFoundErrorMessage);
-        var debit = transactions.FirstOrDefault(x => x.Type == TransactionType.Debit)
-            ?? throw new NotFoundException(DebitTransactionNotFoundErrorMessage);
+        var transactionsList = transactions.ToList();
+        var credit = request.CreditTransaction.WithTransaction(
+            transactionsList.FirstOrDefault(x => x.Type == TransactionType.Credit)
+            ?? throw new NotFoundException(CreditTransactionNotFoundErrorMessage));
 
-        if (credit.BankAccountId == debit.CounterpartyBankAccountId &&
-            credit.CounterpartyBankAccountId == debit.BankAccountId &&
-            credit.CounterpartyBankAccountId is not null)
+        var debit = request.DebitTransaction.WithTransaction(
+            transactionsList.FirstOrDefault(x => x.Type == TransactionType.Debit)
+            ?? throw new NotFoundException(DebitTransactionNotFoundErrorMessage));
+
+
+        if (credit.Transaction.BankAccountId == debit.Transaction.CounterpartyBankAccountId &&
+            credit.Transaction.CounterpartyBankAccountId == debit.Transaction.BankAccountId &&
+            credit.Transaction.CounterpartyBankAccountId is not null)
         {
             throw new UnprocessableException(InvalidTransactionLinkErrorMessage);
         }
 
-        var accounts = (await accountStorageService.GetAccountsAsync(cancellationToken, credit.BankAccountId, credit.CounterpartyBankAccountId!.Value)).ToList();
+        ChangeVersion(credit, debit);
+        ProcessCredit(credit);
+        ProcessDebit(debit);
 
-        var creditAccount = accounts.SingleOrDefault(a => a.Id == credit.BankAccountId)
-             ?? throw new NotFoundException(CreditAccountNotFoundErrorMessage);
-        var debitAccount = accounts.SingleOrDefault(a => a.Id == debit.BankAccountId)
-             ?? throw new NotFoundException(DebitAccountNotFoundErrorMessage);
-
-        ProcessCredit(credit, creditAccount);
-        ProcessDebit(debit, debitAccount);
-
-        await transactionStorageService.ApplyTransactionsAsync([credit, debit], [creditAccount, debitAccount], cancellationToken);
+        await transactionStorageService.ApplyTransactionsAsync(
+            [credit.Transaction, debit.Transaction],
+            [credit.Transaction.BankAccount!, debit.Transaction.BankAccount!],
+            cancellationToken);
 
         return Unit.Value;
     }
 
-    private static void ProcessDebit(Transaction debit, Domains.Account debitAccount)
+    private static void ChangeVersion(TransactionInfo credit, TransactionInfo debit)
     {
-        debitAccount.Balance += debit.Amount;
-        debit.IsApply = true;
+        credit.Transaction.BankAccount!.Version = credit.AccountVersion;
+        debit.Transaction.BankAccount!.Version = debit.AccountVersion;
     }
 
-    private static void ProcessCredit(Transaction credit, Domains.Account creditAccount)
+    private static void ProcessDebit(TransactionInfo debit)
     {
-        if (creditAccount.Balance < credit.Amount) {
+        debit.Transaction.BankAccount!.Balance += debit.Transaction.Amount;
+    }
+
+    private static void ProcessCredit(TransactionInfo credit)
+    {
+        if (credit.Transaction.BankAccount!.Balance < credit.Transaction.Amount)
+        {
             throw new UnprocessableException(AccountNotFoundMoney);
         }
 
-        creditAccount.Balance -= credit.Amount;
-        credit.IsApply = true;
+        credit.Transaction.BankAccount.Balance -= credit.Transaction.Amount;
     }
 }

@@ -1,5 +1,5 @@
-﻿using AccountService.Api.Domains.Enums;
-using AccountService.Api.ViewModels;
+﻿using AccountService.Api.ViewModels;
+using AccountService.Infrastructure.Enums;
 using JetBrains.Annotations;
 using MediatR;
 
@@ -32,4 +32,9 @@ public class ExecuteTransactionCommand : IRequest<TransactionViewModel>
     /// Описание транзакции
     /// </summary>
     public required string Description { get; set; }
+
+    /// <summary>
+    /// Версия сущности
+    /// </summary>
+    public uint BankAccountVersion { get; set; }
 }

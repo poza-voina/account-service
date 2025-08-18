@@ -1,4 +1,4 @@
-﻿using AccountService.Api.Domains.Enums;
+﻿using AccountService.Infrastructure.Enums;
 using JetBrains.Annotations;
 
 namespace AccountService.Api.ViewModels;
@@ -50,4 +50,9 @@ public class TransactionViewModel
     /// Флаг принятия транзакции
     /// </summary>
     public required bool IsApply { get; set; }
+
+    /// <summary>
+    /// Версия сущности
+    /// </summary>
+    public uint Version { get; set; }
 }

@@ -19,6 +19,39 @@ services:
       - Authentication__Audience=account
       - Authentication__ClientId=${CLIENT_ID}
       - Authentication__ClientSecret=${CLIENT_SECRET}
+      - ConnectionStrings__PostgreSqlConnection=User ID=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Server=postgres;Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Pooling=true;
+
+  postgres:
+    image: postgres:17
+    container_name: postgres-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - ./database/procedures:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  
+  migration-runner:
+    build:
+      context: .
+      dockerfile:  src/MigrationRunner/Dockerfile
+    container_name: migration-runner
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__PostgreSqlConnection=User ID=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Server=postgres;Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Pooling=true;
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.3.2
@@ -30,9 +63,9 @@ services:
     command: ["start-dev"]
     healthcheck:
       test: ["CMD", "bash", "-c", "if </dev/tcp/localhost/$KEYCLOAK_PORT; then exit 0; else exit 1; fi"]
-      interval: 10s
+      interval: 20s
       timeout: 5s
-      retries: 3
+      retries: 5
 
   keycloak-init:
     image: quay.io/keycloak/keycloak:26.3.2
@@ -44,3 +77,6 @@ services:
       - ./generate-realm.sh:/opt/keycloak/generate-realm.sh:ro
       - ./.env:/opt/keycloak/.env:ro
     restart: no
+
+volumes:
+  postgres_data:

@@ -25,7 +25,7 @@ public class TransferTransactionCommandValidator : AbstractValidator<TransferTra
 
         RuleFor(x => x.Currency)
             .NotEmpty()
-            .WithMessage("Валюта не дожна быть пустой")
+            .WithMessage("Валюта не должна быть пустой")
             .Must(currencyHelper.IsValid)
             .WithMessage("Валюта должна быть введена в формате ISO 4217");
 

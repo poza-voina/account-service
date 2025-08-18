@@ -4,6 +4,8 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<PreserveCompilationReferences>true</PreserveCompilationReferences>
+		<PreserveCompilationContext>true</PreserveCompilationContext>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>1591</NoWarn>
 		<NoWarn>$(NoWarn);CS0169</NoWarn>
@@ -17,6 +19,11 @@
 		<PackageReference Include="AutoMapper" Version="15.0.1" />
 		<PackageReference Include="FluentValidation" Version="12.0.0" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+		<!-- ReSharper disable once VulnerablePackage -->
+		<PackageReference Include="Hangfire.AspNetCore" Version="1.8.20" />
+		<!-- ReSharper disable once VulnerablePackage -->
+		<PackageReference Include="Hangfire.Core" Version="1.8.20" />
+		<PackageReference Include="Hangfire.PostgreSql" Version="1.20.12" />
 		<PackageReference Include="JetBrains.Annotations" Version="2025.2.0" />
 		<PackageReference Include="MediatR" Version="13.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
@@ -25,4 +32,8 @@
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.7" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\AccountService.Abstractions\AccountService.Abstractions.csproj" />
+		<ProjectReference Include="..\AccountService.Infrastructure\AccountService.Infrastructure.csproj" />
+	</ItemGroup>
 </Project>

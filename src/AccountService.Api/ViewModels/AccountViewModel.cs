@@ -1,4 +1,4 @@
-﻿using AccountService.Api.Domains.Enums;
+﻿using AccountService.Infrastructure.Enums;
 using JetBrains.Annotations;
 
 namespace AccountService.Api.ViewModels;
@@ -7,7 +7,7 @@ namespace AccountService.Api.ViewModels;
 public class AccountViewModel
 {
     /// <summary>
-    /// Индентификатор счета
+    /// Идентификатор счета
     /// </summary>
     public Guid Id { get; set; }
 
@@ -45,4 +45,9 @@ public class AccountViewModel
     /// Дата закрытия счета
     /// </summary>
     public DateTime? ClosingDate { get; set; }
+
+    /// <summary>
+    /// Версия сущности
+    /// </summary>
+    public required uint Version { get; set; }
 }

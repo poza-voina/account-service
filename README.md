@@ -11,11 +11,20 @@
 ## [Документация API](./docs/api.md)
 ## [Задание 1](./docs/task1.md)
 ## [Задание 2](./docs/task2.md)
+## [Задание 3](./docs/task3.md)
 
 ## Запуск в Docker
+Приложениt запускается на 80 порту и имеют такие url:
+
+`http://localhost/swagger/index.html`
+
+`http://localhost/hangfire`
+
+`http://localhost:8080` - keycloak
+
 ```docker compose up -d```
 порядок запуска сервисов
-keycloak -> keycloak-init -> accountservice.api
+keycloak -> keycloak-init -> postgres -> migrationRunner -> accountservice.api
 
 ## Запуск в VS + Docker
 <img width="327" height="86" alt="image" src="https://github.com/user-attachments/assets/6d84f909-3e56-4816-926f-d51adf63f64c" />

@@ -1,4 +1,4 @@
-using AccountService.Api.Exceptions;
+using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Account.Interfaces;
 using MediatR;
 
