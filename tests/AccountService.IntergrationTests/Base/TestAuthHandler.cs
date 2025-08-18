@@ -11,9 +11,7 @@ public class TestAuthHandler(
                            ILoggerFactory logger,
                            UrlEncoder encoder)
     : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
-    {
-    }
-
+{
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         var claims = new[]

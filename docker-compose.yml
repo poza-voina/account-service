@@ -55,41 +55,6 @@ services:
         condition: service_healthy
     restart: "no"
 
-  postgres:
-    image: postgres:17
-    container_name: postgres-db
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-      - ./database/procedures:/docker-entrypoint-initdb.d/procedures
-      - ./database/sql:/docker-entrypoint-initdb.d/sql
-      - ./database/seed:/docker-entrypoint-initdb.d/sql
-
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-    ports:
-      - "${POSTGRES_PORT}:5432"
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-  
-  migration-runner:
-    build:
-      context: .
-      dockerfile:  src/MigrationRunner/Dockerfile
-    container_name: migration-runner
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__PostgreSqlConnection=User ID=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Server=postgres;Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Pooling=true;
-    depends_on:
-      postgres:
-        condition: service_healthy
-    restart: "no"
-
   keycloak:
     image: quay.io/keycloak/keycloak:26.3.2
     ports:

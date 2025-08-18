@@ -21,7 +21,6 @@ public interface IRepository<TModel> where TModel : class, IDatabaseModel
     Task<int> ExecuteSqlAsync(
         FormattableString sqlQuery,
         CancellationToken cancellationToken = default);
-}
 
     Task<IEnumerable<TModel>> AddRangeAsync(
         IEnumerable<TModel> entities,
