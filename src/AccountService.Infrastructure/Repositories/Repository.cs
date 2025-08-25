@@ -65,4 +65,19 @@ public class Repository<TModel>(ApplicationDbContext context) : IRepository<TMod
             await UpdateAsync(entity);
         }
     }
+
+    public async Task<IEnumerable<TModel>> AddRangeAsync(
+        IEnumerable<TModel> entities,
+        CancellationToken cancellationToken = default)
+    {
+        var entitiesList = entities.ToList();
+        await context.Set<TModel>().AddRangeAsync(entitiesList, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+        return entitiesList;
+    }
+
+    public async Task<bool> CanConnectToDb()
+    {
+        return await context.Database.CanConnectAsync();
+    }
 }

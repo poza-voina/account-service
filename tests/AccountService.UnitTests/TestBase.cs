@@ -1,9 +1,14 @@
 ﻿using AccountService.Api;
+using AccountService.Api.ObjectStorage;
+using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Infrastructure;
 using AccountService.Infrastructure.Enums;
 using AccountService.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using System.Data;
 using Xunit;
 
 namespace AccountService.UnitTests;
@@ -28,14 +33,35 @@ public abstract class TestBase : IAsyncLifetime
     {
         services.AddLogging();
 
+        var mockUow = new Mock<IUnitOfWork>();
+
+        var mockTransaction = new Mock<IDbContextTransaction>();
+
+        mockUow.Setup(u => u.BeginTransactionAsync(It.IsAny<IsolationLevel>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(mockTransaction.Object);
+
+        mockUow.Setup(u => u.CommitAsync(It.IsAny<CancellationToken>()))
+               .Returns(Task.CompletedTask);
+
+        mockUow.Setup(u => u.RollbackAsync(It.IsAny<CancellationToken>()))
+               .Returns(Task.CompletedTask);
+
         services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase($"TestDb_{Guid.NewGuid()}"));
 
+        services.AddScoped<IEventCollector, EventCollector>();
+
         services.AddAutoMapperConfiguration();
+
+        services.AddHttpContextAccessor();
 
         services.AddMockClients();
 
         services.AddServices();
+
+        services.AddScoped(_ => mockUow.Object);
+
         services.AddRepositories();
+        
         services.AddHelpers();
 
         services.AddValidationConfiguration();

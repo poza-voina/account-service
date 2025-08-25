@@ -1,4 +1,5 @@
-﻿using AccountService.Abstractions.Constants;
+﻿using Serilog;
+using AccountService.Abstractions.Constants;
 using AccountService.Abstractions.Extensions;
 using AccountService.Api.Behaviors;
 using AccountService.Api.Features.Account;
@@ -7,6 +8,8 @@ using AccountService.Api.Features.Statements.GetStatement;
 using AccountService.Api.Features.Transactions;
 using AccountService.Api.Features.Transactions.Interfaces;
 using AccountService.Api.ObjectStorage;
+using AccountService.Api.ObjectStorage.Events.Consumers;
+using AccountService.Api.ObjectStorage.Events.Published;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Api.Scheduler;
@@ -32,6 +35,12 @@ namespace AccountService.Api;
 
 public static class DependencyInjection
 {
+    public static void AddEventConfiguration(this IServiceCollection services)
+    {
+        services.AddScoped<IEventCollector, EventCollector>();
+        services.AddScoped<IEventDispatcher, EventDispatcher>();
+    }
+
     public static void AddMockClients(this IServiceCollection services)
     {
         services.AddSingleton<ICollection<Guid>>(_ =>
@@ -120,7 +129,12 @@ public static class DependencyInjection
 
     public static void AddMediatrConfiguration(this IServiceCollection services)
     {
-        services.AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+        services.AddMediatR(
+            x =>
+            {
+                x.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            });
+
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
     }
 
@@ -202,6 +216,8 @@ public static class DependencyInjection
         services.AddScoped<ITransactionStorageService, TransactionStorageService>();
         services.AddScoped<ICurrencyService, CurrencyService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddSingleton<IEventFactory, EventFactory>();
+        services.AddScoped<IHealthCheckService, HealthCheckService>();
     }
 
     public static void AddAutoMapperConfiguration(this IServiceCollection services)
@@ -235,6 +251,41 @@ public static class DependencyInjection
         services.AddHangfireServer();
 
         services.AddScoped<AccrueInterestJob>();
+        services.AddScoped<RabbitMqPublishJob>();
         services.AddSingleton(typeof(JobRunner<>));
+    }
+
+    public static void AddRabbitMqConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        var rabbitMqConfiguration = configuration.GetRequiredSection("Brokers:RabbitMq").GetRequired<RabbitMqConfiguration>()
+            .Map<AccountOpened>("account.opened")
+            .Map<InterestAccrued>("money.*")
+            .Map<MoneyCredited>("money.*")
+            .Map<MoneyDebited>("money.*")
+            .Map<TransferCompleted>("money.*");
+
+        services.AddSingleton(rabbitMqConfiguration);
+
+        services.AddSingleton<RabbitMqConnectionMonitor>();
+        services.AddSingleton<IRabbitMqConnectionMonitor>(sp => sp.GetRequiredService<RabbitMqConnectionMonitor>());
+        services.AddHostedService(sp => sp.GetRequiredService<RabbitMqConnectionMonitor>());
+
+
+        services.AddScoped<IRabbitMqConnectionManager, RabbitMqConnectionManager>();
+
+        var consumerConfiguration = new ConsumerConfiguration()
+            .WithQueueName("account.antifraud")
+            .Map<AntifraudConsumerV1>();
+
+        services.AddScoped<IRabbitMqPublisher, RabbitMqPublisher>();
+
+        services.AddSingleton(consumerConfiguration);
+        services.AddHostedService<AntifraudConsumerV1>();
+    }
+
+    public static void AddSerilog(this WebApplicationBuilder builder)
+    {
+        builder.Host.UseSerilog((context, configuration) =>
+            configuration.ReadFrom.Configuration(context.Configuration));
     }
 }

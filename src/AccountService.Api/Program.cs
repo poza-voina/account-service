@@ -1,5 +1,6 @@
 using AccountService.Abstractions.Constants;
 using AccountService.Abstractions.Extensions;
+using AccountService.Api.ObjectStorage.Middlewares;
 using AccountService.Api.ObjectStorage.Objects;
 using AccountService.Api.Scheduler;
 using Hangfire;
@@ -13,7 +14,10 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         var services = builder.Services;
         var configuration = builder.Configuration;
-        var environmentName = builder.Environment.EnvironmentName;
+
+        services.AddHttpContextAccessor();
+
+        services.AddEventConfiguration();
 
         services.AddMockClients();
 
@@ -43,12 +47,15 @@ public class Program
 
         services.AddAutoMapperConfiguration();
 
-        if (environmentName != "Testing")
-        {
-            services.AddHangfireConfiguration(configuration);
-        }
+        services.AddRabbitMqConfiguration(configuration);
+
+        services.AddHangfireConfiguration(configuration);
+
+        builder.AddSerilog();
 
         var app = builder.Build();
+
+        app.UseMiddleware<EventDispatchMiddleware>();
 
         if (!app.Environment.IsEnvironment("Testing"))
         {
@@ -59,7 +66,7 @@ public class Program
 
         app.UseExceptionHandler(_ => { });
         app.MapControllers();
-        
+
         if (!app.Environment.IsEnvironment("Testing"))
         {
             app.UseSwagger();
@@ -73,14 +80,14 @@ public class Program
                 c.OAuthUsePkce();
                 c.OAuthScopes("openid", "profile");
             });
-
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions
-            {
-                Authorization = [new AllowAllAuthorizationFilter()]
-            });
-
-            JobConfigurator.Configure(app.Services);
         }
+        app.UseHangfireDashboard("/hangfire", new DashboardOptions
+        {
+            Authorization = [new AllowAllAuthorizationFilter()]
+        });
+
+        JobConfigurator.Configure(app.Services);
+
 
         app.Run();
     }

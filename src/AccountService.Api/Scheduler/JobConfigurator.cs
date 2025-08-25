@@ -11,5 +11,11 @@ public static class JobConfigurator
             nameof(AccrueInterestJob),
             runner => runner.Run(),
             Cron.Daily);
+
+        RecurringJob.AddOrUpdate<JobRunner<RabbitMqPublishJob>>(
+            nameof(RabbitMqPublishJob),
+            runner => runner.Run(),
+            "*/5 * * * * *"
+        );
     }
 }

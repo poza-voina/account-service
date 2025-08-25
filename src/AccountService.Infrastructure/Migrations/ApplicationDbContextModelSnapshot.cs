@@ -52,6 +52,10 @@ namespace AccountService.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("isDeleted");
 
+                    b.Property<bool>("IsFrozen")
+                        .HasColumnType("boolean")
+                        .HasColumnName("isFrozen");
+
                     b.Property<DateTime>("OpeningDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -80,6 +84,112 @@ namespace AccountService.Infrastructure.Migrations
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("OwnerId"), "hash");
 
                     b.ToTable("accounts", (string)null);
+                });
+
+            modelBuilder.Entity("AccountService.Infrastructure.Models.InboxConsumed", b =>
+                {
+                    b.Property<Guid>("MessageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("messageId");
+
+                    b.Property<string>("Handler")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("handler");
+
+                    b.Property<DateTime>("ProcessedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("failedAt")
+                        .HasDefaultValueSql("now() at time zone 'utc'");
+
+                    b.HasKey("MessageId");
+
+                    b.ToTable("inboxConsumed", (string)null);
+                });
+
+            modelBuilder.Entity("AccountService.Infrastructure.Models.InboxDeadLetter", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<string>("EventType")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("eventType");
+
+                    b.Property<string>("ExceptionMessage")
+                        .HasColumnType("text")
+                        .HasColumnName("exceptionMessage");
+
+                    b.Property<DateTime>("FailedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("failedAt")
+                        .HasDefaultValueSql("now() at time zone 'utc'");
+
+                    b.Property<string>("Payload")
+                        .HasColumnType("text")
+                        .HasColumnName("payload");
+
+                    b.Property<string>("StackTrace")
+                        .HasColumnType("text")
+                        .HasColumnName("stackTrace");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("inboxDeadLetter", (string)null);
+                });
+
+            modelBuilder.Entity("AccountService.Infrastructure.Models.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<Guid>("CorrelationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("correlationId");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("createdAt")
+                        .HasDefaultValueSql("now() at time zone 'utc'");
+
+                    b.Property<string>("EventPayload")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("eventPayload");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("eventType");
+
+                    b.Property<DateTime?>("ProcessedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processedAt");
+
+                    b.Property<int>("RetryCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("retryCount");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("outboxMessages", (string)null);
                 });
 
             modelBuilder.Entity("AccountService.Infrastructure.Models.Transaction", b =>
