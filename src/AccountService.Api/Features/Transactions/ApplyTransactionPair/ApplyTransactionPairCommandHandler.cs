@@ -1,5 +1,6 @@
 using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Transactions.Interfaces;
+using AccountService.Api.ObjectStorage;
 using AccountService.Api.ObjectStorage.Events.Published;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ObjectStorage.Objects;
@@ -11,17 +12,19 @@ using Models = AccountService.Infrastructure.Models;
 namespace AccountService.Api.Features.Transactions.ApplyTransactionPair;
 
 public class ApplyTransactionPairCommandHandler(
+    IServiceProvider provider,
     ITransactionStorageService transactionStorageService,
     IMediator mediator,
     IEventFactory eventFactory)
-    : IRequestHandler<ApplyTransactionPairCommand, Unit>
+    : UnitHandlerBase<ApplyTransactionPairCommand, Unit>(provider),
+    IRequestHandler<ApplyTransactionPairCommand, Unit>
 {
     private const string InvalidTransactionLinkErrorMessage = "Транзакции не формируют взаимную связь";
     private const string AccountNotFoundMoney = "На счете недостаточно средств";
     private const string CreditTransactionNotFoundErrorMessage = "Транзакция на списание не найдена";
     private const string DebitTransactionNotFoundErrorMessage = "Транзакция на пополнение не найдена";
 
-    public async Task<Unit> Handle(ApplyTransactionPairCommand request, CancellationToken cancellationToken)
+    protected override async Task<Unit> ExecuteTransactionBodyAsync(ApplyTransactionPairCommand request, CancellationToken cancellationToken)
     {
         var transactions = await transactionStorageService.GetTransactionsAsync(
             [request.CreditTransaction.TransactionId, request.DebitTransaction.TransactionId],

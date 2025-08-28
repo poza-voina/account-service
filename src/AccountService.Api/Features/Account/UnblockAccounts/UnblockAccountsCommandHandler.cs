@@ -4,34 +4,21 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using AccountService.Api.ObjectStorage.Interfaces;
 using System.Data;
+using AccountService.Api.ObjectStorage;
 
 namespace AccountService.Api.Features.Account.UnblockAccounts;
 
-public class UnblockAccountsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UnblockAccountsCommand, Unit>
+public class UnblockAccountsCommandHandler(IRepository<Models.Account> repository, IServiceProvider provider) : UnitHandlerBase<UnblockAccountsCommand, Unit>(provider)
 {
-    public async Task<Unit> Handle(UnblockAccountsCommand request, CancellationToken cancellationToken)
+    protected override async Task<Unit> ExecuteTransactionBodyAsync(UnblockAccountsCommand request, CancellationToken cancellationToken)
     {
-        var repository = unitOfWork.GetRepository<IRepository<Models.Account>>();
+        var accounts = await repository.GetAll()
+            .Where(x => x.OwnerId == request.OwnerId && x.IsFrozen)
+            .ToListAsync(cancellationToken: cancellationToken);
 
-        await unitOfWork.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
+        accounts.ForEach(x => x.IsFrozen = false);
 
-        try
-        {
-            var accounts = await repository.GetAll()
-                .Where(x => x.OwnerId == request.OwnerId && x.IsFrozen)
-                .ToListAsync(cancellationToken: cancellationToken);
-
-            accounts.ForEach(x => x.IsFrozen = false);
-
-            await repository.UpdateRangeAsync(accounts);
-
-            await unitOfWork.CommitAsync(cancellationToken);
-        }
-        catch (Exception)
-        {
-            await unitOfWork.RollbackAsync(cancellationToken);
-            throw;
-        }
+        await repository.UpdateRangeAsync(accounts);
 
         return Unit.Value;
     }

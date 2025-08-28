@@ -26386,3 +26386,356 @@ System.IO.IOException: Failed to bind to address http://[::1]:80: address alread
    at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
    at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
    at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2025-08-27 22:27:09.206 +03:00 [INF] Start installing Hangfire SQL objects...
+2025-08-27 22:27:09.325 +03:00 [INF] Hangfire SQL objects installed.
+2025-08-27 22:27:09.893 +03:00 [INF] User profile is available. Using 'C:\Users\pudge\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-08-27 22:27:10.174 +03:00 [INF] Connection open: true
+2025-08-27 22:27:10.176 +03:00 [INF] Channel open: true
+2025-08-27 22:27:10.185 +03:00 [INF] Now listening on: http://localhost:80
+2025-08-27 22:27:10.256 +03:00 [INF] Starting Hangfire Server using job storage: 'PostgreSQL Server: Host: 127.0.0.1, DB: account-service, Schema: hangfire'
+2025-08-27 22:27:10.257 +03:00 [INF] Using the following options for PostgreSQL job storage:
+2025-08-27 22:27:10.257 +03:00 [INF]     Queue poll interval: 00:00:15.
+2025-08-27 22:27:10.258 +03:00 [INF]     Invisibility timeout: 00:30:00.
+2025-08-27 22:27:10.258 +03:00 [INF]     Use sliding invisibility timeout: False.
+2025-08-27 22:27:10.259 +03:00 [INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2025-08-27 22:27:10.275 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-08-27 22:27:10.275 +03:00 [INF] Hosting environment: Development
+2025-08-27 22:27:10.276 +03:00 [INF] Content root path: E:\projects\entry\account-service\src\AccountService.Api
+2025-08-27 22:27:10.329 +03:00 [INF] Server desktop-b532s08:4648:979d3ad3 successfully announced in 16,0204 ms
+2025-08-27 22:27:10.336 +03:00 [INF] Server desktop-b532s08:4648:979d3ad3 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, ExpirationManager, CountersAggregator, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2025-08-27 22:27:10.375 +03:00 [INF] 1 servers were removed due to timeout
+2025-08-27 22:27:10.655 +03:00 [INF] Removed 2 outdated record(s) from 'aggregatedcounter' table.
+2025-08-27 22:27:10.840 +03:00 [INF] Server desktop-b532s08:4648:979d3ad3 all the dispatchers started
+2025-08-27 22:27:11.876 +03:00 [INF] Removed 226 outdated record(s) from 'job' table.
+2025-08-27 22:27:11.936 +03:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2025-08-27 22:27:13.099 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/swagger/index.html - null null
+2025-08-27 22:27:16.113 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/swagger/index.html - 200 null text/html;charset=utf-8 3026.8282ms
+2025-08-27 22:27:16.192 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/swagger/swagger-ui.css - null null
+2025-08-27 22:27:16.254 +03:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-08-27 22:27:16.277 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/swagger/swagger-ui.css - 200 154949 text/css 85.4026ms
+2025-08-27 22:27:16.289 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/swagger/index.css - null null
+2025-08-27 22:27:16.292 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/swagger/swagger-ui-bundle.js - null null
+2025-08-27 22:27:16.305 +03:00 [INF] Sending file. Request path: '/index.css'. Physical path: 'N/A'
+2025-08-27 22:27:16.317 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/swagger/index.css - 200 202 text/css 27.6461ms
+2025-08-27 22:27:16.371 +03:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-08-27 22:27:16.384 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/swagger/swagger-ui-bundle.js - 200 1485241 text/javascript 92.1011ms
+2025-08-27 22:27:16.911 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/swagger/swagger-ui-standalone-preset.js - null null
+2025-08-27 22:27:16.921 +03:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-08-27 22:27:16.922 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/swagger/swagger-ui-standalone-preset.js - 200 229223 text/javascript 10.624ms
+2025-08-27 22:27:16.926 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/swagger/index.js - null null
+2025-08-27 22:27:16.931 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/swagger/index.js - 200 null application/javascript;charset=utf-8 5.2184ms
+2025-08-27 22:27:16.961 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/_framework/aspnetcore-browser-refresh.js - null null
+2025-08-27 22:27:16.965 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/_framework/aspnetcore-browser-refresh.js - 200 16521 application/javascript; charset=utf-8 4.3139ms
+2025-08-27 22:27:16.970 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/_vs/browserLink - null null
+2025-08-27 22:27:17.058 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/_vs/browserLink - 200 null text/javascript; charset=UTF-8 87.6769ms
+2025-08-27 22:27:17.952 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/swagger/v1/swagger.json - null null
+2025-08-27 22:27:17.952 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/swagger/favicon-32x32.png - null null
+2025-08-27 22:27:17.959 +03:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-08-27 22:27:17.961 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/swagger/favicon-32x32.png - 200 628 image/png 8.4815ms
+2025-08-27 22:27:18.304 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 350.0974ms
+2025-08-27 22:27:31.734 +03:00 [INF] Message published: EventId="38f0a3b5-06a5-4737-a9b2-da4d7d3ef5e6", Type=InterestAccrued, CorrelationId="8fefe286-a763-4fd1-9663-1ced9b07c752", Retry=0, Latency=37ms
+2025-08-27 22:28:38.513 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost/accounts - application/json 119
+2025-08-27 22:28:38.598 +03:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2025-08-27 22:28:38.611 +03:00 [INF] AuthenticationScheme: Bearer was challenged.
+2025-08-27 22:28:38.612 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost/accounts - 401 null application/json; charset=utf-8 99.2176ms
+2025-08-27 22:29:05.151 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/swagger/oauth2-redirect.html?state=V2VkIEF1ZyAyNyAyMDI1IDIyOjI4OjU1IEdNVCswMzAwICjQnNC%2B0YHQutCy0LAsINGB0YLQsNC90LTQsNGA0YLQvdC%2B0LUg0LLRgNC10LzRjyk%3D&session_state=d3a8d1ba-b8cc-45f0-82fa-9fbd755657db&iss=http%3A%2F%2Flocalhost%3A8080%2Frealms%2Fapplication-realm&code=6530d947-a2e3-4771-80ee-e8c6da8efff3.d3a8d1ba-b8cc-45f0-82fa-9fbd755657db.11a0fe7c-9e60-409f-9e1e-2176a140248a - null null
+2025-08-27 22:29:05.158 +03:00 [INF] Sending file. Request path: '/oauth2-redirect.html'. Physical path: 'N/A'
+2025-08-27 22:29:05.197 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/swagger/oauth2-redirect.html?state=V2VkIEF1ZyAyNyAyMDI1IDIyOjI4OjU1IEdNVCswMzAwICjQnNC%2B0YHQutCy0LAsINGB0YLQsNC90LTQsNGA0YLQvdC%2B0LUg0LLRgNC10LzRjyk%3D&session_state=d3a8d1ba-b8cc-45f0-82fa-9fbd755657db&iss=http%3A%2F%2Flocalhost%3A8080%2Frealms%2Fapplication-realm&code=6530d947-a2e3-4771-80ee-e8c6da8efff3.d3a8d1ba-b8cc-45f0-82fa-9fbd755657db.11a0fe7c-9e60-409f-9e1e-2176a140248a - 200 null text/html 45.9709ms
+2025-08-27 22:29:05.207 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/.well-known/appspecific/com.chrome.devtools.json - null null
+2025-08-27 22:29:05.209 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/_framework/aspnetcore-browser-refresh.js - null null
+2025-08-27 22:29:05.222 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/_vs/browserLink - null null
+2025-08-27 22:29:05.226 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 19.588ms
+2025-08-27 22:29:05.228 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/_framework/aspnetcore-browser-refresh.js - 200 16521 application/javascript; charset=utf-8 19.478ms
+2025-08-27 22:29:05.235 +03:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2025-08-27 22:29:05.238 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/_vs/browserLink - 200 null text/javascript; charset=UTF-8 16.0257ms
+2025-08-27 22:29:08.087 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/.well-known/appspecific/com.chrome.devtools.json - null null
+2025-08-27 22:29:08.104 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 16.3874ms
+2025-08-27 22:29:08.107 +03:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2025-08-27 22:29:09.291 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/swagger/index.html - null null
+2025-08-27 22:29:09.302 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/swagger/index.html - 200 null text/html;charset=utf-8 11.2776ms
+2025-08-27 22:29:09.361 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/.well-known/appspecific/com.chrome.devtools.json - null null
+2025-08-27 22:29:09.390 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/_framework/aspnetcore-browser-refresh.js - null null
+2025-08-27 22:29:09.395 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/_framework/aspnetcore-browser-refresh.js - 200 16521 application/javascript; charset=utf-8 6.0296ms
+2025-08-27 22:29:09.393 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 32.0851ms
+2025-08-27 22:29:09.411 +03:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2025-08-27 22:29:09.429 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/_vs/browserLink - null null
+2025-08-27 22:29:09.448 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/_vs/browserLink - 200 null text/javascript; charset=UTF-8 19.4019ms
+2025-08-27 22:29:09.794 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/swagger/v1/swagger.json - null null
+2025-08-27 22:29:09.933 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 139.7079ms
+2025-08-27 22:29:12.826 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/swagger/oauth2-redirect.html?state=V2VkIEF1ZyAyNyAyMDI1IDIyOjI5OjEyIEdNVCswMzAwICjQnNC%2B0YHQutCy0LAsINGB0YLQsNC90LTQsNGA0YLQvdC%2B0LUg0LLRgNC10LzRjyk%3D&session_state=d3a8d1ba-b8cc-45f0-82fa-9fbd755657db&iss=http%3A%2F%2Flocalhost%3A8080%2Frealms%2Fapplication-realm&code=6002bb0a-8731-4e79-b225-8b49ad959946.d3a8d1ba-b8cc-45f0-82fa-9fbd755657db.11a0fe7c-9e60-409f-9e1e-2176a140248a - null null
+2025-08-27 22:29:12.832 +03:00 [INF] Sending file. Request path: '/oauth2-redirect.html'. Physical path: 'N/A'
+2025-08-27 22:29:12.834 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/swagger/oauth2-redirect.html?state=V2VkIEF1ZyAyNyAyMDI1IDIyOjI5OjEyIEdNVCswMzAwICjQnNC%2B0YHQutCy0LAsINGB0YLQsNC90LTQsNGA0YLQvdC%2B0LUg0LLRgNC10LzRjyk%3D&session_state=d3a8d1ba-b8cc-45f0-82fa-9fbd755657db&iss=http%3A%2F%2Flocalhost%3A8080%2Frealms%2Fapplication-realm&code=6002bb0a-8731-4e79-b225-8b49ad959946.d3a8d1ba-b8cc-45f0-82fa-9fbd755657db.11a0fe7c-9e60-409f-9e1e-2176a140248a - 200 null text/html 7.5777ms
+2025-08-27 22:29:12.852 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/_vs/browserLink - null null
+2025-08-27 22:29:12.853 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/_framework/aspnetcore-browser-refresh.js - null null
+2025-08-27 22:29:12.863 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/_framework/aspnetcore-browser-refresh.js - 200 16521 application/javascript; charset=utf-8 10.2961ms
+2025-08-27 22:29:12.866 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/_vs/browserLink - 200 null text/javascript; charset=UTF-8 14.6093ms
+2025-08-27 22:29:39.225 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost/accounts - application/json 0
+2025-08-27 22:29:39.672 +03:00 [INF] Executing endpoint 'AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api)'
+2025-08-27 22:29:39.698 +03:00 [INF] Route matched with {action = "CreateAccount", controller = "Account"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[AccountService.Api.ViewModels.Result.MbResult`1[AccountService.Api.ViewModels.AccountViewModel]]] CreateAccount(AccountService.Api.Features.Account.CreateAccount.CreateAccountCommand) on controller AccountService.Api.Features.Account.AccountController (AccountService.Api).
+2025-08-27 22:29:39.732 +03:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2025-08-27 22:29:39.752 +03:00 [INF] Executed action AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api) in 49.9989ms
+2025-08-27 22:29:39.754 +03:00 [INF] Executed endpoint 'AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api)'
+2025-08-27 22:29:39.754 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost/accounts - 400 null application/problem+json; charset=utf-8 529.5921ms
+2025-08-27 22:29:54.772 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost/accounts - application/json 119
+2025-08-27 22:29:54.851 +03:00 [INF] Executing endpoint 'AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api)'
+2025-08-27 22:29:54.853 +03:00 [INF] Route matched with {action = "CreateAccount", controller = "Account"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[AccountService.Api.ViewModels.Result.MbResult`1[AccountService.Api.ViewModels.AccountViewModel]]] CreateAccount(AccountService.Api.Features.Account.CreateAccount.CreateAccountCommand) on controller AccountService.Api.Features.Account.AccountController (AccountService.Api).
+2025-08-27 22:29:59.197 +03:00 [INF] Executed action AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api) in 4341.2893ms
+2025-08-27 22:29:59.209 +03:00 [INF] Executed endpoint 'AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api)'
+2025-08-27 22:29:59.216 +03:00 [ERR] An unhandled exception has occurred while executing the request.
+FluentValidation.ValidationException: Validation failed: 
+ -- InterestRate: Ключевая ставка должна быть пустой, если тип счета Checking Severity: Error
+   at AccountService.Api.Behaviors.ValidationBehavior`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\Behaviors\ValidationBehavior.cs:line 18
+   at MediatR.Wrappers.RequestHandlerWrapperImpl`2.<>c__DisplayClass1_1.<Handle>b__2(CancellationToken t)
+   at MediatR.Wrappers.RequestHandlerWrapperImpl`2.Handle(IRequest`1 request, IServiceProvider serviceProvider, CancellationToken cancellationToken)
+   at MediatR.Mediator.Send[TResponse](IRequest`1 request, CancellationToken cancellationToken)
+   at AccountService.Api.Features.Account.AccountController.CreateAccount(CreateAccountCommand command) in E:\projects\entry\account-service\src\AccountService.Api\Features\Account\AccountController.cs:line 31
+   at lambda_method154(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2025-08-27 22:29:59.271 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost/accounts - 400 null application/json; charset=utf-8 4498.6112ms
+2025-08-27 22:30:08.669 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost/accounts - application/json 99
+2025-08-27 22:30:08.679 +03:00 [INF] Executing endpoint 'AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api)'
+2025-08-27 22:30:08.681 +03:00 [INF] Route matched with {action = "CreateAccount", controller = "Account"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[AccountService.Api.ViewModels.Result.MbResult`1[AccountService.Api.ViewModels.AccountViewModel]]] CreateAccount(AccountService.Api.Features.Account.CreateAccount.CreateAccountCommand) on controller AccountService.Api.Features.Account.AccountController (AccountService.Api).
+2025-08-27 22:30:08.752 +03:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2025-08-27 22:30:08.764 +03:00 [INF] Executed action AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api) in 77.6281ms
+2025-08-27 22:30:08.768 +03:00 [INF] Executed endpoint 'AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api)'
+2025-08-27 22:30:08.773 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost/accounts - 400 null application/problem+json; charset=utf-8 103.7742ms
+2025-08-27 22:30:11.497 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost/accounts - application/json 98
+2025-08-27 22:30:11.562 +03:00 [INF] Executing endpoint 'AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api)'
+2025-08-27 22:30:11.567 +03:00 [INF] Route matched with {action = "CreateAccount", controller = "Account"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[AccountService.Api.ViewModels.Result.MbResult`1[AccountService.Api.ViewModels.AccountViewModel]]] CreateAccount(AccountService.Api.Features.Account.CreateAccount.CreateAccountCommand) on controller AccountService.Api.Features.Account.AccountController (AccountService.Api).
+2025-08-27 22:30:11.777 +03:00 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2025-08-27 22:30:15.475 +03:00 [INF] Executed action AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api) in 3905.9318ms
+2025-08-27 22:30:15.519 +03:00 [INF] Executed endpoint 'AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api)'
+2025-08-27 22:30:15.522 +03:00 [ERR] An unhandled exception has occurred while executing the request.
+AccountService.Abstractions.Exceptions.UnprocessableException: Клиент не существует
+   at AccountService.Api.ObjectStorage.ClientVerificationService.VerifyAsync(Guid ownerId) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\ClientVefiricationService.cs:line 15
+   at AccountService.Api.Features.Account.CreateAccount.CreateAccountCommandHandler.ExecuteTransactionBodyAsync(CreateAccountCommand request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\Features\Account\CreateAccount\CreateAccountCommandHandler.cs:line 24
+   at AccountService.Api.ObjectStorage.UnitHandlerBase`2.ExecuteTransactionAsync(TRequest request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\UnitHandlerBase.cs:line 32
+   at AccountService.Api.ObjectStorage.UnitHandlerBase`2.ExecuteTransactionAsync(TRequest request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\UnitHandlerBase.cs:line 40
+   at AccountService.Api.Features.Account.AccountController.CreateAccount(CreateAccountCommand command) in E:\projects\entry\account-service\src\AccountService.Api\Features\Account\AccountController.cs:line 31
+   at lambda_method154(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2025-08-27 22:30:15.534 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost/accounts - 422 null application/json; charset=utf-8 4036.6927ms
+2025-08-27 22:30:47.920 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost/accounts - application/json 98
+2025-08-27 22:30:47.927 +03:00 [INF] Executing endpoint 'AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api)'
+2025-08-27 22:30:47.933 +03:00 [INF] Route matched with {action = "CreateAccount", controller = "Account"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[AccountService.Api.ViewModels.Result.MbResult`1[AccountService.Api.ViewModels.AccountViewModel]]] CreateAccount(AccountService.Api.Features.Account.CreateAccount.CreateAccountCommand) on controller AccountService.Api.Features.Account.AccountController (AccountService.Api).
+2025-08-27 22:30:48.137 +03:00 [INF] Executing OkObjectResult, writing value of type 'AccountService.Api.ViewModels.Result.MbResult`1[[AccountService.Api.ViewModels.AccountViewModel, AccountService.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-08-27 22:30:48.158 +03:00 [INF] Executed action AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api) in 223.9967ms
+2025-08-27 22:30:48.162 +03:00 [INF] Executed endpoint 'AccountService.Api.Features.Account.AccountController.CreateAccount (AccountService.Api)'
+2025-08-27 22:30:48.174 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost/accounts - 200 null application/json; charset=utf-8 253.4991ms
+2025-08-27 22:30:48.369 +03:00 [INF] Message published: EventId="0a133f9b-1507-4d5f-9503-9bb54a8aa50e", Type=AccountOpened, CorrelationId="16e9f6ae-b44e-4050-8e1d-b082514df446", Retry=0, Latency=0ms
+2025-08-27 22:37:44.231 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost/transactions/transfer - application/json 194
+2025-08-27 22:37:44.237 +03:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2025-08-27 22:37:44.238 +03:00 [INF] AuthenticationScheme: Bearer was challenged.
+2025-08-27 22:37:44.240 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost/transactions/transfer - 401 null application/json; charset=utf-8 8.524ms
+2025-08-27 22:38:25.291 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost/transactions/transfer - application/json 194
+2025-08-27 22:38:25.381 +03:00 [INF] Executing endpoint 'AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api)'
+2025-08-27 22:38:25.391 +03:00 [INF] Route matched with {action = "TransferTransaction", controller = "Transaction"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[AccountService.Api.ViewModels.Result.MbResult`1[AccountService.Api.ViewModels.TransactionViewModel]]] TransferTransaction(AccountService.Api.Features.Transactions.TransferTransaction.TransferTransactionCommand) on controller AccountService.Api.Features.Transactions.TransactionController (AccountService.Api).
+2025-08-27 22:38:25.404 +03:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2025-08-27 22:38:25.409 +03:00 [INF] Executed action AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api) in 15.5628ms
+2025-08-27 22:38:25.411 +03:00 [INF] Executed endpoint 'AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api)'
+2025-08-27 22:38:25.412 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost/transactions/transfer - 400 null application/problem+json; charset=utf-8 120.6625ms
+2025-08-27 22:39:20.912 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost/transactions/transfer - application/json 260
+2025-08-27 22:39:20.932 +03:00 [INF] Executing endpoint 'AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api)'
+2025-08-27 22:39:20.934 +03:00 [INF] Route matched with {action = "TransferTransaction", controller = "Transaction"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[AccountService.Api.ViewModels.Result.MbResult`1[AccountService.Api.ViewModels.TransactionViewModel]]] TransferTransaction(AccountService.Api.Features.Transactions.TransferTransaction.TransferTransactionCommand) on controller AccountService.Api.Features.Transactions.TransactionController (AccountService.Api).
+2025-08-27 22:39:22.809 +03:00 [INF] Executed action AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api) in 1870.5386ms
+2025-08-27 22:39:22.844 +03:00 [INF] Executed endpoint 'AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api)'
+2025-08-27 22:39:22.886 +03:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: Transaction already started
+   at AccountService.Api.ObjectStorage.UnitOfWork.BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\UnitOfWork.cs:line 19
+   at AccountService.Api.ObjectStorage.UnitHandlerBase`2.ExecuteTransactionAsync(TRequest request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\UnitHandlerBase.cs:line 28
+   at AccountService.Api.Features.Transactions.TransferTransaction.TransferTransactionCommandHandler.ExecuteTransactionBodyAsync(TransferTransactionCommand request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\Features\Transactions\TransferTransaction\TransferTransactionCommandHandler.cs:line 25
+   at AccountService.Api.ObjectStorage.UnitHandlerBase`2.ExecuteTransactionAsync(TRequest request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\UnitHandlerBase.cs:line 32
+   at AccountService.Api.ObjectStorage.UnitHandlerBase`2.ExecuteTransactionAsync(TRequest request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\UnitHandlerBase.cs:line 40
+   at AccountService.Api.Features.Transactions.TransactionController.TransferTransaction(TransferTransactionCommand command) in E:\projects\entry\account-service\src\AccountService.Api\Features\Transactions\TransactionController.cs:line 43
+   at lambda_method306(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2025-08-27 22:39:22.913 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost/transactions/transfer - 500 null application/json; charset=utf-8 2001.0888ms
+2025-08-27 22:39:30.747 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost/transactions/transfer - application/json 260
+2025-08-27 22:39:30.848 +03:00 [INF] Executing endpoint 'AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api)'
+2025-08-27 22:39:30.851 +03:00 [INF] Route matched with {action = "TransferTransaction", controller = "Transaction"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[AccountService.Api.ViewModels.Result.MbResult`1[AccountService.Api.ViewModels.TransactionViewModel]]] TransferTransaction(AccountService.Api.Features.Transactions.TransferTransaction.TransferTransactionCommand) on controller AccountService.Api.Features.Transactions.TransactionController (AccountService.Api).
+2025-08-27 22:40:02.582 +03:00 [INF] Executed action AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api) in 31725.909ms
+2025-08-27 22:40:02.627 +03:00 [INF] Executed endpoint 'AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api)'
+2025-08-27 22:40:02.631 +03:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: Transaction already started
+   at AccountService.Api.ObjectStorage.UnitOfWork.BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\UnitOfWork.cs:line 19
+   at AccountService.Api.ObjectStorage.UnitHandlerBase`2.ExecuteTransactionAsync(TRequest request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\UnitHandlerBase.cs:line 28
+   at AccountService.Api.Features.Transactions.TransferTransaction.TransferTransactionCommandHandler.ExecuteTransactionBodyAsync(TransferTransactionCommand request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\Features\Transactions\TransferTransaction\TransferTransactionCommandHandler.cs:line 25
+   at AccountService.Api.ObjectStorage.UnitHandlerBase`2.ExecuteTransactionAsync(TRequest request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\UnitHandlerBase.cs:line 32
+   at AccountService.Api.ObjectStorage.UnitHandlerBase`2.ExecuteTransactionAsync(TRequest request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\UnitHandlerBase.cs:line 40
+   at AccountService.Api.Features.Transactions.TransactionController.TransferTransaction(TransferTransactionCommand command) in E:\projects\entry\account-service\src\AccountService.Api\Features\Transactions\TransactionController.cs:line 43
+   at lambda_method306(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2025-08-27 22:40:02.658 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost/transactions/transfer - 500 null application/json; charset=utf-8 31911.4029ms
+2025-08-27 22:40:05.508 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost/transactions/transfer - application/json 260
+2025-08-27 22:40:05.512 +03:00 [INF] Executing endpoint 'AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api)'
+2025-08-27 22:40:05.514 +03:00 [INF] Route matched with {action = "TransferTransaction", controller = "Transaction"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[AccountService.Api.ViewModels.Result.MbResult`1[AccountService.Api.ViewModels.TransactionViewModel]]] TransferTransaction(AccountService.Api.Features.Transactions.TransferTransaction.TransferTransactionCommand) on controller AccountService.Api.Features.Transactions.TransactionController (AccountService.Api).
+2025-08-27 22:42:11.705 +03:00 [INF] Start installing Hangfire SQL objects...
+2025-08-27 22:42:11.885 +03:00 [INF] Hangfire SQL objects installed.
+2025-08-27 22:42:12.316 +03:00 [INF] User profile is available. Using 'C:\Users\pudge\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-08-27 22:42:12.589 +03:00 [INF] Now listening on: http://localhost:80
+2025-08-27 22:42:12.607 +03:00 [INF] Connection open: true
+2025-08-27 22:42:12.610 +03:00 [INF] Channel open: true
+2025-08-27 22:42:12.662 +03:00 [INF] Starting Hangfire Server using job storage: 'PostgreSQL Server: Host: 127.0.0.1, DB: account-service, Schema: hangfire'
+2025-08-27 22:42:12.675 +03:00 [INF] Using the following options for PostgreSQL job storage:
+2025-08-27 22:42:12.676 +03:00 [INF]     Queue poll interval: 00:00:15.
+2025-08-27 22:42:12.677 +03:00 [INF]     Invisibility timeout: 00:30:00.
+2025-08-27 22:42:12.677 +03:00 [INF]     Use sliding invisibility timeout: False.
+2025-08-27 22:42:12.678 +03:00 [INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2025-08-27 22:42:12.725 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-08-27 22:42:12.730 +03:00 [INF] Hosting environment: Development
+2025-08-27 22:42:12.731 +03:00 [INF] Content root path: E:\projects\entry\account-service\src\AccountService.Api
+2025-08-27 22:42:12.746 +03:00 [INF] Server desktop-b532s08:9196:24e0ec1c successfully announced in 14,1075 ms
+2025-08-27 22:42:12.752 +03:00 [INF] Server desktop-b532s08:9196:24e0ec1c is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, ExpirationManager, CountersAggregator, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2025-08-27 22:42:13.682 +03:00 [INF] Server desktop-b532s08:9196:24e0ec1c all the dispatchers started
+2025-08-27 22:42:13.688 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/_framework/aspnetcore-browser-refresh.js - null null
+2025-08-27 22:42:13.687 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/_vs/browserLink - null null
+2025-08-27 22:42:13.732 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/_framework/aspnetcore-browser-refresh.js - 200 16521 application/javascript; charset=utf-8 79.8393ms
+2025-08-27 22:42:13.878 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/_vs/browserLink - 200 null text/javascript; charset=UTF-8 227.3296ms
+2025-08-27 22:42:14.136 +03:00 [INF] Request starting HTTP/1.1 GET http://localhost/swagger/v1/swagger.json - null null
+2025-08-27 22:42:14.939 +03:00 [INF] Request finished HTTP/1.1 GET http://localhost/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 802.5963ms
+2025-08-27 22:42:17.956 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost/transactions/transfer - application/json 260
+2025-08-27 22:42:18.508 +03:00 [INF] Executing endpoint 'AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api)'
+2025-08-27 22:42:18.529 +03:00 [INF] Route matched with {action = "TransferTransaction", controller = "Transaction"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[AccountService.Api.ViewModels.Result.MbResult`1[AccountService.Api.ViewModels.TransactionViewModel]]] TransferTransaction(AccountService.Api.Features.Transactions.TransferTransaction.TransferTransactionCommand) on controller AccountService.Api.Features.Transactions.TransactionController (AccountService.Api).
+2025-08-27 22:42:18.537 +03:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2025-08-27 22:42:18.801 +03:00 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2025-08-27 22:42:32.874 +03:00 [INF] Executed action AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api) in 14338.0424ms
+2025-08-27 22:42:32.877 +03:00 [INF] Executed endpoint 'AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api)'
+2025-08-27 22:42:32.887 +03:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException: The database operation was expected to affect 1 row(s), but actually affected 0 row(s); data may have been modified or deleted since entities were loaded. See https://go.microsoft.com/fwlink/?LinkId=527962 for information on understanding and handling optimistic concurrency exceptions.
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.ThrowAggregateUpdateConcurrencyExceptionAsync(RelationalDataReader reader, Int32 commandIndex, Int32 expectedRowsAffected, Int32 rowsAffected, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at AccountService.Infrastructure.Repositories.Repository`1.UpdateAsync(TModel entity, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Infrastructure\Repositories\Repository.cs:line 55
+   at AccountService.Infrastructure.Repositories.Repository`1.UpdateRangeAsync(IEnumerable`1 entities) in E:\projects\entry\account-service\src\AccountService.Infrastructure\Repositories\Repository.cs:line 65
+   at AccountService.Api.Features.Transactions.TransactionStorageService.ApplyTransactionsAsync(IEnumerable`1 transactions, IEnumerable`1 accounts, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\Features\Transactions\TransactionStorageService.cs:line 36
+   at AccountService.Api.Features.Transactions.ApplyTransactionPair.ApplyTransactionPairCommandHandler.ExecuteTransactionBodyAsync(ApplyTransactionPairCommand request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\Features\Transactions\ApplyTransactionPair\ApplyTransactionPairCommandHandler.cs:line 59
+   at AccountService.Api.Features.Transactions.TransferTransaction.TransferTransactionCommandHandler.ExecuteTransactionBodyAsync(TransferTransactionCommand request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\Features\Transactions\TransferTransaction\TransferTransactionCommandHandler.cs:line 42
+   at AccountService.Api.ObjectStorage.UnitHandlerBase`2.ExecuteTransactionAsync(TRequest request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\UnitHandlerBase.cs:line 33
+   at AccountService.Api.ObjectStorage.UnitHandlerBase`2.ExecuteTransactionAsync(TRequest request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\UnitHandlerBase.cs:line 41
+   at AccountService.Api.Features.Transactions.TransactionController.TransferTransaction(TransferTransactionCommand command) in E:\projects\entry\account-service\src\AccountService.Api\Features\Transactions\TransactionController.cs:line 43
+   at lambda_method51(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2025-08-27 22:42:33.011 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost/transactions/transfer - 409 null application/json; charset=utf-8 15055.1547ms
+2025-08-27 22:44:19.299 +03:00 [INF] Request starting HTTP/1.1 POST http://localhost/transactions/transfer - application/json 260
+2025-08-27 22:44:19.311 +03:00 [INF] Executing endpoint 'AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api)'
+2025-08-27 22:44:19.312 +03:00 [INF] Route matched with {action = "TransferTransaction", controller = "Transaction"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[AccountService.Api.ViewModels.Result.MbResult`1[AccountService.Api.ViewModels.TransactionViewModel]]] TransferTransaction(AccountService.Api.Features.Transactions.TransferTransaction.TransferTransactionCommand) on controller AccountService.Api.Features.Transactions.TransactionController (AccountService.Api).
+2025-08-27 22:44:21.970 +03:00 [INF] Executed action AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api) in 2655.6551ms
+2025-08-27 22:44:21.974 +03:00 [INF] Executed endpoint 'AccountService.Api.Features.Transactions.TransactionController.TransferTransaction (AccountService.Api)'
+2025-08-27 22:44:21.977 +03:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException: The database operation was expected to affect 1 row(s), but actually affected 0 row(s); data may have been modified or deleted since entities were loaded. See https://go.microsoft.com/fwlink/?LinkId=527962 for information on understanding and handling optimistic concurrency exceptions.
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.ThrowAggregateUpdateConcurrencyExceptionAsync(RelationalDataReader reader, Int32 commandIndex, Int32 expectedRowsAffected, Int32 rowsAffected, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at AccountService.Infrastructure.Repositories.Repository`1.UpdateAsync(TModel entity, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Infrastructure\Repositories\Repository.cs:line 55
+   at AccountService.Infrastructure.Repositories.Repository`1.UpdateRangeAsync(IEnumerable`1 entities) in E:\projects\entry\account-service\src\AccountService.Infrastructure\Repositories\Repository.cs:line 65
+   at AccountService.Api.Features.Transactions.TransactionStorageService.ApplyTransactionsAsync(IEnumerable`1 transactions, IEnumerable`1 accounts, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\Features\Transactions\TransactionStorageService.cs:line 36
+   at AccountService.Api.Features.Transactions.ApplyTransactionPair.ApplyTransactionPairCommandHandler.ExecuteTransactionBodyAsync(ApplyTransactionPairCommand request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\Features\Transactions\ApplyTransactionPair\ApplyTransactionPairCommandHandler.cs:line 59
+   at AccountService.Api.Features.Transactions.TransferTransaction.TransferTransactionCommandHandler.ExecuteTransactionBodyAsync(TransferTransactionCommand request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\Features\Transactions\TransferTransaction\TransferTransactionCommandHandler.cs:line 42
+   at AccountService.Api.ObjectStorage.UnitHandlerBase`2.ExecuteTransactionAsync(TRequest request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\UnitHandlerBase.cs:line 33
+   at AccountService.Api.ObjectStorage.UnitHandlerBase`2.ExecuteTransactionAsync(TRequest request, CancellationToken cancellationToken) in E:\projects\entry\account-service\src\AccountService.Api\ObjectStorage\UnitHandlerBase.cs:line 41
+   at AccountService.Api.Features.Transactions.TransactionController.TransferTransaction(TransferTransactionCommand command) in E:\projects\entry\account-service\src\AccountService.Api\Features\Transactions\TransactionController.cs:line 43
+   at lambda_method51(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2025-08-27 22:46:27.917 +03:00 [INF] Request finished HTTP/1.1 POST http://localhost/transactions/transfer - 409 null application/json; charset=utf-8 128618.5927ms
+2025-08-27 22:47:12.884 +03:00 [INF] 1 servers were removed due to timeout
