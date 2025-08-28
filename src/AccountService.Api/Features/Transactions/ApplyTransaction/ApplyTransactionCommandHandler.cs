@@ -1,5 +1,6 @@
 using AccountService.Abstractions.Exceptions;
 using AccountService.Api.Features.Transactions.Interfaces;
+using AccountService.Api.ObjectStorage;
 using AccountService.Api.ObjectStorage.Events.Published;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Infrastructure.Enums;
@@ -11,20 +12,21 @@ using Models = AccountService.Infrastructure.Models;
 namespace AccountService.Api.Features.Transactions.ApplyTransaction;
 
 public class ApplyTransactionCommandHandler(
+    IServiceProvider provider,
     IMediator mediator,
     ITransactionStorageService transactionStorageService,
     IEventFactory eventFactory)
-    : IRequestHandler<ApplyTransactionCommand, Unit>
+    : UnitHandlerBase<ApplyTransactionCommand, Unit>(provider), IRequestHandler<ApplyTransactionCommand, Unit>
 {
     private const string EnumErrorMessage = "Недопустимое значение перечисления";
     private const string NotEnoughMoneyErrorMessage = "На счете недостаточно средств";
 
-    public async Task<Unit> Handle(ApplyTransactionCommand request, CancellationToken cancellationToken)
+    protected override async Task<Unit> ExecuteTransactionBodyAsync(ApplyTransactionCommand request, CancellationToken cancellationToken)
     {
         var transaction = await transactionStorageService.GetTransactionAsync(
-            request.AnyTransaction.TransactionId,
-            cancellationToken,
-            x => x.Include(transaction => transaction.BankAccount));
+           request.AnyTransaction.TransactionId,
+           cancellationToken,
+           x => x.Include(transaction => transaction.BankAccount));
 
         var account = transaction.BankAccount!;
 

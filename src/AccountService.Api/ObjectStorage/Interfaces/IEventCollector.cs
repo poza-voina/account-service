@@ -6,4 +6,5 @@ public interface IEventCollector
 {
     IEnumerable<IEventBase> GetEvents();
     void AddEvent(IEventBase @event);
+    void Clear();
 }

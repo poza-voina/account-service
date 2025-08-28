@@ -45,4 +45,8 @@ public class EventDispatcher(IEventCollector eventCollector, IRepository<OutboxM
 
         await repository.AddRangeAsync(outboxMessages, cancellationToken);
     }
+    public void RollbackAll()
+    {
+        eventCollector.Clear();
+    }
 }

@@ -12,4 +12,9 @@ public class EventCollector : IEventCollector
 
     public IEnumerable<IEventBase> GetEvents() =>
         _events;
+
+    public void Clear()
+    {
+        _events.Clear();
+    }
 }

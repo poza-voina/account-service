@@ -23,10 +23,22 @@ public class ExceptionHandler : IExceptionHandler
             _ => StatusCodes.Status500InternalServerError
         };
 
+        var errorMessage = exception switch
+        {
+            NotFoundException => "Ресурс не найден",
+            ConflictException => "Ресурс существует",
+            DbUpdateConcurrencyException => "Конфлик данных. Запись была изменена другим пользователем",
+            _ => null
+        };
+
         MbResult<object> result;
         if (exception is ValidationException validationException)
         {
             result = MbResultFactory.WithValidationErrors(validationException.Errors, statusCode);
+        }
+        else if (errorMessage is not null)
+        {
+            result = MbResultFactory.WithOperationError(errorMessage, statusCode);
         }
         else
         {

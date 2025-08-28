@@ -218,6 +218,8 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddSingleton<IEventFactory, EventFactory>();
         services.AddScoped<IHealthCheckService, HealthCheckService>();
+        services.AddScoped<ApplicationContext>();
+        services.AddScoped<IEventDispatcher, EventDispatcher>();
     }
 
     public static void AddAutoMapperConfiguration(this IServiceCollection services)

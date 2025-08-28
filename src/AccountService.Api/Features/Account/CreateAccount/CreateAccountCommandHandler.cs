@@ -1,5 +1,6 @@
 using AccountService.Abstractions.Constants;
 using AccountService.Api.Features.Account.Interfaces;
+using AccountService.Api.ObjectStorage;
 using AccountService.Api.ObjectStorage.Events.Published;
 using AccountService.Api.ObjectStorage.Interfaces;
 using AccountService.Api.ViewModels;
@@ -10,16 +11,15 @@ using Models = AccountService.Infrastructure.Models;
 namespace AccountService.Api.Features.Account.CreateAccount;
 
 public class CreateAccountCommandHandler(
+    IServiceProvider provider,
     IMediator mediator,
-    IUnitOfWork unitOfWork,
     IAccountStorageService accountStorageService,
     IMapper mapper,
     IClientVerificationService clientVerificationService,
-    IHttpContextAccessor httpContextAccessor,
     IEventFactory eventFactory
-    ) : IRequestHandler<CreateAccountCommand, AccountViewModel>
+    ) : UnitHandlerBase<CreateAccountCommand, AccountViewModel>(provider)
 {
-    public async Task<AccountViewModel> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
+    protected override async Task<AccountViewModel> ExecuteTransactionBodyAsync(CreateAccountCommand request, CancellationToken cancellationToken)
     {
         await clientVerificationService.VerifyAsync(request.OwnerId);
 
@@ -29,32 +29,6 @@ public class CreateAccountCommandHandler(
         account.IsDeleted = false;
         account.IsFrozen = false;
 
-        if (IsTransactionStarted)
-        {
-            return await ExecuteTransactionBodyAsync(account, cancellationToken);
-        }
-        {
-            return await ExecuteTransactionAsync(account, cancellationToken);
-        }
-    }
-
-    private async Task<AccountViewModel> ExecuteTransactionAsync(Models.Account account, CancellationToken cancellationToken)
-    {
-        await unitOfWork.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, cancellationToken);
-
-        try
-        {
-            return await ExecuteTransactionBodyAsync(account, cancellationToken);
-        }
-        catch (Exception)
-        {
-            await unitOfWork.RollbackAsync(cancellationToken);
-            throw;
-        }
-    }
-
-    private async Task<AccountViewModel> ExecuteTransactionBodyAsync(Models.Account account, CancellationToken cancellationToken)
-    {
         account = await accountStorageService.CreateAccountAsync(account, cancellationToken);
 
         var result = mapper.Map<AccountViewModel>(account);
@@ -65,9 +39,4 @@ public class CreateAccountCommandHandler(
 
         return result;
     }
-
-    private bool IsTransactionStarted =>
-        httpContextAccessor.HttpContext
-        ?.Items
-        .ContainsKey(SystemConstants.TransactionStartedKey) is true;
 }
